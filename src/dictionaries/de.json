@@ -76,7 +76,9 @@
         "successTitle": "Bestellung aufgegeben",
         "successBody": "Vielen Dank. Die Bestätigung ist auf dem Weg in Ihr Postfach.",
         "cardNote": "Kartendaten gehen direkt an unseren Zahlungsdienstleister und werden auf dieser Seite nicht gespeichert.",
-        "otherMethods": "Andere Zahlungsart — PayPal, Klarna und mehr"
+        "otherMethods": "Andere Zahlungsart — PayPal, Klarna und mehr",
+        "noPayment": "Für diese Bestellung ist keine Zahlung erforderlich.",
+        "placeOrder": "Bestellung aufgeben"
     },
     "catalogue": {
         "title": "Produkte",

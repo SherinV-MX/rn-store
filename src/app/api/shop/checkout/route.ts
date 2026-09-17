@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { randomUUID } from 'node:crypto';
 import {
     setContact, setAddress, selectDelivery, setDiscountCodes,
-    prepareForCompletion, attachPayment, submitForCompletion, getCart, ShopifyError,
+    prepareForCompletion, attachPayment, attachFreePayment, submitForCompletion, getCart, ShopifyError,
 } from '@/lib/shopify';
 import type { Address } from '@/lib/shopify';
 
@@ -93,24 +93,29 @@ export async function POST(request: NextRequest) {
             /* The last step. Prepare first so the amount charged is the amount Shopify has
                just recalculated — never a total the browser worked out. */
             case 'pay': {
-                if (typeof body.sessionId !== 'string' || !body.sessionId) {
-                    return NextResponse.json({ error: 'missing_session' }, { status: 400 });
-                }
-
                 const prepared = await prepareForCompletion(cartId, locale);
                 if (prepared.status !== 'ready' || !prepared.total) {
                     return NextResponse.json({ result: { status: prepared.status, errors: prepared.errors } });
                 }
 
-                await attachPayment(
-                    cartId,
-                    {
-                        amount: prepared.total,
-                        sessionId: body.sessionId,
-                        billingAddress: cleanAddress(body.billingAddress ?? {}),
-                    },
-                    locale,
-                );
+                const billingAddress = cleanAddress(body.billingAddress ?? {});
+                /* Whether a card is needed is decided from the amount Shopify just calculated,
+                   never from what the browser claims — otherwise a caller could ask to pay
+                   nothing for a cart that owes something. */
+                const owesNothing = Number.parseFloat(prepared.total.amount) === 0;
+
+                if (owesNothing) {
+                    await attachFreePayment(cartId, prepared.total, billingAddress, locale);
+                } else {
+                    if (typeof body.sessionId !== 'string' || !body.sessionId) {
+                        return NextResponse.json({ error: 'missing_session' }, { status: 400 });
+                    }
+                    await attachPayment(
+                        cartId,
+                        { amount: prepared.total, sessionId: body.sessionId, billingAddress },
+                        locale,
+                    );
+                }
 
                 /* The attempt token makes the submission idempotent: a retry after a dropped
                    connection re-reads the same attempt instead of charging twice. */

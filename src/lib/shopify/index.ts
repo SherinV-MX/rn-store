@@ -243,6 +243,28 @@ export async function attachPayment(
     if (errors.length) throw new ShopifyError(errors.map((e) => e.message).join('; '), errors);
 }
 
+/* A cart that owes nothing still needs a payment method attached before it can be submitted —
+   Shopify just accepts one that moves no money. This is the path a 100% discount code or a
+   free item takes, and it is the one part of completion that is not gated behind card
+   approval, so it is also how the whole flow can be shown working end to end. */
+export async function attachFreePayment(
+    cartId: string, amount: Money, billingAddress: Address, locale: string,
+): Promise<void> {
+    const data = await storefront<{ cartPaymentUpdate: { userErrors: { message: string }[] } | null }>(
+        CART_PAYMENT_UPDATE,
+        {
+            cartId,
+            payment: {
+                amount: { amount: amount.amount, currencyCode: amount.currencyCode },
+                freePaymentMethod: { billingAddress: toMailingAddress(billingAddress) },
+            },
+            ...context(locale),
+        },
+    );
+    const errors = data.cartPaymentUpdate?.userErrors ?? [];
+    if (errors.length) throw new ShopifyError(errors.map((e) => e.message).join('; '), errors);
+}
+
 export interface SubmitResult {
     status: 'success' | 'already_accepted' | 'failed' | 'throttled';
     redirectUrl?: string;

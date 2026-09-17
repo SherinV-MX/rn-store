@@ -43,6 +43,8 @@ export interface CheckoutDict {
     successBody: string;
     cardNote: string;
     otherMethods: string;
+    noPayment: string;
+    placeOrder: string;
 }
 
 const COUNTRIES = ['DE', 'AT', 'CH', 'NL', 'BE', 'FR', 'PL', 'IT', 'ES'];
@@ -135,7 +137,9 @@ export default function CheckoutFlow({ locale, dict }: { locale: string; dict: C
         setBusy(true);
         try {
             await syncDetails();
-            const sessionId = await vaultCard(card);
+            /* A cart that owes nothing skips the card entirely — there is nothing to charge,
+               so asking for one would be theatre. */
+            const sessionId = owesNothing ? undefined : await vaultCard(card);
             const { result } = await call({
                 action: 'pay',
                 sessionId,
@@ -184,6 +188,7 @@ export default function CheckoutFlow({ locale, dict }: { locale: string; dict: C
 
     const group = cart.deliveryGroups[0];
     const shippingCost = group?.selectedDeliveryOption?.estimatedCost;
+    const owesNothing = Number.parseFloat(cart.cost.totalAmount.amount) === 0;
 
     return (
         <form className={styles.layout} onSubmit={pay}>
@@ -275,6 +280,10 @@ export default function CheckoutFlow({ locale, dict }: { locale: string; dict: C
 
                 <section className={styles.block}>
                     <h2 className={styles.blockTitle}>{dict.payment}</h2>
+                    {owesNothing ? (
+                        <p className={styles.note}>{dict.noPayment}</p>
+                    ) : (
+                    <>
                     <input
                         className={styles.input} required placeholder={dict.cardNumber} inputMode="numeric"
                         value={card.number} onChange={setCardField('number')} autoComplete="cc-number"
@@ -298,12 +307,18 @@ export default function CheckoutFlow({ locale, dict }: { locale: string; dict: C
                         value={card.name} onChange={setCardField('name')} autoComplete="cc-name"
                     />
                     <p className={styles.note}>{dict.cardNote}</p>
+                    </>
+                    )}
                 </section>
 
                 {error && <p className={styles.error} role="alert">{error}</p>}
 
                 <button type="submit" className={styles.pay} disabled={busy}>
-                    {busy ? dict.paying : `${dict.pay} ${formatMoney(cart.cost.totalAmount, locale)}`}
+                    {busy
+                        ? dict.paying
+                        : owesNothing
+                            ? dict.placeOrder
+                            : `${dict.pay} ${formatMoney(cart.cost.totalAmount, locale)}`}
                 </button>
 
                 {/* PayPal, Klarna and the other redirect-based methods cannot be completed
