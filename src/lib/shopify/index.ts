@@ -38,6 +38,9 @@ function context(locale: string) {
     };
 }
 
+/* How long product data may be stale, in seconds. Override with SHOPIFY_CATALOGUE_TTL. */
+const CATALOGUE_TTL = Number(process.env.SHOPIFY_CATALOGUE_TTL ?? 30);
+
 interface Connection<T> { nodes: T[] }
 interface RawProduct extends Omit<Product, 'images' | 'variants'> {
     images: Connection<Product['images'][number]>;
@@ -72,9 +75,10 @@ export async function getProduct(handle: string, locale: string): Promise<Produc
     const data = await storefront<{ product: RawProduct | null }>(
         PRODUCT_QUERY,
         { handle, ...context(locale) },
-        /* Product copy and prices change rarely and a stale minute is harmless; the cart is
-           what has to be live. */
-        { revalidate: 300 },
+        /* Short on purpose: the store is edited while the site is open, and a five-minute
+           cache means a price or stock change looks broken until it expires. Thirty seconds
+           keeps the API cost sensible without anyone wondering whether the edit worked. */
+        { revalidate: CATALOGUE_TTL },
     );
     return data.product ? flattenProduct(data.product) : null;
 }
@@ -83,7 +87,7 @@ export async function getProduct(handle: string, locale: string): Promise<Produc
    code: adding a product in Shopify is all it takes for it to appear. */
 export async function getProducts(locale: string, first = 50): Promise<ProductCard[]> {
     const data = await storefront<{ products: Connection<ProductCard> }>(
-        PRODUCTS_QUERY, { first, ...context(locale) }, { revalidate: 300 },
+        PRODUCTS_QUERY, { first, ...context(locale) }, { revalidate: CATALOGUE_TTL },
     );
     return data.products.nodes;
 }
