@@ -1,0 +1,21 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   Single source of truth for the shared responsive breakpoints.
+
+   These `@custom-media` aliases are injected into every CSS/module file at
+   build time (see postcss.config.mjs → @csstools/postcss-global-data), so a
+   breakpoint change here propagates everywhere instead of being copy-pasted
+   into each component.
+
+   Keep in sync with the JS regime constant in
+   src/components/products/wes/wesActivationViewport.ts:
+     LAPTOP_MIN = 1200 → lower bound of --pinned-band
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Desktop pinning: width ≥1200px AND height ≤1200px (laptops / 1080p).
+   On TALLER viewports (zoomed-out browsers, 4K, portrait) the sections flow
+   statically at normal size — the next section stays visible below — and
+   their step/flip animations play scroll-driven as the section crosses the
+   center of the viewport (see the flow-mode branches in the components).
+   Below 1200px wide the sections are static (mobile stacking). */
+@custom-media --pinned-band (min-width: 1200px);
+

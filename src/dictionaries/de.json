@@ -1,0 +1,44 @@
+{
+    "meta": {
+        "title": "Store — BSS LogisQ",
+        "description": "Hardware direkt bestellen. Konfiguriert, geprüft und aus Deutschland versendet."
+    },
+    "header": {
+        "store": "Store",
+        "support": "Support",
+        "cart": "Warenkorb"
+    },
+    "hero": {
+        "eyebrow": "Das All-in-One-Werkzeug",
+        "title": "Kolli Scanner",
+        "subtitle": "Jede Kiste vollständig erfasst, bevor sie sich bewegt.",
+        "bullets": [
+            "3D-Maße, Gewicht und Stapelflächen in einem Zehn-Sekunden-Scan",
+            "Genauer als zwei Millimeter, bei jeder Kiste im Wareneingang",
+            "Eigenständig einsetzbar oder direkt an Ihr WES angebunden"
+        ],
+        "orderNow": "Jetzt bestellen",
+        "unavailable": "Dieses Produkt ist im Store noch nicht verfügbar.",
+        "talkToUs": "Sprechen Sie uns an"
+    },
+    "shop": {
+        "addToCart": "In den Warenkorb",
+        "adding": "Wird hinzugefügt…",
+        "soldOut": "Ausverkauft",
+        "unavailable": "Diese Kombination ist nicht verfügbar",
+        "quantity": "Menge",
+        "inStock": "Auf Lager",
+        "lowStock": "Nur noch {count} verfügbar",
+        "taxNote": "Inkl. MwSt. Versandkosten werden im Checkout berechnet."
+    },
+    "cart": {
+        "title": "Ihr Warenkorb",
+        "empty": "Noch nichts im Warenkorb.",
+        "subtotal": "Zwischensumme",
+        "taxNote": "Steuern und Versand werden im Checkout berechnet.",
+        "checkout": "Zur Kasse",
+        "remove": "Entfernen",
+        "close": "Schließen",
+        "quantity": "Menge"
+    }
+}

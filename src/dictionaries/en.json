@@ -1,0 +1,44 @@
+{
+    "meta": {
+        "title": "Store — BSS LogisQ",
+        "description": "Order the hardware directly. Configured, tested and shipped from Germany."
+    },
+    "header": {
+        "store": "Store",
+        "support": "Support",
+        "cart": "Cart"
+    },
+    "hero": {
+        "eyebrow": "The All-in-One Tool",
+        "title": "Kolli Scanner",
+        "subtitle": "Every box fully understood before it moves.",
+        "bullets": [
+            "3D dimensions, weight and stacking surfaces in a ten-second scan",
+            "Accurate to under two millimetres, on every box that enters the warehouse",
+            "Works standalone or wired straight into your WES"
+        ],
+        "orderNow": "Order now",
+        "unavailable": "This product is not available in the store yet.",
+        "talkToUs": "Talk to us"
+    },
+    "shop": {
+        "addToCart": "Add to cart",
+        "adding": "Adding…",
+        "soldOut": "Sold out",
+        "unavailable": "This combination is not available",
+        "quantity": "Quantity",
+        "inStock": "In stock",
+        "lowStock": "Only {count} left",
+        "taxNote": "Incl. VAT. Shipping calculated at checkout."
+    },
+    "cart": {
+        "title": "Your cart",
+        "empty": "Nothing in the cart yet.",
+        "subtotal": "Subtotal",
+        "taxNote": "Taxes and shipping are calculated at checkout.",
+        "checkout": "Go to checkout",
+        "remove": "Remove",
+        "close": "Close",
+        "quantity": "Quantity"
+    }
+}

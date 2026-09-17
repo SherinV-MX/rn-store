@@ -1,0 +1,336 @@
+:root {
+    /* Brand Colors - Professional Blue Palette */
+    --color-primary: #1565C0;
+    /* Deep professional blue */
+    --color-secondary: #1976D2;
+    /* Medium blue */
+    --color-accent: #D32F2F;
+    /* Signal red for emphasis */
+    --color-highlight: #0D47A1;
+    /* Dark blue for headings */
+    --color-primary-dark: #0D47A1;
+    /* Darker shade for hover states */
+
+    /* Neutral Palette - Light Mode */
+    --color-bg: #FFFFFF;
+    --color-bg-alt: #F5F9FF;
+    /* Very light blue tint */
+    --color-surface: #FFFFFF;
+    --color-text-main: #263238;
+    /* Charcoal */
+    --color-text-dim: #607D8B;
+    /* Blue-gray */
+
+    /* Functional Colors */
+    --color-glass: rgba(21, 101, 192, 0.05);
+    --color-border: rgba(21, 101, 192, 0.15);
+    --color-border-hover: rgba(21, 101, 192, 0.3);
+
+    /* Typography */
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Inter', sans-serif;
+
+    /* ── Type scale — fluid clamp() values ──────────────────────────────
+       Formula: clamp(mobile-min, fluid-vw, desktop-max)
+       Scales linearly between 375 px (mobile) and 1440 px (desktop).
+       Zero breakpoint jumps — every resize step is smooth.           */
+    --text-2xs:      0.625rem;                          /* 10px — fixed: tiny labels never need scaling        */
+    --text-xs:       0.75rem;                           /* 12px — fixed: captions/badges stay crisp at any size */
+    --text-sm:       clamp(0.8125rem, 0.85vw,  0.875rem);  /* 13→14px — small body, meta text          */
+    --text-base:     clamp(0.9375rem, 1vw,     1rem);       /* 15→16px — base body copy                 */
+    --text-md:       clamp(1rem,      1.1vw,   1.125rem);   /* 16→18px — slightly larger body           */
+    --text-lg:       clamp(1.125rem,  1.25vw,  1.25rem);    /* 18→20px — lead text, nav links           */
+    --text-lg-plus:  clamp(1.125rem,  1.375vw, 1.375rem);   /* 18→22px — mid-size labels                */
+    --text-xl:       clamp(1.25rem,   1.5vw,   1.5rem);     /* 20→24px — large body, small headings     */
+    --text-xl-plus:  clamp(1.25rem,   1.625vw, 1.625rem);   /* 20→26px — quote text, subtitles          */
+    --text-2xl:      clamp(1.375rem,  1.75vw,  1.75rem);    /* 22→28px — card headings                  */
+    --text-2xl-plus: clamp(1.5rem,    1.875vw, 1.875rem);   /* 24→30px — section sub-headings           */
+    --text-3xl:      clamp(1.5rem,    2vw,     2rem);        /* 24→32px — section headings               */
+    --text-3xl-plus: clamp(1.625rem,  2.25vw,  2.25rem);    /* 26→36px — large section headings         */
+    --text-4xl:      clamp(1.75rem,   2.5vw,   2.5rem);     /* 28→40px — page headings                  */
+    --text-4xl-plus: clamp(1.875rem,  2.75vw,  2.75rem);    /* 30→44px — large page headings            */
+    --text-5xl:      clamp(2rem,      3vw,     3rem);        /* 32→48px — hero sub-headings              */
+    --text-5xl-plus: clamp(2rem,      3.125vw, 3.125rem);   /* 32→50px — WES card headings              */
+    --text-6xl:      clamp(2.25rem,   3.5vw,   3.5rem);     /* 36→56px — hero headings                  */
+    --text-7xl:      clamp(2.5rem,    4vw,     4rem);        /* 40→64px — large hero                     */
+    --text-8xl:      clamp(2.75rem,   6.5vw,   5.5rem);     /* 44→88px — display / WES hero             */
+    --text-9xl:      clamp(3.5rem,    9vw,     9rem);        /* 56→144px — oversized display (404)       */
+
+    /* ── Fluid spacing scale ─────────────────────────────────────────────
+       Replace magic-number px values in component CSS with these tokens.
+       Same linear-interpolation principle as the type scale above.     */
+    --space-1:   clamp(0.25rem,  0.35vw, 0.5rem);    /*  4→  8px — icon gap, tight inline      */
+    --space-2:   clamp(0.5rem,   0.6vw,  0.75rem);   /*  8→ 12px — small padding               */
+    --space-3:   clamp(0.625rem, 0.85vw, 1rem);      /* 10→ 16px — card inner padding (sm)     */
+    --space-4:   clamp(0.875rem, 1.2vw,  1.5rem);    /* 14→ 24px — card inner padding          */
+    --space-5:   clamp(1rem,     1.5vw,  2rem);      /* 16→ 32px — section sub-gap             */
+    --space-6:   clamp(1.25rem,  2vw,    2.5rem);    /* 20→ 40px — medium section gap          */
+    --space-8:   clamp(1.5rem,   2.75vw, 3rem);      /* 24→ 48px — section inner padding       */
+    --space-10:  clamp(2rem,     3.6vw,  3.875rem);  /* 32→ 62px — component gap               */
+    --space-12:  clamp(2.25rem,  4vw,    4.5rem);    /* 36→ 72px — between-section spacing     */
+    --space-16:  clamp(2.7rem,   5.4vw,  6rem);      /* 43→ 96px — section top/bottom padding  */
+    --space-20:  clamp(3.6rem,   6.6vw,  7.2rem);    /* 57→115px — hero padding                */
+    --space-24:  clamp(4.5rem,   8.1vw,  9rem);      /* 72→144px — hero/page top padding       */
+
+    /* Transitions */
+    --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: 0.15s ease-out;
+
+    /* Shadows & Effects - Light Mode */
+    --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-card: 0 4px 16px rgba(21, 101, 192, 0.1);
+    --shadow-glow: 0 0 20px rgba(21, 101, 192, 0.15);
+
+    /* Live sticky-navbar height. The Navbar measures itself and overwrites this
+       on :root at runtime (resize + orientationchange). The value here is only the
+       pre-hydration fallback — every "clear the navbar" offset should use
+       var(--nav-h) instead of a hardcoded 100/108/120px. */
+    --nav-h: 100px;
+
+    /* Section gap scale tuned to 0.90 (20% increase from 0.75) */
+    --black-gap-scale: 0.90;
+
+    /* Single source of truth for the black gap between page sections
+       (WesBlackSection + SquadronQSpacer render EXACTLY this height). */
+    --black-gap: calc(clamp(56px, 9vw, 175px) * var(--black-gap-scale));
+
+    /* Space above a section heading (increased by 20% to ~62px max). */
+    --section-head-top: clamp(44px, 4.3vw, 62px);
+
+    /* Clearance BELOW a section heading's divider, before its body starts — the counterpart
+       to --section-head-top above it. One value for the whole site, and the WES page sets it:
+       64px is what its SectionHeader has always used, so every other page now matches it
+       rather than the other way round. The company header was 59px, SquadronQ's hand-rolled
+       architecture header 18px, and the technology pages ran anywhere from 8px to 64px.
+       A section's own wrapper must NOT add a gap under the header as well — three company
+       sections used to, which is how one page measured 59 / 79 / 119px.
+       Phone value (45px, also from the WES header) is in the ≤640px block below. */
+    --section-head-gap: 64px;
+
+    /* Card → step slider, for all three numbered sliders on the site: the Kolli Scanner
+       parameters rail (1–6), WES How It Works (1–4) and WES Video Steps.
+
+       One value because they are the same component to a reader, and they were three different
+       numbers: measured at 1920 the card's bottom sat 43px above the first circle on Kolli, 38 on
+       Video Steps and 96 on How It Works — the last one because its .steps margin STACKED on the
+       .inner flex gap, so the two spacings added up without anyone asking them to.
+
+       Each slider reaches this same total differently, since what sits between the card and the
+       circles differs — Kolli has a 37px pointer band in flow, the WES pair have a 32px
+       speech-bubble tail hanging out of flow — so each does its own arithmetic against this
+       number rather than applying it raw. Change it here and all three move together. */
+    --slider-step-gap: 44px;
+
+    /* ── WES product page layout tokens ── */
+    /* Single source of truth for content widths, gutters, motion, and shape */
+    --wes-content-base: 1440px;                      /* desktop baseline (Figma)            */
+    --wes-content-hero: 1290px;                      /* hero is narrower per Figma           */
+    --wes-content-cap: 1700px;                       /* big-screen ceiling                   */
+    --wes-gutter: clamp(20px, 5.21vw, 100px);        /* 20px@375 → 75px@1440 (Figma) → 100px@1920 */
+    --wes-section-pad: clamp(3rem, 6vw, 6.5rem);     /* fluid vertical section padding       */
+    --wes-radius-card: clamp(12px, 1.4vw, 20px);     /* card radius scales with viewport     */
+    --wes-motion-slide: 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    --wes-motion-tail: 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+
+    /* ── WES Brand Colors ── */
+    --wes-black:        #000;
+    --wes-white:        #fff;
+    --wes-off-white:    #f1f1f1;
+    --wes-near-black:   #111;
+
+    /* Blue family */
+    --wes-blue:         #4fabe0;   /* main brand accent */
+    --wes-blue-pale:    #cee8f7;
+    --wes-blue-light:   #d0dff0;
+    --wes-blue-mid:     #6cc1ee;
+    --wes-blue-deep:    #2d8fc7;
+    --wes-blue-bright:  #08b9ff;
+    --wes-blue-wash:    #e4f2fd;
+
+    /* Teal family */
+    --wes-teal:         #487f8e;
+    --wes-teal-dark:    #273438;
+    --wes-teal-deeper:  #0c181d;
+
+    /* Dark scale */
+    --wes-panel:        #0d0e1a;
+    --wes-dark-1:       #131a1c;
+    --wes-dark-2:       #0a0d0e;
+    --wes-dark-3:       #050607;
+
+    /* Gray scale */
+    --wes-gray:         #7f7f7f;
+    --wes-gray-dim:     #363636;
+    --wes-gray-mid:     #474747;
+    --wes-gray-light:   #f4f4f4;
+    --wes-gray-border:  #e3e3e3;
+
+    /* WES accent step colours — keyed by index, used by HowItWorks */
+    --wes-purple:   #847bff;
+    --wes-green:    #00d97e;
+    --wes-step-1:   var(--wes-purple);
+    --wes-step-2:   var(--wes-green);
+    --wes-step-3:   var(--wes-blue);
+    --wes-step-4:   var(--wes-blue-bright);
+
+    /* ── Additional functional colors ── */
+    --color-success:          #4caf50;
+    --color-success-deep:     #16a34a;
+    --color-error:            #ef4444;
+    --color-primary-navy:     #1e40af;
+    --color-bg-pale:          #eef2f6;
+    --color-text-muted:       #525c6b;
+    --color-text-placeholder: #b0b7c0;
+    --color-border-light:     #c4cfdb;
+
+    /* ── Gray utility scale ── */
+    --color-gray-100: #f8f9fa;   /* lightest surface        */
+    --color-gray-200: #f3f4f6;   /* soft surface            */
+    --color-gray-300: #d1d5db;   /* toggle track / divider  */
+    --color-gray-400: #e9e9e9;   /* light divider           */
+    --color-gray-500: #ccc;      /* mid gray border         */
+    --color-gray-600: #666;      /* muted text              */
+    --color-gray-svg: #d9d9d9;   /* SVG fill placeholder    */
+
+    /* ── WES industry tag colors ── */
+    --wes-teal-industry: #239292;
+    --wes-blue-industry: #4ea7db;
+
+    /* ── DevyonQ Visual (neural network purple theme) ── */
+    --devyon-bg-start:  #1a0b2e;
+    --devyon-bg-end:    #2d1b4e;
+    --devyon-border:    #4a3b6e;
+    --devyon-node:      #9333ea;
+    --devyon-input:     #d8b4fe;
+    --devyon-output:    #f0abfc;
+    --devyon-pulse:     #a855f7;
+
+    /* ── XyronQ Visual (blueprint dark navy theme) ── */
+    --xyron-bg:     #0b1929;
+    --xyron-border: #1e3a5f;
+}
+
+/* Base Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--color-bg);
+    color: var(--color-text-main);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    font-family: var(--font-heading);
+    letter-spacing: -0.02em;
+}
+
+/* Utility Classes */
+.glass {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-subtle);
+}
+
+.text-gradient {
+    background: linear-gradient(90deg, var(--color-primary), var(--color-highlight));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-5);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   DARK THEME — remap every semantic --color-* token to WES dark
+   Set by adding data-theme="dark" to <html> in the root layout.
+   WES-specific pages use additional [data-page='wes'] overrides.
+══════════════════════════════════════════════════════════════ */
+[data-theme="dark"] {
+    /* Brand — brighter blues for dark backgrounds */
+    --color-primary:      var(--wes-blue);        /* #4fabe0 */
+    --color-secondary:    var(--wes-blue-mid);     /* #6cc1ee */
+    --color-highlight:    var(--wes-blue-mid);     /* #6cc1ee */
+    --color-primary-dark: var(--wes-blue-deep);   /* #2d8fc7 */
+
+    /* Backgrounds — semi-transparent so body gradient bleeds through every section */
+    --color-bg:           rgba(0,   0,   0,   0.62);  /* 38% gradient shows through     */
+    --color-bg-alt:       rgba(15,  20,  22,  0.65);  /* 35% gradient shows through     */
+    --color-surface:      rgba(13,  14,  26,  0.88);  /* dark navy card, mostly solid   */
+    --color-bg-pale:      rgba(39,  52,  56,  0.82);  /* teal dark, mostly solid        */
+
+    /* Text */
+    --color-text-main:        #ffffff;
+    --color-text-dim:         rgba(209, 228, 243, 0.72);
+    --color-text-muted:       rgba(209, 228, 243, 0.50);
+    --color-text-placeholder: rgba(209, 228, 243, 0.28);
+
+    /* Borders */
+    --color-border:       rgba(79, 171, 224, 0.16);
+    --color-border-hover: rgba(79, 171, 224, 0.40);
+    --color-border-light: rgba(79, 171, 224, 0.10);
+
+    /* Glass / effects */
+    --color-glass: rgba(79, 171, 224, 0.06);
+
+    /* Shadows */
+    --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.40);
+    --shadow-card:   0 4px 20px rgba(0, 0, 0, 0.55);
+    --shadow-glow:   0 0 20px rgba(79, 171, 224, 0.15);
+
+    /* Gray utility scale → dark equivalents */
+    --color-gray-100: var(--wes-dark-1);              /* was lightest surface */
+    --color-gray-200: var(--wes-panel);               /* was soft surface     */
+    --color-gray-300: rgba(79, 171, 224, 0.20);       /* toggle track/divider */
+    --color-gray-400: rgba(255, 255, 255, 0.07);      /* light divider        */
+    --color-gray-500: rgba(255, 255, 255, 0.14);      /* mid gray border      */
+    --color-gray-600: rgba(209, 228, 243, 0.55);      /* muted text           */
+}
+
+/* ── Phone: halve the between-section gap ──
+   On phone nothing pins, so the navbar-clearance space above each heading is dead
+   weight, and it stacked on top of the spacer + the section's own bottom padding —
+   ~220px of black between sections. Cutting both tokens here roughly halves every
+   junction on every page at once, so they all stay identical to each other. */
+@media (max-width: 600px) {
+    :root {
+        /* Through the scale as well, so the phone junction tightens with everything else
+           instead of quietly becoming the one gap left at full size. */
+        --black-gap: calc(52px * var(--black-gap-scale));
+        --section-head-top: 38px;
+    }
+}
+
+/* ── Phone: heading clearance ──
+   640, not the 600 above, because both SectionHeader components already switched at 640 and
+   every company/product section is tuned to that breakpoint. 59px is a wide-desktop value; on
+   a 390px screen it reads as an empty band between the divider and the content. */
+@media (max-width: 640px) {
+    :root {
+        /* 56, not the 45 this used to be: under a 32px heading and above a full-width card,
+           45px read as almost no separation at all on a phone. Raised here rather than in any
+           one section so every junction on every page opens by the same amount. */
+        --section-head-gap: 56px;
+    }
+}
+
+/* ── Global keyframes (referenced by JS inline styles) ── */
+
+/* WesQuote typewriter caret — used via element.style.animation in WesQuote.tsx */
+@keyframes wesQuoteBlink {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0; }
+}

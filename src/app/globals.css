@@ -1,0 +1,47 @@
+@import '../styles/design-tokens.css';
+
+/* Lean on purpose. The tokens come from the BSS site so type, spacing and colour stay in
+   the family; everything page-specific lives in the component's own module. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--nav-h) + 8px);
+}
+
+body {
+    margin: 0;
+    min-height: 100dvh;
+    background: var(--color-bg);
+    color: var(--color-text-main);
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: 1.6;
+    overscroll-behavior-x: none;
+}
+
+h1, h2, h3, h4 {
+    font-family: var(--font-heading);
+    line-height: 1.1;
+    margin: 0;
+}
+
+img, picture, video { max-width: 100%; display: block; }
+button { font: inherit; color: inherit; }
+a { color: inherit; }
+
+/* The store is a shop, not a brochure: one content width, used by every section, so the
+   product shot and the buy box always line up. */
+.shell {
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: clamp(16px, 4vw, 64px);
+}
+
+/* Anything the keyboard can reach says so. */
+:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+}
