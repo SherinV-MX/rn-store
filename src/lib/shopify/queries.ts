@@ -62,10 +62,21 @@ const CART = `
         id
         checkoutUrl
         totalQuantity
+        buyerIdentity { email phone countryCode }
+        discountCodes { code applicable }
+        deliveryGroups(first: 5) {
+            nodes {
+                id
+                groupType
+                selectedDeliveryOption { handle title description estimatedCost { ...Money } }
+                deliveryOptions { handle title description estimatedCost { ...Money } }
+            }
+        }
         cost {
             subtotalAmount { ...Money }
             totalAmount { ...Money }
             totalTaxAmount { ...Money }
+            totalDutyAmount { ...Money }
         }
         lines(first: 100) {
             nodes {
@@ -131,6 +142,106 @@ export const CART_LINES_UPDATE = `
     @inContext(country: $country, language: $language) {
         cartLinesUpdate(cartId: $cartId, lines: $lines) {
             cart { ...Cart }
+            userErrors { field message }
+        }
+    }
+`;
+
+/* ── Checkout, on our own domain ──────────────────────────────────────────────
+   Contact, address, delivery choice and discounts are ordinary cart mutations, so every step
+   before payment is ours to render. Payment is the last three: prepare, attach a payment
+   method, submit. */
+
+export const CART_BUYER_IDENTITY_UPDATE = `
+    ${CART_BODY}
+    mutation CartBuyerIdentityUpdate($cartId: ID!, $buyerIdentity: CartBuyerIdentityInput!, $country: CountryCode, $language: LanguageCode)
+    @inContext(country: $country, language: $language) {
+        cartBuyerIdentityUpdate(cartId: $cartId, buyerIdentity: $buyerIdentity) {
+            cart { ...Cart }
+            userErrors { field message }
+        }
+    }
+`;
+
+export const CART_DELIVERY_ADDRESSES_ADD = `
+    ${CART_BODY}
+    mutation CartDeliveryAddressesAdd($cartId: ID!, $addresses: [CartSelectableAddressInput!]!, $country: CountryCode, $language: LanguageCode)
+    @inContext(country: $country, language: $language) {
+        cartDeliveryAddressesAdd(cartId: $cartId, addresses: $addresses) {
+            cart { ...Cart }
+            userErrors { field message }
+        }
+    }
+`;
+
+export const CART_DELIVERY_OPTION_UPDATE = `
+    ${CART_BODY}
+    mutation CartDeliveryOptionUpdate($cartId: ID!, $selected: [CartSelectedDeliveryOptionInput!]!, $country: CountryCode, $language: LanguageCode)
+    @inContext(country: $country, language: $language) {
+        cartSelectedDeliveryOptionsUpdate(cartId: $cartId, selectedDeliveryOptions: $selected) {
+            cart { ...Cart }
+            userErrors { field message }
+        }
+    }
+`;
+
+export const CART_DISCOUNT_CODES_UPDATE = `
+    ${CART_BODY}
+    mutation CartDiscountCodesUpdate($cartId: ID!, $codes: [String!], $country: CountryCode, $language: LanguageCode)
+    @inContext(country: $country, language: $language) {
+        cartDiscountCodesUpdate(cartId: $cartId, discountCodes: $codes) {
+            cart { ...Cart }
+            userErrors { field message }
+        }
+    }
+`;
+
+/* Shopify recalculates taxes, shipping and totals here. It must be called, and come back
+   Ready, before a payment is attached — otherwise the amount we charge could differ from the
+   amount the cart actually owes. */
+export const CART_PREPARE_FOR_COMPLETION = `
+    mutation CartPrepare($cartId: ID!, $country: CountryCode, $language: LanguageCode)
+    @inContext(country: $country, language: $language) {
+        cartPrepareForCompletion(cartId: $cartId) {
+            result {
+                __typename
+                ... on CartStatusReady {
+                    cart {
+                        id
+                        cost { totalAmount { amount currencyCode } }
+                    }
+                }
+                ... on CartStatusNotReady { errors { code message } }
+                ... on CartThrottled { pollAfter }
+            }
+            userErrors { field message }
+        }
+    }
+`;
+
+/* sessionId comes from Shopify's card vault, which the browser talks to directly. No card
+   number ever reaches our server. */
+export const CART_PAYMENT_UPDATE = `
+    mutation CartPaymentUpdate($cartId: ID!, $payment: CartPaymentInput!, $country: CountryCode, $language: LanguageCode)
+    @inContext(country: $country, language: $language) {
+        cartPaymentUpdate(cartId: $cartId, payment: $payment) {
+            cart { id }
+            userErrors { field message }
+        }
+    }
+`;
+
+export const CART_SUBMIT_FOR_COMPLETION = `
+    mutation CartSubmit($cartId: ID!, $attemptToken: String!, $country: CountryCode, $language: LanguageCode)
+    @inContext(country: $country, language: $language) {
+        cartSubmitForCompletion(cartId: $cartId, attemptToken: $attemptToken) {
+            result {
+                __typename
+                ... on SubmitSuccess { redirectUrl attemptId }
+                ... on SubmitAlreadyAccepted { attemptId }
+                ... on SubmitFailed { checkoutUrl errors { code message } }
+                ... on SubmitThrottled { pollAfter }
+            }
             userErrors { field message }
         }
     }

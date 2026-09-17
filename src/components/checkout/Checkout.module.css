@@ -1,0 +1,243 @@
+.layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: var(--space-10);
+    align-items: start;
+    padding-block: var(--space-10) var(--space-16);
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+}
+
+.title {
+    font-size: var(--text-4xl);
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+}
+
+.block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.blockTitle {
+    margin-bottom: var(--space-1);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+}
+
+.row {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.row > * { flex: 1; min-width: 0; }
+
+.input {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background: var(--color-surface);
+    font-size: var(--text-base);
+    transition: border-color var(--transition-fast);
+}
+
+.input:focus {
+    border-color: var(--color-accent);
+    outline: none;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    min-height: 52px;
+    padding-inline: var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background: var(--color-surface);
+    font-size: var(--text-sm);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.option:hover:not(:disabled) { border-color: var(--color-border-hover); }
+
+.optionOn {
+    border-color: var(--color-accent);
+    box-shadow: inset 0 0 0 1px var(--color-accent);
+}
+
+.note {
+    margin: 0;
+    color: var(--color-text-dim);
+    font-size: var(--text-xs);
+}
+
+.error {
+    margin: 0;
+    padding: var(--space-2) var(--space-3);
+    border-radius: 4px;
+    background: rgba(211, 47, 47, 0.08);
+    color: var(--color-accent);
+    font-size: var(--text-sm);
+}
+
+.pay {
+    min-height: 56px;
+    border: 0;
+    border-radius: 4px;
+    background: var(--color-accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: var(--text-md);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: filter var(--transition-fast);
+}
+
+.pay:hover:not(:disabled) { filter: brightness(1.08); }
+.pay:disabled { opacity: 0.6; cursor: default; }
+
+/* ── Summary ─────────────────────────────────────────────────────────────── */
+
+.summary {
+    position: sticky;
+    top: calc(var(--nav-h) + var(--space-3));
+    padding: var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-bg-alt);
+}
+
+.lines {
+    margin: 0 0 var(--space-4);
+    padding: 0;
+    list-style: none;
+}
+
+.line {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding-block: var(--space-2);
+}
+
+.thumb {
+    width: 56px;
+    height: 56px;
+    border-radius: 4px;
+    object-fit: cover;
+    background: #fff;
+}
+
+.lineBody { flex: 1; min-width: 0; }
+
+.lineName {
+    margin: 0;
+    font-size: var(--text-sm);
+    font-weight: 600;
+}
+
+.lineQty {
+    margin: 0;
+    color: var(--color-text-dim);
+    font-size: var(--text-xs);
+}
+
+.linePrice {
+    font-size: var(--text-sm);
+    font-variant-numeric: tabular-nums;
+}
+
+.totals {
+    margin: 0;
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-border);
+    font-size: var(--text-sm);
+}
+
+.totals > div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding-block: 4px;
+}
+
+.totals dt { color: var(--color-text-dim); }
+.totals dd { margin: 0; font-variant-numeric: tabular-nums; }
+
+.grand {
+    margin-top: var(--space-2);
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--color-border);
+    font-size: var(--text-lg);
+    font-weight: 700;
+}
+
+.grand dt { color: var(--color-text-main) !important; }
+
+/* ── Terminal states ─────────────────────────────────────────────────────── */
+
+.doneBox {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding-block: var(--space-16);
+}
+
+.doneTitle {
+    font-size: var(--text-4xl);
+    text-transform: uppercase;
+}
+
+.doneBody {
+    margin: 0;
+    color: var(--color-text-dim);
+    font-size: var(--text-md);
+}
+
+.doneLink {
+    padding: 0.8rem 1.6rem;
+    border-radius: 4px;
+    background: var(--color-accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: var(--text-sm);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+@media (max-width: 900px) {
+    .layout {
+        grid-template-columns: 1fr;
+        gap: var(--space-6);
+    }
+
+    /* The summary leads on a phone: what you are paying for, before the form asking you to
+       pay for it. */
+    .summary {
+        position: static;
+        order: -1;
+    }
+}

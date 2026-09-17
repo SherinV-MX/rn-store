@@ -11,10 +11,17 @@ interface CartContextValue {
     /* An add/update is in flight. Buttons disable on this rather than on a per-button flag,
        because two clicks racing each other on the same cart is how quantities go wrong. */
     busy: boolean;
+    /* False until the first load has settled. Without it a page cannot tell "no cart" from
+       "not asked yet", and the checkout announces an empty cart a beat before the real one
+       arrives. */
+    ready: boolean;
     /* A message the buyer should see — sold out, quantity above stock. Null otherwise. */
     error: string | null;
     open: boolean;
     setOpen: (open: boolean) => void;
+    /* For the checkout, which drives its own mutations through /api/shop/checkout and hands
+       the resulting cart back so the header count and drawer stay in step. */
+    setCart: (cart: Cart | null) => void;
     addItem: (merchandiseId: string, quantity?: number) => Promise<void>;
     setQuantity: (lineId: string, quantity: number) => Promise<void>;
     removeItem: (lineId: string) => Promise<void>;
@@ -31,6 +38,7 @@ export function useCart(): CartContextValue {
 export default function CartProvider({ locale, children }: { locale: string; children: React.ReactNode }) {
     const [cart, setCart] = useState<Cart | null>(null);
     const [busy, setBusy] = useState(false);
+    const [ready, setReady] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [open, setOpen] = useState(false);
     /* Guards against a slow first response overwriting a newer one — the visitor who adds
@@ -71,7 +79,8 @@ export default function CartProvider({ locale, children }: { locale: string; chi
         fetch(`/api/shop/cart?locale=${locale}`)
             .then((res) => res.json())
             .then((data) => { if (!cancelled) setCart(data.cart ?? null); })
-            .catch(() => { /* no cart is the normal case, not an error worth showing */ });
+            .catch(() => { /* no cart is the normal case, not an error worth showing */ })
+            .finally(() => { if (!cancelled) setReady(true); });
         return () => { cancelled = true; };
     }, [locale]);
 
@@ -94,8 +103,8 @@ export default function CartProvider({ locale, children }: { locale: string; chi
     );
 
     const value = useMemo(
-        () => ({ cart, busy, error, open, setOpen, addItem, setQuantity, removeItem }),
-        [cart, busy, error, open, addItem, setQuantity, removeItem],
+        () => ({ cart, busy, ready, error, open, setOpen, setCart, addItem, setQuantity, removeItem }),
+        [cart, busy, ready, error, open, addItem, setQuantity, removeItem],
     );
 
     return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

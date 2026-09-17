@@ -67,17 +67,50 @@ export interface CartLine {
     };
 }
 
+export interface DeliveryOption {
+    handle: string;
+    title: string | null;
+    description: string | null;
+    estimatedCost: Money;
+}
+
+export interface DeliveryGroup {
+    id: string;
+    groupType: string;
+    selectedDeliveryOption: DeliveryOption | null;
+    deliveryOptions: DeliveryOption[];
+}
+
+export interface Address {
+    firstName?: string;
+    lastName?: string;
+    company?: string;
+    address1?: string;
+    address2?: string;
+    city?: string;
+    zip?: string;
+    countryCode?: string;
+    provinceCode?: string;
+    phone?: string;
+}
+
 export interface Cart {
     id: string;
-    /* The hand-off. Everything up to here is ours; this URL is Shopify's hosted checkout. */
+    /* Shopify's own hosted checkout. Kept as a fallback for when completing on our side is
+       refused — a shop with no card gateway, say — so the buyer is never stranded. */
     checkoutUrl: string;
     totalQuantity: number;
+    buyerIdentity: { email: string | null; phone: string | null; countryCode: string | null };
+    discountCodes: { code: string; applicable: boolean }[];
+    /* Empty when nothing in the cart needs shipping, or when the shop has no rates for the
+       address. Empty is not an error — it means there is no delivery step to show. */
+    deliveryGroups: DeliveryGroup[];
     cost: {
         subtotalAmount: Money;
         totalAmount: Money;
-        /* null until Shopify knows the buyer's country — it stays null on our side of the
-           hand-off, which is why the page never promises a tax-inclusive total. */
+        /* Both stay null until Shopify knows the address. */
         totalTaxAmount: Money | null;
+        totalDutyAmount: Money | null;
     };
     lines: CartLine[];
 }

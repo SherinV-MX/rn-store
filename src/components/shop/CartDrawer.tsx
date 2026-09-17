@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { X, Minus, Plus } from 'lucide-react';
 import { useCart } from './CartProvider';
 import { formatMoney } from '@/lib/shopify/format';
@@ -124,9 +125,11 @@ export default function CartDrawer({ locale, dict }: { locale: string; dict: Car
                             <strong>{formatMoney(cart.cost.subtotalAmount, locale)}</strong>
                         </div>
                         <p className={styles.taxNote}>{dict.taxNote}</p>
-                        {/* The hand-off to Shopify. A plain link, deliberately: checkout is a
-                            different origin, so it has to be a real navigation. */}
-                        <a className={styles.checkout} href={cart.checkoutUrl}>{dict.checkout}</a>
+                        {/* Our own checkout, on this domain. cart.checkoutUrl still exists as the
+                            escape hatch if completing here is ever refused. */}
+                        <Link className={styles.checkout} href={`/${locale}/checkout`} onClick={() => setOpen(false)}>
+                            {dict.checkout}
+                        </Link>
                     </div>
                 )}
             </aside>
