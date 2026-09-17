@@ -74,6 +74,7 @@
         "backToStore": "Back to the store",
         "successTitle": "Order placed",
         "successBody": "Thank you. A confirmation is on its way to your inbox.",
-        "cardNote": "Card details go straight to our payment provider and are never stored on this site."
+        "cardNote": "Card details go straight to our payment provider and are never stored on this site.",
+        "otherMethods": "Pay another way — PayPal, Klarna and more"
     }
 }

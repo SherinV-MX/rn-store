@@ -42,6 +42,7 @@ export interface CheckoutDict {
     successTitle: string;
     successBody: string;
     cardNote: string;
+    otherMethods: string;
 }
 
 const COUNTRIES = ['DE', 'AT', 'CH', 'NL', 'BE', 'FR', 'PL', 'IT', 'ES'];
@@ -303,6 +304,21 @@ export default function CheckoutFlow({ locale, dict }: { locale: string; dict: C
 
                 <button type="submit" className={styles.pay} disabled={busy}>
                     {busy ? dict.paying : `${dict.pay} ${formatMoney(cart.cost.totalAmount, locale)}`}
+                </button>
+
+                {/* PayPal, Klarna and the other redirect-based methods cannot be completed
+                    through the cart API — they need the round trip to the provider that only
+                    Shopify's own checkout performs. Rather than pretend they do not exist, this
+                    hands the same cart over. Contact and address are pushed first, so the buyer
+                    arrives with the fields already filled instead of typing them twice. */}
+                <button
+                    type="button" className={styles.alt} disabled={busy}
+                    onClick={async () => {
+                        await syncDetails();
+                        window.location.href = cart.checkoutUrl;
+                    }}
+                >
+                    {dict.otherMethods}
                 </button>
             </div>
 

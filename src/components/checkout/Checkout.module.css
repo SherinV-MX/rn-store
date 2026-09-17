@@ -117,6 +117,25 @@
 .pay:hover:not(:disabled) { filter: brightness(1.08); }
 .pay:disabled { opacity: 0.6; cursor: default; }
 
+/* Deliberately quieter than the card button: it is the alternative, not the default. */
+.alt {
+    min-height: 48px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--color-text-dim);
+    font-size: var(--text-sm);
+    cursor: pointer;
+    transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.alt:hover:not(:disabled) {
+    border-color: var(--color-border-hover);
+    color: var(--color-text-main);
+}
+
+.alt:disabled { opacity: 0.5; cursor: default; }
+
 /* ── Summary ─────────────────────────────────────────────────────────────── */
 
 .summary {
