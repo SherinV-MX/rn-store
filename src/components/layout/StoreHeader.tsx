@@ -7,6 +7,7 @@ import styles from './StoreHeader.module.css';
 
 export interface HeaderDict {
     store: string;
+    products: string;
     support: string;
     cart: string;
 }
@@ -24,6 +25,7 @@ export default function StoreHeader({ locale, dict }: { locale: string; dict: He
 
                 <nav className={styles.nav}>
                     <Link href={`/${locale}`} className={styles.link}>{dict.store}</Link>
+                    <Link href={`/${locale}/products`} className={styles.link}>{dict.products}</Link>
                     <a href="https://bss-logisq.com/en/contact" className={styles.link}>{dict.support}</a>
                 </nav>
 

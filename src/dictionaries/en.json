@@ -6,7 +6,8 @@
     "header": {
         "store": "Store",
         "support": "Support",
-        "cart": "Cart"
+        "cart": "Cart",
+        "products": "Products"
     },
     "hero": {
         "eyebrow": "The All-in-One Tool",
@@ -76,5 +77,16 @@
         "successBody": "Thank you. A confirmation is on its way to your inbox.",
         "cardNote": "Card details go straight to our payment provider and are never stored on this site.",
         "otherMethods": "Pay another way — PayPal, Klarna and more"
+    },
+    "catalogue": {
+        "title": "Products",
+        "intro": "Everything we currently ship, straight from the store.",
+        "from": "from",
+        "soldOut": "Sold out",
+        "empty": "No products are published yet."
+    },
+    "detail": {
+        "back": "All products",
+        "details": "Details"
     }
 }

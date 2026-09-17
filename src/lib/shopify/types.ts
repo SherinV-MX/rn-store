@@ -34,6 +34,16 @@ export interface ProductVariant {
     image: ProductImage | null;
 }
 
+/* What a grid tile needs, and nothing more. */
+export interface ProductCard {
+    id: string;
+    handle: string;
+    title: string;
+    availableForSale: boolean;
+    featuredImage: ProductImage | null;
+    priceRange: { minVariantPrice: Money; maxVariantPrice: Money };
+}
+
 export interface ProductOption {
     id: string;
     name: string;

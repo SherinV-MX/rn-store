@@ -1,0 +1,101 @@
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: var(--space-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.cell { display: flex; }
+
+.card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    /* Fill the grid row so tiles line up whatever the image or the title length — without it
+       a short name makes a short card and the row looks broken. */
+    height: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-surface);
+    text-decoration: none;
+    overflow: hidden;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast),
+                transform var(--transition-fast);
+}
+
+.card:hover {
+    border-color: var(--color-border-hover);
+    box-shadow: var(--shadow-card);
+    transform: translateY(-2px);
+}
+
+.shot {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 4 / 3;
+    padding: var(--space-4);
+    background: var(--color-bg-alt);
+    /* aspect-ratio only holds while the content fits: a tall portrait image would otherwise
+       stretch its own tile and the row would stop lining up. */
+    overflow: hidden;
+}
+
+.img {
+    width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.imgEmpty {
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(45deg, #EDF2F7 0 12px, #F7FAFC 12px 24px);
+}
+
+.badge {
+    position: absolute;
+    top: var(--space-2);
+    left: var(--space-2);
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--color-text-main);
+    color: #fff;
+    font-size: var(--text-2xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: var(--space-3) var(--space-4) var(--space-4);
+}
+
+.name {
+    font-size: var(--text-lg);
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.price {
+    margin: 0;
+    font-size: var(--text-md);
+    font-variant-numeric: tabular-nums;
+}
+
+.from {
+    color: var(--color-text-dim);
+    font-size: var(--text-xs);
+    text-transform: lowercase;
+}
+
+.empty {
+    padding-block: var(--space-12);
+    color: var(--color-text-dim);
+    text-align: center;
+}

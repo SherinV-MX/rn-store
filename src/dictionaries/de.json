@@ -6,7 +6,8 @@
     "header": {
         "store": "Store",
         "support": "Support",
-        "cart": "Warenkorb"
+        "cart": "Warenkorb",
+        "products": "Produkte"
     },
     "hero": {
         "eyebrow": "Das All-in-One-Werkzeug",
@@ -76,5 +77,16 @@
         "successBody": "Vielen Dank. Die Bestätigung ist auf dem Weg in Ihr Postfach.",
         "cardNote": "Kartendaten gehen direkt an unseren Zahlungsdienstleister und werden auf dieser Seite nicht gespeichert.",
         "otherMethods": "Andere Zahlungsart — PayPal, Klarna und mehr"
+    },
+    "catalogue": {
+        "title": "Produkte",
+        "intro": "Alles, was wir derzeit ausliefern — direkt aus dem Store.",
+        "from": "ab",
+        "soldOut": "Ausverkauft",
+        "empty": "Es sind noch keine Produkte veröffentlicht."
+    },
+    "detail": {
+        "back": "Alle Produkte",
+        "details": "Details"
     }
 }

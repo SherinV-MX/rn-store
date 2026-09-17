@@ -1,0 +1,100 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    padding-block: var(--space-8) var(--space-16);
+}
+
+.back {
+    align-self: flex-start;
+    color: var(--color-text-dim);
+    font-size: var(--text-sm);
+    text-decoration: none;
+}
+
+.back:hover { color: var(--color-accent); }
+
+.top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-8);
+    align-items: start;
+}
+
+.media {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.heroShot {
+    display: grid;
+    place-items: center;
+    padding: var(--space-6);
+    border-radius: 6px;
+    background: var(--color-bg-alt);
+}
+
+.heroImg {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.thumbs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-2);
+}
+
+.thumb {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    background: var(--color-bg-alt);
+    object-fit: contain;
+}
+
+.buy {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    /* The buy box is built for the dark hero, so it gets its own dark plate here rather than
+       a second set of styles. */
+    padding: var(--space-5);
+    border-radius: 8px;
+    background: #263238;
+}
+
+.title {
+    color: #fff;
+    font-size: var(--text-4xl);
+    line-height: 1.05;
+    text-transform: uppercase;
+}
+
+.description {
+    max-width: 70ch;
+}
+
+.descTitle {
+    margin-bottom: var(--space-2);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+}
+
+.descBody {
+    font-size: var(--text-base);
+    line-height: 1.7;
+}
+
+.descBody :global(p) { margin: 0 0 1em; }
+.descBody :global(ul) { padding-left: 1.2em; }
+.descBody :global(img) { border-radius: 4px; }
+
+@media (max-width: 900px) {
+    .top { grid-template-columns: 1fr; }
+}

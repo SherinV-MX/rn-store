@@ -57,6 +57,29 @@ export const PRODUCT_QUERY = `
     }
 `;
 
+/* The listing asks for far less than the product page: no variants, no description, no image
+   set. A grid of fifty products fetching all of that would cost a page load for nothing. */
+export const PRODUCTS_QUERY = `
+    ${MONEY}
+    ${IMAGE}
+    query Products($first: Int!, $country: CountryCode, $language: LanguageCode)
+    @inContext(country: $country, language: $language) {
+        products(first: $first, sortKey: BEST_SELLING) {
+            nodes {
+                id
+                handle
+                title
+                availableForSale
+                featuredImage { ...Image }
+                priceRange {
+                    minVariantPrice { ...Money }
+                    maxVariantPrice { ...Money }
+                }
+            }
+        }
+    }
+`;
+
 const CART = `
     fragment Cart on Cart {
         id

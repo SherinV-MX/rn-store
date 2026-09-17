@@ -14,8 +14,9 @@ import {
     CART_PREPARE_FOR_COMPLETION,
     CART_PAYMENT_UPDATE,
     CART_SUBMIT_FOR_COMPLETION,
+    PRODUCTS_QUERY,
 } from './queries';
-import type { Address, Cart, Money, Product } from './types';
+import type { Address, Cart, Money, Product, ProductCard } from './types';
 
 export { ShopifyError } from './client';
 export { shopIsConfigured } from './client';
@@ -76,6 +77,15 @@ export async function getProduct(handle: string, locale: string): Promise<Produc
         { revalidate: 300 },
     );
     return data.product ? flattenProduct(data.product) : null;
+}
+
+/* Everything published to the channel, newest catalogue state. Nothing here is per-product
+   code: adding a product in Shopify is all it takes for it to appear. */
+export async function getProducts(locale: string, first = 50): Promise<ProductCard[]> {
+    const data = await storefront<{ products: Connection<ProductCard> }>(
+        PRODUCTS_QUERY, { first, ...context(locale) }, { revalidate: 300 },
+    );
+    return data.products.nodes;
 }
 
 /* Returns null rather than throwing when the cart is gone: Shopify expires carts and
