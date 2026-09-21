@@ -73,7 +73,17 @@ export interface CartLine {
         title: string;
         selectedOptions: SelectedOption[];
         image: ProductImage | null;
-        product: { handle: string; title: string };
+        /* Shipping is priced in lib/shipping/rates, not by Shopify, so the cart has to carry
+           what that calculation needs: the unit weight and whether staff marked the product
+           as going by normal post. */
+        weight: number | null;
+        weightUnit: 'GRAMS' | 'KILOGRAMS' | 'OUNCES' | 'POUNDS';
+        requiresShipping: boolean;
+        product: {
+            handle: string;
+            title: string;
+            smallItem: { value: string } | null;
+        };
     };
 }
 

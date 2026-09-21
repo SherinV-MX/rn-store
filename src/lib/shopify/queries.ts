@@ -116,7 +116,18 @@ const CART = `
                             title
                             selectedOptions { name value }
                             image { ...Image }
-                            product { handle title }
+                            # Weight and the small item flag come down with the cart because
+                            # we price shipping ourselves — see lib/shipping/rates. Shopify
+                            # quotes the dearest rate in the zone whatever the cart weighs,
+                            # so its delivery options cannot be shown to a buyer.
+                            weight
+                            weightUnit
+                            requiresShipping
+                            product {
+                                handle
+                                title
+                                smallItem: metafield(namespace: "custom", key: "small_item") { value }
+                            }
                         }
                     }
                 }

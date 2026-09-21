@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { useCart } from '@/components/shop/CartProvider';
 import { formatMoney } from '@/lib/shopify/format';
 import type { Cart } from '@/lib/shopify/types';
+import { quote, totals } from '@/lib/shipping/rates';
+import { itemsFromCart, goodsNetCents } from '@/lib/shipping/from-cart';
 import styles from './Checkout.module.css';
 
 export interface CheckoutDict {
@@ -45,9 +47,20 @@ export interface CheckoutDict {
     otherMethods: string;
     noPayment: string;
     placeOrder: string;
+    company: string;
+    vatId: string;
+    vatIdNote: string;
+    vatReverseCharge: string;
+    vatExport: string;
+    smallItemPost: string;
+    noWeight: string;
+    noZone: string;
+    goods: string;
 }
 
-const COUNTRIES = ['DE', 'AT', 'CH', 'NL', 'BE', 'FR', 'PL', 'IT', 'ES'];
+/* The countries the shop actually has rates for — sections 4 and 10.1. Offering more would
+   put a buyer through the whole form only to be told at the end that we cannot deliver. */
+const COUNTRIES = ['DE', 'BE', 'NL', 'FR', 'ME', 'AL', 'GE'];
 
 /* The card goes to /api/shop/card-session, which relays it to Shopify's vault and returns an
    opaque session id. Not directly to the vault: it sends no CORS headers, so a browser on our
@@ -72,7 +85,13 @@ export default function CheckoutFlow({ locale, dict }: { locale: string; dict: C
         email: '', phone: '',
         firstName: '', lastName: '',
         address1: '', address2: '', city: '', zip: '', countryCode: 'DE',
+        /* Section 6.1: both optional, both on the invoice address. A private customer leaves
+           them empty and never sees anything about VAT numbers. */
+        company: '', vatId: '',
     });
+    /* Which shipping option the buyer picked. Section 7 can offer two for a German cart, and
+       the choice is theirs, so it is held here rather than derived. */
+    const [shippingChoice, setShippingChoice] = useState<string | null>(null);
     const [card, setCard] = useState({ number: '', month: '', year: '', cvc: '', name: '' });
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -112,18 +131,6 @@ export default function CheckoutFlow({ locale, dict }: { locale: string; dict: C
                     city: form.city, zip: form.zip, countryCode: form.countryCode, phone: form.phone,
                 },
             });
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'error');
-        } finally {
-            setBusy(false);
-        }
-    };
-
-    const chooseDelivery = async (groupId: string, handle: string) => {
-        setError(null);
-        try {
-            setBusy(true);
-            await call({ action: 'delivery', groupId, handle });
         } catch (err) {
             setError(err instanceof Error ? err.message : 'error');
         } finally {
@@ -186,9 +193,18 @@ export default function CheckoutFlow({ locale, dict }: { locale: string; dict: C
         );
     }
 
-    const group = cart.deliveryGroups[0];
-    const shippingCost = group?.selectedDeliveryOption?.estimatedCost;
-    const owesNothing = Number.parseFloat(cart.cost.totalAmount.amount) === 0;
+    /* Shipping and VAT are worked out here, not read off the cart. Shopify quotes the dearest
+       rate in the destination's zone whatever the cart weighs and returns no tax at all, so
+       its own figures cannot be put in front of a buyer. See lib/shipping/rates. */
+    const currencyCode = cart.cost.subtotalAmount.currencyCode;
+    const money = (cents: number) => formatMoney({ amount: (cents / 100).toFixed(2), currencyCode }, locale);
+
+    const shipping = quote(itemsFromCart(cart), form.countryCode, form.vatId);
+    const chosen = shipping.options.find((o) => o.id === shippingChoice) ?? shipping.options[0] ?? null;
+    const sums = totals(goodsNetCents(cart), chosen?.netCents ?? 0, shipping.vatApplies);
+
+    const optionLabel = (id: string, label: string) => (id === 'small-item' ? dict.smallItemPost : label);
+    const owesNothing = sums.totalCents === 0;
 
     return (
         <form className={styles.layout} onSubmit={pay}>
@@ -246,34 +262,50 @@ export default function CheckoutFlow({ locale, dict }: { locale: string; dict: C
                     >
                         {COUNTRIES.map((c) => <option key={c} value={c}>{c}</option>)}
                     </select>
+                    <input
+                        className={styles.input} placeholder={dict.company}
+                        value={form.company} onChange={set('company')} autoComplete="organization"
+                    />
+                    <input
+                        className={styles.input} placeholder={dict.vatId}
+                        value={form.vatId} onChange={set('vatId')} onBlur={syncDetails}
+                    />
+                    <p className={styles.note}>{dict.vatIdNote}</p>
                 </section>
 
                 <section className={styles.block}>
                     <h2 className={styles.blockTitle}>{dict.delivery}</h2>
-                    {group ? (
+                    {/* Section 9: a cart with no shipping weight would travel for nothing, so
+                        it is stopped here rather than allowed through checkout. */}
+                    {shipping.blocked === 'no-weight' && <p className={styles.note}>{dict.noWeight}</p>}
+                    {shipping.blocked === 'no-zone' && <p className={styles.note}>{dict.noZone}</p>}
+
+                    {shipping.options.length > 0 ? (
                         <div className={styles.options}>
-                            {group.deliveryOptions.map((option) => {
-                                const chosen = group.selectedDeliveryOption?.handle === option.handle;
+                            {/* Section 7: a qualifying German cart sees the flat rate and the
+                                express rate side by side and picks. The flat rate is an extra
+                                option, never a replacement. */}
+                            {shipping.options.map((option) => {
+                                const on = chosen?.id === option.id;
                                 return (
                                     <button
-                                        key={option.handle} type="button" disabled={busy}
-                                        className={`${styles.option} ${chosen ? styles.optionOn : ''}`}
-                                        onClick={() => chooseDelivery(group.id, option.handle)}
+                                        key={option.id} type="button" disabled={busy}
+                                        className={`${styles.option} ${on ? styles.optionOn : ''}`}
+                                        onClick={() => setShippingChoice(option.id)}
                                     >
-                                        <span>{option.title ?? option.handle}</span>
+                                        <span>{optionLabel(option.id, option.label)}</span>
                                         <span>
-                                            {Number(option.estimatedCost.amount) === 0
+                                            {option.netCents === 0
                                                 ? dict.free
-                                                : formatMoney(option.estimatedCost, locale)}
+                                                : money(shipping.vatApplies
+                                                    ? Math.round(option.netCents * 1.19)
+                                                    : option.netCents)}
                                         </span>
                                     </button>
                                 );
                             })}
                         </div>
-                    ) : (
-                        /* No groups means nothing in the cart needs shipping, or the address has
-                           not been filled in far enough for Shopify to quote. Either way there is
-                           nothing to choose yet, and saying so beats an empty box. */
+                    ) : shipping.blocked === null && (
                         <p className={styles.note}>{dict.noShipping}</p>
                     )}
                 </section>
@@ -318,7 +350,7 @@ export default function CheckoutFlow({ locale, dict }: { locale: string; dict: C
                         ? dict.paying
                         : owesNothing
                             ? dict.placeOrder
-                            : `${dict.pay} ${formatMoney(cart.cost.totalAmount, locale)}`}
+                            : `${dict.pay} ${money(sums.totalCents)}`}
                 </button>
 
                 {/* PayPal, Klarna and the other redirect-based methods cannot be completed
@@ -358,22 +390,25 @@ export default function CheckoutFlow({ locale, dict }: { locale: string; dict: C
                     ))}
                 </ul>
 
+                {/* Net throughout, with the VAT on its own line, because section 6 requires a
+                    customer entitled to net pricing to see net prices before paying rather
+                    than be charged and refunded afterwards. */}
                 <dl className={styles.totals}>
-                    <div><dt>{dict.subtotal}</dt><dd>{formatMoney(cart.cost.subtotalAmount, locale)}</dd></div>
+                    <div><dt>{dict.goods}</dt><dd>{money(sums.goodsNetCents)}</dd></div>
                     <div>
                         <dt>{dict.shippingLine}</dt>
-                        <dd>
-                            {shippingCost
-                                ? (Number(shippingCost.amount) === 0 ? dict.free : formatMoney(shippingCost, locale))
-                                : dict.calculated}
-                        </dd>
+                        <dd>{chosen ? money(sums.shippingNetCents) : dict.calculated}</dd>
                     </div>
                     <div>
                         <dt>{dict.tax}</dt>
-                        <dd>{cart.cost.totalTaxAmount ? formatMoney(cart.cost.totalTaxAmount, locale) : dict.calculated}</dd>
+                        <dd>
+                            {shipping.vatApplies
+                                ? money(sums.vatCents)
+                                : (shipping.zone?.eu ? dict.vatReverseCharge : dict.vatExport)}
+                        </dd>
                     </div>
                     <div className={styles.grand}>
-                        <dt>{dict.total}</dt><dd>{formatMoney(cart.cost.totalAmount, locale)}</dd>
+                        <dt>{dict.total}</dt><dd>{money(sums.totalCents)}</dd>
                     </div>
                 </dl>
             </aside>

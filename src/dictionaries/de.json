@@ -78,7 +78,16 @@
         "cardNote": "Kartendaten gehen direkt an unseren Zahlungsdienstleister und werden auf dieser Seite nicht gespeichert.",
         "otherMethods": "Andere Zahlungsart — PayPal, Klarna und mehr",
         "noPayment": "Für diese Bestellung ist keine Zahlung erforderlich.",
-        "placeOrder": "Bestellung aufgeben"
+        "placeOrder": "Bestellung aufgeben",
+        "company": "Firma (optional)",
+        "vatId": "USt-IdNr. (optional)",
+        "vatIdNote": "EU-Unternehmen außerhalb Deutschlands: Eine gültige USt-IdNr. entfällt die Umsatzsteuer (Reverse Charge).",
+        "vatReverseCharge": "Reverse Charge — ohne Umsatzsteuer",
+        "vatExport": "Ausfuhr — ohne Umsatzsteuer",
+        "smallItemPost": "Warensendung",
+        "noWeight": "Dieser Warenkorb hat kein Versandgewicht und kann nicht geliefert werden. Bitte kontaktieren Sie uns.",
+        "noZone": "In dieses Land liefern wir derzeit nicht.",
+        "goods": "Waren"
     },
     "catalogue": {
         "title": "Produkte",

@@ -78,7 +78,16 @@
         "cardNote": "Card details go straight to our payment provider and are never stored on this site.",
         "otherMethods": "Pay another way — PayPal, Klarna and more",
         "noPayment": "Nothing to pay for this order.",
-        "placeOrder": "Place order"
+        "placeOrder": "Place order",
+        "company": "Company (optional)",
+        "vatId": "VAT number (optional)",
+        "vatIdNote": "EU businesses outside Germany: a valid VAT number removes VAT under the reverse charge.",
+        "vatReverseCharge": "Reverse charge — VAT not applied",
+        "vatExport": "Export — VAT not applied",
+        "smallItemPost": "Small item post",
+        "noWeight": "This cart has no shipping weight, so it cannot be delivered. Please contact us.",
+        "noZone": "We do not ship to that country yet.",
+        "goods": "Goods"
     },
     "catalogue": {
         "title": "Products",
