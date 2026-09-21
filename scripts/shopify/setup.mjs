@@ -430,21 +430,45 @@ async function carrier({ url }) {
         log(`  removed previous registration (${c.callbackUrl})`);
     }
 
-    const created = await admin(
-        `mutation($input: DeliveryCarrierServiceCreateInput!) {
-            carrierServiceCreate(input: $input) {
-                carrierService { id name callbackUrl active }
-                userErrors { field message }
-            }
-        }`,
-        { input: { name: CARRIER_NAME, callbackUrl, supportsServiceDiscovery: true, active: true } },
-        ['carrierServiceCreate'],
-    );
+    const CREATE = `mutation($input: DeliveryCarrierServiceCreateInput!) {
+        carrierServiceCreate(input: $input) {
+            carrierService { id name callbackUrl active }
+            userErrors { field message }
+        }
+    }`;
+    const input = { name: CARRIER_NAME, callbackUrl, supportsServiceDiscovery: true };
 
-    const service = created.carrierServiceCreate.carrierService;
+    /* Registering the service is allowed on any plan; switching it on is not. "Carrier
+       Calculated Shipping" comes with the Advanced plan, or with any plan billed annually.
+       Without it Shopify never calls this endpoint and keeps quoting its own tables, so an
+       inactive registration is reported as a blocker rather than a success. */
+    let service;
+    try {
+        service = (await admin(CREATE, { input: { ...input, active: true } }, ['carrierServiceCreate']))
+            .carrierServiceCreate.carrierService;
+    } catch (err) {
+        if (!JSON.stringify(err.detail ?? '').includes('Carrier Calculated Shipping')) throw err;
+
+        service = (await admin(CREATE, { input: { ...input, active: false } }, ['carrierServiceCreate']))
+            .carrierServiceCreate.carrierService;
+
+        log(`  registered "${service.name}" -> ${service.callbackUrl}`);
+        log('  but INACTIVE: this plan does not include Carrier Calculated Shipping.');
+        log('');
+        log('  Shopify will not call the endpoint until that is enabled — the Advanced plan,');
+        log('  or the current plan switched to annual billing. Until then the store quotes its');
+        log('  own tables while the checkout page shows the correct figures, so the two still');
+        log('  disagree and no order should be taken.');
+        log('');
+        log('  Once enabled, run:');
+        log('    node scripts/shopify/setup.mjs shipping --replace-zones --carrier-only');
+        return;
+    }
+
     log(`  registered "${service.name}" -> ${service.callbackUrl} (active=${service.active})`);
-    log('\n  Now run the shipping stage with --carrier-only to clear the 66 static brackets,');
-    log('  otherwise Shopify offers both its own rates and ours side by side.');
+    log('');
+    log('  Now clear the 66 static brackets, or Shopify offers its rates beside ours:');
+    log('    node scripts/shopify/setup.mjs shipping --replace-zones --carrier-only');
 }
 
 const CARRIER_NAME = 'BSS LogisQ rates';
