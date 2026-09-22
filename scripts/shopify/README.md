@@ -68,6 +68,41 @@ floating-point kilograms cannot give them.
 "no shipping available" instead of shipping for free — which is the behaviour §9 asks for,
 arrived at by omission rather than by a rule.
 
+## Why the weight brackets are not used
+
+The 66 brackets are created correctly and the admin renders them correctly — `0.001-3.299kg`,
+`3.3-5.299kg` and so on. Shopify's checkout does not evaluate them.
+
+Established by adding probe rates to the Germany zone and asking the Cart API what it would
+offer:
+
+| Rate | Weight conditions | Offered to a 20 g cart? |
+|---|---|---|
+| `MANUAL TEST` | none | yes — correct |
+| `MIN ONLY >= 50kg` | one (min) | **yes** — impossible |
+| `MAX ONLY <= 3.299kg` | two (min 0 + max) | no — should have matched |
+| `DHL Express (up to 3.3 kg)` | two | no — should have matched |
+| `DHL Express (9.9 kg and over)` | one (min) | **yes** — impossible |
+
+So a rate carrying one condition is treated as unconditional, and a rate carrying two is
+dropped altogether. That is why every cart was quoted the top bracket whatever it weighed:
+the top bracket is the only bracket in each zone with a single condition.
+
+Ruled out along the way: the condition unit (tested in grams and in kilograms, and with
+gram-valued numbers under a kilogram unit — all stored exactly as sent), the variant weight
+unit, `requiresShipping`, `taxable`, missing inventory levels, duplicate rate names, the
+shipping origin, and the delivery profile. `cartPrepareForCompletion` gives the same answer as
+the Cart API, so this is what Shopify would charge, not an estimate.
+
+Worth a Shopify support ticket. Note also that the admin's own **Add shipping option** dialog
+offers no weight fields at all on this store, only a flat price — consistent with weight
+conditions not being a supported feature here, even though the API accepts them.
+
+Until it is resolved, the checkout page prices shipping itself from `src/lib/shipping/rates`,
+and `/api/shop/rates` exists to hand Shopify the same figures as a carrier service. That
+endpoint is registered but **inactive**: activating it needs Carrier Calculated Shipping,
+which this plan does not include.
+
 ## What this setup does not do
 
 **§7, the small-item flat rate.** Shopify rates can be conditioned on cart weight or cart
