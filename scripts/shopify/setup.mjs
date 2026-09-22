@@ -302,8 +302,29 @@ function bracketLabel(row) {
 
 /* -------------------------------------------------------------- shipping */
 
+/* One method definition per zone whose rates come from our endpoint rather than a fixed
+   price. adaptToNewServices means a service we start returning later — the small item flat
+   rate, say — is offered without anyone having to tick it on here. */
+function participantFor(carrierServiceId) {
+    return {
+        name: CARRIER_NAME,
+        active: true,
+        participant: { carrierServiceId, adaptToNewServices: true, participantServices: [] },
+    };
+}
+
 async function shipping({ replaceZones, carrierOnly }) {
-    step('Zones and rate tables (sections 4, 5, 8)');
+    step(carrierOnly ? 'Zones served by our own rate endpoint' : 'Zones and rate tables (sections 4, 5, 8)');
+
+    let carrierServiceId = null;
+    if (carrierOnly) {
+        const found = await admin(`{ carrierServices(first: 20) { nodes { id name active } } }`);
+        const service = found.carrierServices.nodes.find(c => c.name === CARRIER_NAME);
+        if (!service) throw new AdminError(`No carrier service called "${CARRIER_NAME}" — run the carrier stage first.`);
+        if (!service.active) throw new AdminError(`"${CARRIER_NAME}" is registered but inactive; Shopify will never call it.`);
+        carrierServiceId = service.id;
+        log(`  rates will come from "${service.name}"`);
+    }
 
     const problems = checkTranscription();
     if (problems.length) throw new AdminError('Rate tables do not reconcile with the spec:\n' + problems.join('\n'));
@@ -364,9 +385,12 @@ async function shipping({ replaceZones, carrierOnly }) {
                             name: zone.name,
                             countries: zone.countries.map(code => ({ code })),
                             /* With a carrier service the zone still has to exist, because
-                               Shopify only asks us for rates to countries it already serves.
-                               The brackets themselves come from our endpoint instead. */
-                            methodDefinitionsToCreate: carrierOnly ? [] : methodDefinitionsToCreate,
+                               Shopify only asks us for rates to countries it already serves —
+                               and it only asks at all once the zone carries a participant
+                               pointing at the service. Activating the service is not enough
+                               on its own: a zone holding no method definitions is quoted
+                               nothing, which looks exactly like a broken endpoint. */
+                            methodDefinitionsToCreate: carrierOnly ? [participantFor(carrierServiceId)] : methodDefinitionsToCreate,
                         }],
                     }],
                 },
