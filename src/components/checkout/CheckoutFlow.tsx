@@ -307,12 +307,13 @@ export default function CheckoutFlow({ locale, dict }: { locale: string; dict: C
                                         onClick={() => setShippingChoice(option.id)}
                                     >
                                         <span>{optionLabel(option.id, option.label)}</span>
+                                        {/* Net, like the summary beside it and like Shopify's
+                                            own checkout, which lists shipping net and puts
+                                            the tax on its own line. Showing one gross figure
+                                            here and net everywhere else made the same order
+                                            read as two different prices. */}
                                         <span>
-                                            {option.netCents === 0
-                                                ? dict.free
-                                                : money(shipping.vatApplies
-                                                    ? Math.round(option.netCents * 1.19)
-                                                    : option.netCents)}
+                                            {option.netCents === 0 ? dict.free : money(option.netCents)}
                                         </span>
                                     </button>
                                 );
