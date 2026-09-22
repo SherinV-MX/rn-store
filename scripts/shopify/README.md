@@ -98,22 +98,28 @@ Worth a Shopify support ticket. Note also that the admin's own **Add shipping op
 offers no weight fields at all on this store, only a flat price — consistent with weight
 conditions not being a supported feature here, even though the API accepts them.
 
-Until it is resolved, the checkout page prices shipping itself from `src/lib/shipping/rates`,
-and `/api/shop/rates` exists to hand Shopify the same figures as a carrier service. That
-endpoint is registered but **inactive**: activating it needs Carrier Calculated Shipping,
-which this plan does not include.
+So the brackets are not used. The checkout page prices shipping from `src/lib/shipping/rates`,
+and `/api/shop/rates` hands Shopify the same figures as a carrier service — which is now
+active, so both sides quote one number. Confirmed at Shopify's own checkout: a 4.2 kg cart to
+Germany comes out at 22.00 shipping, 194.18 tax, 1,216.18 total, which is T1 to the cent.
+
+Two things were needed beyond writing the endpoint:
+
+- **Carrier Calculated Shipping**, which arrives with the Advanced plan. Registration is
+  allowed on any plan but activation is refused, and a registered-but-inactive service is
+  never called.
+- **A participant in every zone.** Activating the service is not enough: Shopify only asks
+  the carrier about a zone that holds a method definition pointing at it. A zone left with no
+  definitions is quoted nothing at all, which reads exactly like a broken endpoint.
 
 ## What this setup does not do
 
-**§7, the small-item flat rate.** Shopify rates can be conditioned on cart weight or cart
-price, never on a product metafield, and §7 forbids deriving eligibility from weight (T5 is
-the test that proves it). The `custom.small_item` flag is created and set correctly on all
-eight articles, but nothing consumes it yet. `verify` skips T4 and reports whether the flags
-themselves are right.
+**§7, the small-item flat rate — now handled, but not by Shopify.** A Shopify rate can be
+conditioned on cart weight or cart price, never on a product metafield, and §7 forbids
+deriving eligibility from weight (T5 is the test that proves it).
 
-Enforcing it needs either the **Carrier Service API** (Advanced plan, any annual plan, or free
-on a development store — this one qualifies) or a **delivery customization Function**
-(Shopify Plus only).
+This is now enforced by `/api/shop/rates`, which can read the flag because it is our code.
+The alternative would have been a **delivery customization Function**, which is Plus-only.
 
 **§6.3 row 3, EU reverse charge.** Zero-rating on a customer-entered VAT ID is a Plus B2B
 feature or an app. `verify` skips T7. There is a second problem behind it: §6.4 puts the VAT
