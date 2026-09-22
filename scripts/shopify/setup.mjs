@@ -3,6 +3,7 @@
      node scripts/shopify/setup.mjs inspect     what the store looks like now, changes nothing
      node scripts/shopify/setup.mjs metafield   the small item flag (section 2)
      node scripts/shopify/setup.mjs products    the eight test articles (section 2.1)
+     node scripts/shopify/setup.mjs inventory   tracks them and stocks 1000 of each
      node scripts/shopify/setup.mjs shipping    zones and the 66 weight brackets (sections 4, 5, 8)
      node scripts/shopify/setup.mjs verify      reads the store back and replays section 10
 
@@ -473,6 +474,74 @@ async function carrier({ url }) {
 
 const CARRIER_NAME = 'BSS LogisQ rates';
 
+/* ------------------------------------------------------------- inventory */
+
+/* Turns tracking on and stocks every test article.
+
+   The articles were created untracked on purpose, so a PoC cart could never be blocked by
+   stock levels. Tracking them makes the admin read like a real catalogue instead of showing
+   "Inventory not tracked" on every row — at the price that an article can now run out, so
+   each one is stocked deep enough that running the test suite cannot exhaust it. */
+const STOCK = 1000;
+
+async function inventory() {
+    step('Inventory for the test articles');
+
+    for (const a of ARTICLES) {
+        const read = await admin(
+            `query($h: String!) {
+                productByIdentifier(identifier: { handle: $h }) {
+                    variants(first: 1) { nodes {
+                        inventoryItem { id tracked inventoryLevels(first: 5) { nodes { location { id } } } }
+                    } }
+                }
+            }`,
+            { h: handleOf(a) },
+        );
+
+        const item = read.productByIdentifier?.variants.nodes[0]?.inventoryItem;
+        if (!item) { log(`  ${a.sku}  missing — run the products stage first`); continue; }
+
+        const locationId = item.inventoryLevels.nodes[0]?.location?.id;
+        if (!locationId) { log(`  ${a.sku}  no stock location`); continue; }
+
+        if (!item.tracked) {
+            await admin(
+                `mutation($id: ID!, $input: InventoryItemInput!) {
+                    inventoryItemUpdate(id: $id, input: $input) {
+                        inventoryItem { id tracked }
+                        userErrors { field message }
+                    }
+                }`,
+                { id: item.id, input: { tracked: true } },
+                ['inventoryItemUpdate'],
+            );
+        }
+
+        await admin(
+            `mutation($input: InventorySetQuantitiesInput!) {
+                inventorySetQuantities(input: $input) {
+                    inventoryAdjustmentGroup { createdAt }
+                    userErrors { field message }
+                }
+            }`,
+            {
+                input: {
+                    name: 'available',
+                    reason: 'correction',
+                    /* Nothing else is writing to these counts, so there is no revision to
+                       race against. */
+                    ignoreCompareQuantity: true,
+                    quantities: [{ inventoryItemId: item.id, locationId, quantity: STOCK }],
+                },
+            },
+            ['inventorySetQuantities'],
+        );
+
+        log(`  ${a.sku}  ${a.name.padEnd(18)} tracked, ${STOCK} in stock`);
+    }
+}
+
 /* ---------------------------------------------------------------- verify */
 
 async function verify() {
@@ -579,7 +648,7 @@ async function verify() {
 
 /* ------------------------------------------------------------------ main */
 
-const STAGES = { inspect, metafield, products, shipping, carrier, verify };
+const STAGES = { inspect, metafield, products, inventory, shipping, carrier, verify };
 
 async function main() {
     const args = process.argv.slice(2);
