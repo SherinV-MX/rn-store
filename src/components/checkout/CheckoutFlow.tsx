@@ -62,6 +62,17 @@ export interface CheckoutDict {
    put a buyer through the whole form only to be told at the end that we cannot deliver. */
 const COUNTRIES = ['DE', 'BE', 'NL', 'FR', 'ME', 'AL', 'GE'];
 
+/* Section 6.1 requires the country to be picked from a list rather than typed, because every
+   rule downstream depends on knowing exactly which one it is. The list stores the ISO code and
+   shows the name in the reader's language — "Deutschland" to a German buyer — so the value we
+   send Shopify never depends on how it was displayed. */
+function countryOptions(locale: string) {
+    const names = new Intl.DisplayNames([locale === 'de' ? 'de-DE' : 'en-GB'], { type: 'region' });
+    return COUNTRIES
+        .map((code) => ({ code, name: names.of(code) ?? code }))
+        .sort((a, b) => a.name.localeCompare(b.name, locale));
+}
+
 /* The card goes to /api/shop/card-session, which relays it to Shopify's vault and returns an
    opaque session id. Not directly to the vault: it sends no CORS headers, so a browser on our
    domain cannot call it. See that route for what the relay costs us in PCI terms. */
@@ -260,7 +271,9 @@ export default function CheckoutFlow({ locale, dict }: { locale: string; dict: C
                         onChange={(e) => { set('countryCode')(e); }} onBlur={syncDetails}
                         aria-label={dict.country}
                     >
-                        {COUNTRIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                        {countryOptions(locale).map(({ code, name }) => (
+                            <option key={code} value={code}>{name}</option>
+                        ))}
                     </select>
                     <input
                         className={styles.input} placeholder={dict.company}
