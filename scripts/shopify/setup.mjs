@@ -8,6 +8,8 @@
      node scripts/shopify/setup.mjs shipping    zones and the 66 weight brackets (sections 4, 5, 8)
      node scripts/shopify/setup.mjs verify      reads the store back and replays section 10
 
+   And scripts/shopify/spec-test.mjs runs the whole spec against the deployed rate endpoint.
+
    `all` runs metafield, products, shipping, verify in that order. Every write stage is safe to
    re-run: products upsert by handle, and shipping refuses to touch a profile that already has
    zones unless you pass --replace-zones. */
