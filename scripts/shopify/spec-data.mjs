@@ -1,5 +1,9 @@
 /* The Shipping and VAT spec, as data.
 
+   Product categories are Shopify's standard taxonomy ids, which the admin shows in its
+   Category column; they carry no weight in the calculation and exist so the test articles
+   read like a real catalogue.
+
    Everything here is transcribed from "Shipping and VAT Rules: Spec for Shopify PoC",
    sections 2.1, 4, 5 and 10. Money is held in integer cents and weight in integer grams,
    because section 9 demands that a 3.3 kg cart land in the 3.3 bracket every time and
@@ -10,14 +14,14 @@ export const VAT_RATE = 19;
 /* Section 2.1. Prices are net: the store is configured tax-exclusive, so Shopify adds the
    19% at checkout rather than us storing a gross figure and stripping it back out. */
 export const ARTICLES = [
-    { sku: 'TA-01', name: 'Camera unit',      grams: 4200, smallItem: false, netCents: 100000 },
-    { sku: 'TA-02', name: 'Lens module',      grams: 1100, smallItem: false, netCents:  45000 },
-    { sku: 'TA-03', name: 'Mounting bracket', grams:  800, smallItem: false, netCents:  12000 },
-    { sku: 'TA-04', name: 'Power supply',     grams:  600, smallItem: false, netCents:   8000 },
-    { sku: 'TA-05', name: 'USB cable',        grams:  100, smallItem: true,  netCents:   1500 },
-    { sku: 'TA-06', name: 'Memory card',      grams:   20, smallItem: true,  netCents:   4000 },
-    { sku: 'TA-07', name: 'Lens cap',         grams:   50, smallItem: true,  netCents:    900 },
-    { sku: 'TA-08', name: 'Transport case',   grams: 5400, smallItem: false, netCents:  30000 },
+    { sku: 'TA-01', name: 'Camera unit',      grams: 4200, smallItem: false, netCents: 100000, category: 'co-2-2-4'  },
+    { sku: 'TA-02', name: 'Lens module',      grams: 1100, smallItem: false, netCents:  45000, category: 'co-1-2-1'  },
+    { sku: 'TA-03', name: 'Mounting bracket', grams:  800, smallItem: false, netCents:  12000, category: 'co-1-4'  },
+    { sku: 'TA-04', name: 'Power supply',     grams:  600, smallItem: false, netCents:   8000, category: 'el-7-15-5'  },
+    { sku: 'TA-05', name: 'USB cable',        grams:  100, smallItem: true,  netCents:   1500, category: 'el-7-7-5-2'  },
+    { sku: 'TA-06', name: 'Memory card',      grams:   20, smallItem: true,  netCents:   4000, category: 'el-7-12-2-1'  },
+    { sku: 'TA-07', name: 'Lens cap',         grams:   50, smallItem: true,  netCents:    900, category: 'co-1-3-3'  },
+    { sku: 'TA-08', name: 'Transport case',   grams: 5400, smallItem: false, netCents:  30000, category: 'co-1-4-2-2'  },
 ];
 
 /* Section 4. The spec calls these "example countries"; for the PoC they are the whole list.

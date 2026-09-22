@@ -4,6 +4,7 @@
      node scripts/shopify/setup.mjs metafield   the small item flag (section 2)
      node scripts/shopify/setup.mjs products    the eight test articles (section 2.1)
      node scripts/shopify/setup.mjs inventory   tracks them and stocks 1000 of each
+     node scripts/shopify/setup.mjs categories  sets each article's Shopify category
      node scripts/shopify/setup.mjs shipping    zones and the 66 weight brackets (sections 4, 5, 8)
      node scripts/shopify/setup.mjs verify      reads the store back and replays section 10
 
@@ -542,6 +543,42 @@ async function inventory() {
     }
 }
 
+/* ------------------------------------------------------------ categories */
+
+/* Sets each article's Shopify standard category — the Category column in the admin.
+
+   Nothing in the calculation depends on it. It is here so the test articles read like a real
+   catalogue rather than eight uncategorised rows, and because Shopify uses the category to
+   suggest the metafields and attributes a product of that kind would normally carry. */
+async function categories() {
+    step('Product categories');
+
+    for (const a of ARTICLES) {
+        if (!a.category) { log(`  ${a.sku}  no category in the spec data`); continue; }
+
+        const read = await admin(
+            `query($h: String!) { productByIdentifier(identifier: { handle: $h }) { id } }`,
+            { h: handleOf(a) },
+        );
+        const id = read.productByIdentifier?.id;
+        if (!id) { log(`  ${a.sku}  missing — run the products stage first`); continue; }
+
+        const data = await admin(
+            `mutation($product: ProductUpdateInput!) {
+                productUpdate(product: $product) {
+                    product { id category { id fullName } }
+                    userErrors { field message }
+                }
+            }`,
+            { product: { id, category: `gid://shopify/TaxonomyCategory/${a.category}` } },
+            ['productUpdate'],
+        );
+
+        const set = data.productUpdate.product.category;
+        log(`  ${a.sku}  ${a.name.padEnd(18)} ${set?.fullName ?? '(not set)'}`);
+    }
+}
+
 /* ---------------------------------------------------------------- verify */
 
 async function verify() {
@@ -648,7 +685,7 @@ async function verify() {
 
 /* ------------------------------------------------------------------ main */
 
-const STAGES = { inspect, metafield, products, inventory, shipping, carrier, verify };
+const STAGES = { inspect, metafield, products, inventory, categories, shipping, carrier, verify };
 
 async function main() {
     const args = process.argv.slice(2);
