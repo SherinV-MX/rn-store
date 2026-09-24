@@ -149,12 +149,39 @@ export default function CheckoutFlow({ locale, dict }: { locale: string; dict: C
         }
     };
 
+    /* Hands Shopify the delivery option the buyer actually picked.
+
+       Shopify does not fetch carrier rates until the cart is prepared for completion, so the
+       cart's delivery groups are empty right up to that moment — and with nothing selected,
+       Shopify silently takes the cheapest rate it is offered. A buyer who chose DHL Express
+       would then be charged for the small item post. Preparing first makes the options
+       appear; matching on price rather than on the label keeps it working in both languages.
+
+       If the option cannot be matched, this throws rather than paying: charging an amount the
+       buyer did not agree to is far worse than a failed checkout. */
+    const selectChosenDelivery = async (netCents: number) => {
+        await call({ action: 'prepare' });
+        const { cart: fresh } = await call({ action: 'cart' }) as { cart: Cart };
+
+        for (const group of fresh.deliveryGroups) {
+            const match = group.deliveryOptions.find(
+                (o) => Math.round(Number.parseFloat(o.estimatedCost.amount) * 100) === netCents,
+            );
+            if (!match) continue;
+            if (group.selectedDeliveryOption?.handle === match.handle) return;
+            await call({ action: 'delivery', groupId: group.id, handle: match.handle });
+            return;
+        }
+        throw new Error('delivery_option_unavailable');
+    };
+
     const pay = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
         setBusy(true);
         try {
             await syncDetails();
+            if (chosen) await selectChosenDelivery(chosen.netCents);
             /* A cart that owes nothing skips the card entirely — there is nothing to charge,
                so asking for one would be theatre. */
             const sessionId = owesNothing ? undefined : await vaultCard(card);
