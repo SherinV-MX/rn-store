@@ -235,6 +235,138 @@ async function partB() {
     }
 }
 
+/* ----------------------------------------------------- the awkward ones */
+
+/* Everything above follows the spec's own worked examples. These are the cases the spec does
+   not spell out but a real cart will reach anyway. */
+async function awkward() {
+    console.log('\n=== Every bracket, not just the boundaries ===\n');
+
+    /* Sweeping all 31 rows of each zone catches a single mistyped figure, which spot checks
+       at the ends would sail past. */
+    const WW1 = [51, 59, 61, 62, 64, 66, 68, 70, 72, 74, 76, 79, 81, 84, 86, 89, 91, 94, 96, 99,
+                 101, 104, 107, 109, 112, 115, 118, 121, 123, 126, 129];
+    const WW2 = [65, 87, 89, 91, 94, 97, 100, 103, 106, 109, 112, 115, 119, 123, 126, 130, 134,
+                 137, 141, 144, 148, 153, 158, 163, 168, 173, 177, 182, 187, 192, 197];
+
+    for (const [zone, country, table, surcharge] of [['Zone 1', 'FR', WW1, 0], ['Zone 2', 'ME', WW2, 4000]]) {
+        let bad = 0;
+        for (let i = 0; i < table.length; i++) {
+            /* Probe the middle of each bracket, not its edge. */
+            const grams = i === 0 ? 250 : i * 500 + 250;
+            const offered = await rates({ 'TA-01': 1 }, country, { grams: { 'TA-01': grams } });
+            const got = offered.find(r => r.code === 'weight')?.cents;
+            const want = table[i] * 100 + surcharge;
+            if (got !== want) { bad++; console.log(`        bracket ${i} (${kg(grams)}kg): got ${money(got ?? 0)}, want ${money(want)}`); }
+        }
+        check(`${zone}: all ${table.length} brackets return the spec price`, bad === 0, `${bad} wrong`);
+    }
+
+    console.log('\n=== Quantity, not just weight ===\n');
+
+    /* Section 2: cart weight is unit weight times quantity. A bracket reached by quantity has
+       to behave like one reached by a single heavy item. */
+    const qty = [
+        ['4 x TA-03 = 3.2 kg -> 21.00', { 'TA-03': 4 }, 2100],
+        ['5 x TA-03 = 4.0 kg -> 22.00', { 'TA-03': 5 }, 2200],
+        ['33 x TA-06 = 0.66 kg -> 21.00', { 'TA-06': 33 }, 2100],
+        ['165 x TA-06 = 3.3 kg -> 22.00 (exactly on the threshold)', { 'TA-06': 165 }, 2200],
+        ['164 x TA-06 = 3.28 kg -> 21.00 (one unit below)', { 'TA-06': 164 }, 2100],
+    ];
+    for (const [name, cart, expect] of qty) {
+        const offered = await rates(cart, 'DE');
+        const r = offered.find(x => x.code === 'weight');
+        check(name, r?.cents === expect, r ? `got ${money(r.cents)}` : 'no rate');
+    }
+
+    console.log('\n=== Rounding (section 9: half up, to the cent) ===\n');
+
+    /* A net total whose VAT lands exactly on half a cent must round up, not to even. */
+    const rounding = [
+        [50, 60],       /* 0.50 -> 0.595 -> 0.60 */
+        [150, 179],     /* 1.50 -> 1.785 -> 1.79 */
+        [250, 298],     /* 2.50 -> 2.975 -> 2.98 */
+        [1050, 1250],   /* 10.50 -> 12.495 -> 12.50 */
+        [100000, 119000],
+        [102200, 121618], /* T1: goods + shipping */
+    ];
+    for (const [net, wantGross] of rounding) {
+        check(`${money(net)} net grosses to ${money(wantGross)}`, grossCents(net) === wantGross, `got ${money(grossCents(net))}`);
+    }
+
+    console.log('\n=== VAT numbers (section 6.4) ===\n');
+
+    /* The endpoint does not see the VAT number — it only prices shipping — so these exercise
+       the same rule the checkout page applies. */
+    const { vatIdLooksValid } = await import('../../src/lib/shipping/rates.ts');
+    const vatIds = [
+        ['NL812345678B01', true, 'the spec\'s own A3 number'],
+        ['nl812345678b01', true, 'lowercase still valid'],
+        ['NL 8123 45678 B01', true, 'spaces stripped'],
+        ['NL-812345678B01', true, 'hyphens stripped'],
+        ['FR12345678901', true, 'another EU country'],
+        ['DE123456789', false, 'German number must not exempt (6.4)'],
+        ['de123456789', false, 'German, lowercase'],
+        ['', false, 'empty'],
+        ['   ', false, 'whitespace only'],
+        ['12345678', false, 'no country prefix'],
+        ['NL1', false, 'far too short'],
+        ['NOTAVATNUMBER!!', false, 'junk'],
+    ];
+    for (const [value, want, why] of vatIds) {
+        check(`${why}: ${JSON.stringify(value)}`, vatIdLooksValid(value) === want, `got ${!want}`);
+    }
+
+    console.log('\n=== A misbehaving caller ===\n');
+
+    /* Shopify is the only caller in practice, but the endpoint is public, and it must fail
+       closed — no rate — rather than returning a wrong price. */
+    const posts = [
+        ['empty items', { rate: { destination: { country: 'DE' }, items: [], currency: 'EUR' } }],
+        ['no destination', { rate: { items: [], currency: 'EUR' } }],
+        ['no rate object at all', {}],
+        ['destination with no country', { rate: { destination: {}, items: [{ grams: 1000, quantity: 1, requires_shipping: true, variant_id: null }], currency: 'EUR' } }],
+        ['unknown variant id', { rate: { destination: { country: 'DE' }, items: [{ grams: 1000, quantity: 1, requires_shipping: true, variant_id: 999999999 }], currency: 'EUR' } }],
+        ['negative weight', { rate: { destination: { country: 'DE' }, items: [{ grams: -500, quantity: 1, requires_shipping: true, variant_id: null }], currency: 'EUR' } }],
+    ];
+    for (const [name, body] of posts) {
+        const res = await fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        const parsed = await res.json().catch(() => null);
+        const list = parsed?.rates;
+        const ok = res.status === 200 && Array.isArray(list);
+        /* An unknown variant is still shippable — it just cannot qualify as a small item. */
+        const expectEmpty = name !== 'unknown variant id';
+        check(`${name}: answers 200 with a rates array${expectEmpty ? ', empty' : ''}`,
+            ok && (expectEmpty ? list.length === 0 : list.length > 0),
+            `status ${res.status}, rates ${JSON.stringify(list)}`);
+    }
+
+    const malformed = await fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: 'not json' });
+    const mBody = await malformed.json().catch(() => null);
+    check('malformed JSON: answers 200 with no rates', malformed.status === 200 && mBody?.rates?.length === 0,
+        `status ${malformed.status}`);
+
+    console.log('\n=== The small item flag under pressure ===\n');
+
+    /* A flagged item alongside an unflagged one, at a weight where the flat rate would
+       otherwise be the obvious choice. */
+    const mixed = await rates({ 'TA-07': 1, 'TA-04': 1 }, 'DE');
+    check('flagged + unflagged (0.65 kg) -> no flat rate', !mixed.some(r => r.code === 'small-item'), 'offered');
+
+    /* A non-shippable unflagged line must not veto the flat rate, since it never travels. */
+    const ghost = await rates({ 'TA-05': 1, 'TA-01': 1 }, 'DE', { requiresShipping: { 'TA-01': false } });
+    check('non-shippable unflagged line does not remove the flat rate',
+        ghost.some(r => r.code === 'small-item'), 'flat rate withheld');
+
+    /* Many units of a flagged item still qualify — section 7 is about the product, not the
+       quantity or the resulting weight. */
+    const many = await rates({ 'TA-05': 40 }, 'DE');
+    check('40 x a flagged item (4 kg) still qualifies', many.some(r => r.code === 'small-item'), 'withheld');
+    const heavyFlat = many.find(r => r.code === 'small-item');
+    check('flat rate stays 10.00 however heavy the qualifying cart', heavyFlat?.cents === 1000,
+        heavyFlat ? `got ${money(heavyFlat.cents)}` : 'missing');
+}
+
 /* ------------------------------------------------------------------------ main */
 
 async function main() {
@@ -246,6 +378,7 @@ async function main() {
     await sectionTen();
     await edgeCases();
     await partB();
+    await awkward();
 
     console.log(`\n${'='.repeat(60)}`);
     console.log(`  ${pass} passed, ${fail} failed, ${pass + fail} total`);
