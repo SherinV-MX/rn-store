@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { quote } from '@/lib/shipping/rates';
+import { loadRateCard } from '@/lib/shipping/rate-card';
 import { smallItemFlags } from '@/lib/shipping/small-items';
 
 /* Shopify's carrier service callback.
@@ -54,7 +55,19 @@ export async function POST(request: NextRequest) {
        carry, so it is looked up by variant and cached. */
     const flags = await smallItemFlags(items.map((i) => i.variant_id).filter((id): id is number => id != null));
 
+    /* The zones, brackets and fees come from Shopify so staff can change them without a
+       deploy (section 4). If they cannot be read we return no rates rather than a guess —
+       Shopify then shows no delivery option, which is visible, where a wrong price is not. */
+    let card;
+    try {
+        card = await loadRateCard();
+    } catch (err) {
+        console.error('Rate card unavailable:', err);
+        return NextResponse.json({ rates: [] });
+    }
+
     const result = quote(
+        card,
         items.map((item) => ({
             grams: item.grams,
             quantity: item.quantity,

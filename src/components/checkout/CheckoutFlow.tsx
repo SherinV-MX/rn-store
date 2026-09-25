@@ -7,6 +7,7 @@ import { useCart } from '@/components/shop/CartProvider';
 import { formatMoney } from '@/lib/shopify/format';
 import type { Cart } from '@/lib/shopify/types';
 import { quote, totals } from '@/lib/shipping/rates';
+import type { RateCard } from '@/lib/shipping/rates';
 import { itemsFromCart, goodsNetCents } from '@/lib/shipping/from-cart';
 import styles from './Checkout.module.css';
 
@@ -58,17 +59,18 @@ export interface CheckoutDict {
     goods: string;
 }
 
-/* The countries the shop actually has rates for — sections 4 and 10.1. Offering more would
-   put a buyer through the whole form only to be told at the end that we cannot deliver. */
-const COUNTRIES = ['DE', 'BE', 'NL', 'FR', 'ME', 'AL', 'GE'];
-
 /* Section 6.1 requires the country to be picked from a list rather than typed, because every
    rule downstream depends on knowing exactly which one it is. The list stores the ISO code and
    shows the name in the reader's language — "Deutschland" to a German buyer — so the value we
-   send Shopify never depends on how it was displayed. */
-function countryOptions(locale: string) {
+   send Shopify never depends on how it was displayed.
+
+   The countries come from the zones in Shopify, so adding one to a zone in the admin puts it
+   in this dropdown with no deploy. Offering a country we have no rate for would put a buyer
+   through the whole form only to be told at the end that we cannot deliver. */
+function countryOptions(locale: string, card: RateCard | null) {
     const names = new Intl.DisplayNames([locale === 'de' ? 'de-DE' : 'en-GB'], { type: 'region' });
-    return COUNTRIES
+    const codes = [...new Set((card?.zones ?? []).flatMap((z) => z.countries))];
+    return codes
         .map((code) => ({ code, name: names.of(code) ?? code }))
         .sort((a, b) => a.name.localeCompare(b.name, locale));
 }
@@ -89,7 +91,13 @@ async function vaultCard(card: {
     return body.sessionId as string;
 }
 
-export default function CheckoutFlow({ locale, dict }: { locale: string; dict: CheckoutDict }) {
+export default function CheckoutFlow({ locale, dict, rateCard }: {
+    locale: string;
+    dict: CheckoutDict;
+    /* The zones, brackets and fees, read from Shopify on the server (section 4). null when
+       the store has no rate card, or Shopify could not be reached. */
+    rateCard: RateCard | null;
+}) {
     const { cart, setCart, ready } = useCart();
 
     const [form, setForm] = useState({
@@ -237,9 +245,18 @@ export default function CheckoutFlow({ locale, dict }: { locale: string; dict: C
     const currencyCode = cart.cost.subtotalAmount.currencyCode;
     const money = (cents: number) => formatMoney({ amount: (cents / 100).toFixed(2), currencyCode }, locale);
 
-    const shipping = quote(itemsFromCart(cart), form.countryCode, form.vatId);
-    const chosen = shipping.options.find((o) => o.id === shippingChoice) ?? shipping.options[0] ?? null;
-    const sums = totals(goodsNetCents(cart), chosen?.netCents ?? 0, shipping.vatApplies);
+    const shipping = rateCard
+        ? quote(rateCard, itemsFromCart(cart), form.countryCode, form.vatId)
+        : null;
+    const chosen = shipping
+        ? shipping.options.find((o) => o.id === shippingChoice) ?? shipping.options[0] ?? null
+        : null;
+    const sums = totals(
+        goodsNetCents(cart),
+        chosen?.netCents ?? 0,
+        shipping?.vatApplies ?? true,
+        shipping?.vatRate ?? 19,
+    );
 
     const optionLabel = (id: string, label: string) => (id === 'small-item' ? dict.smallItemPost : label);
     const owesNothing = sums.totalCents === 0;
@@ -298,7 +315,7 @@ export default function CheckoutFlow({ locale, dict }: { locale: string; dict: C
                         onChange={(e) => { set('countryCode')(e); }} onBlur={syncDetails}
                         aria-label={dict.country}
                     >
-                        {countryOptions(locale).map(({ code, name }) => (
+                        {countryOptions(locale, rateCard).map(({ code, name }) => (
                             <option key={code} value={code}>{name}</option>
                         ))}
                     </select>
@@ -317,10 +334,10 @@ export default function CheckoutFlow({ locale, dict }: { locale: string; dict: C
                     <h2 className={styles.blockTitle}>{dict.delivery}</h2>
                     {/* Section 9: a cart with no shipping weight would travel for nothing, so
                         it is stopped here rather than allowed through checkout. */}
-                    {shipping.blocked === 'no-weight' && <p className={styles.note}>{dict.noWeight}</p>}
-                    {shipping.blocked === 'no-zone' && <p className={styles.note}>{dict.noZone}</p>}
+                    {shipping?.blocked === 'no-weight' && <p className={styles.note}>{dict.noWeight}</p>}
+                    {shipping?.blocked === 'no-zone' && <p className={styles.note}>{dict.noZone}</p>}
 
-                    {shipping.options.length > 0 ? (
+                    {shipping && shipping.options.length > 0 ? (
                         <div className={styles.options}>
                             {/* Section 7: a qualifying German cart sees the flat rate and the
                                 express rate side by side and picks. The flat rate is an extra
@@ -346,7 +363,7 @@ export default function CheckoutFlow({ locale, dict }: { locale: string; dict: C
                                 );
                             })}
                         </div>
-                    ) : shipping.blocked === null && (
+                    ) : shipping?.blocked === null && (
                         <p className={styles.note}>{dict.noShipping}</p>
                     )}
                 </section>
@@ -443,9 +460,9 @@ export default function CheckoutFlow({ locale, dict }: { locale: string; dict: C
                     <div>
                         <dt>{dict.tax}</dt>
                         <dd>
-                            {shipping.vatApplies
+                            {shipping?.vatApplies
                                 ? money(sums.vatCents)
-                                : (shipping.zone?.eu ? dict.vatReverseCharge : dict.vatExport)}
+                                : (shipping?.zone?.eu ? dict.vatReverseCharge : dict.vatExport)}
                         </dd>
                     </div>
                     <div className={styles.grand}>
