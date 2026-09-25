@@ -41,6 +41,18 @@ node scripts/shopify/setup.mjs verify      # replays §10 against the live store
 node scripts/shopify/setup.mjs all         # the four write stages in order
 ```
 
+Two scripts read rather than write:
+
+```bash
+node scripts/shopify/spec-test.mjs        # the whole spec against the deployed rate endpoint
+node scripts/shopify/shopify-figures.mjs  # what Shopify itself says each §10 scenario costs
+```
+
+`shopify-figures` builds a real cart per scenario, prepares it for completion, selects the
+intended delivery option and reads back Shopify's own subtotal, tax and total — nothing is
+calculated locally. It is the script to reach for when someone asks whether a figure is ours
+or Shopify's.
+
 `shipping` refuses to touch a delivery profile that already has zones. Re-run it with
 `--replace-zones` to delete what is there and write the spec tables in their place.
 
