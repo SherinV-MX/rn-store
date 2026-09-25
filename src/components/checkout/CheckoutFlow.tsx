@@ -118,9 +118,19 @@ export default function CheckoutFlow({ locale, dict, rateCard }: {
        it is Shopify that takes the money, so its figures are the ones shown — ours are only
        an estimate until the address is complete enough for Shopify to answer. */
     const [liveCost, setLiveCost] = useState<Cart['cost'] | null>(null);
-    /* syncDetails runs from an onBlur that was created before the buyer picked a rate, so the
-       choice is read through a ref rather than closed over. */
+    /* The debounced repricing below is scheduled before the buyer touches the delivery
+       options, so the chosen rate is read through a ref rather than closed over. */
     const chosenRef = useRef<number | undefined>(undefined);
+    const [card, setCard] = useState({ number: '', month: '', year: '', cvc: '', name: '' });
+    const [busy, setBusy] = useState(false);
+    /* Repricing in the background. Separate from `busy` so it never disables anything. */
+    const [pricing, setPricing] = useState(false);
+
+    /* Enough of the address for Shopify to quote anything at all. */
+    const addressComplete = Boolean(form.email && form.address1 && form.city && form.zip);
+    const [error, setError] = useState<string | null>(null);
+    const [done, setDone] = useState(false);
+
     /* Shipping and VAT are worked out here, not read off the cart. Shopify quotes the dearest
        rate in the destination's zone whatever the cart weighs, so its own figures cannot be
        put in front of a buyer. See lib/shipping/rates — the numbers come from Shopify, the
@@ -133,13 +143,9 @@ export default function CheckoutFlow({ locale, dict, rateCard }: {
         : null;
 
     /* The buyer may never touch the delivery options — the first is selected for them — so the
-       chosen rate is tracked here rather than only when one is clicked. syncDetails runs from
-       an onBlur created before any of this existed, hence the ref. */
+       chosen rate is tracked here rather than only when one is clicked. */
     useEffect(() => { chosenRef.current = chosen?.netCents; }, [chosen?.netCents]);
-    const [card, setCard] = useState({ number: '', month: '', year: '', cvc: '', name: '' });
-    const [busy, setBusy] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [done, setDone] = useState(false);
+
 
     const set = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
         setForm((f) => ({ ...f, [key]: e.target.value }));
@@ -161,28 +167,6 @@ export default function CheckoutFlow({ locale, dict, rateCard }: {
     /* Address and contact are pushed as the buyer leaves the block, so Shopify can quote
        shipping and tax before they reach the card — the totals on the right are then real,
        not a guess we would have to correct at the end. */
-    const syncDetails = async () => {
-        if (!form.email || !form.address1 || !form.city || !form.zip) return;
-        setError(null);
-        try {
-            setBusy(true);
-            await call({ action: 'contact', email: form.email, phone: form.phone, countryCode: form.countryCode });
-            await call({
-                action: 'address',
-                address: {
-                    firstName: form.firstName, lastName: form.lastName,
-                    address1: form.address1, address2: form.address2,
-                    city: form.city, zip: form.zip, countryCode: form.countryCode, phone: form.phone,
-                },
-            });
-            /* Shopify can price it now, so replace our estimate with its figures. */
-            if (chosenRef.current !== undefined) await selectChosenDelivery(chosenRef.current);
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'error');
-        } finally {
-            setBusy(false);
-        }
-    };
 
     /* Hands Shopify the delivery option the buyer actually picked.
 
@@ -225,6 +209,66 @@ export default function CheckoutFlow({ locale, dict, rateCard }: {
             setLiveCost(null);
         }
     };
+
+    /* Pushes contact and address, then has Shopify price the order. Kept free of `busy` so the
+       background repricing below cannot disable the form under the buyer's hands. */
+    const pushDetails = async () => {
+        await call({ action: 'contact', email: form.email, phone: form.phone, countryCode: form.countryCode });
+        await call({
+            action: 'address',
+            address: {
+                firstName: form.firstName, lastName: form.lastName,
+                address1: form.address1, address2: form.address2,
+                city: form.city, zip: form.zip, countryCode: form.countryCode, phone: form.phone,
+            },
+        });
+        if (chosenRef.current !== undefined) await selectChosenDelivery(chosenRef.current);
+    };
+
+    const syncDetails = async () => {
+        if (!addressComplete) return;
+        setError(null);
+        try {
+            setBusy(true);
+            await pushDetails();
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'error');
+        } finally {
+            setBusy(false);
+        }
+    };
+
+    /* Reprices as the buyer types, so the totals settle on their own rather than waiting for a
+       field to lose focus or for a button to be pressed. Debounced because each pass is three
+       or four calls to Shopify: it fires once the typing stops, not once per keystroke.
+
+       Keyed on the fields that can change the price, so an unrelated edit — a phone number, a
+       second address line — costs nothing. `pricing` drives a quiet hint rather than `busy`,
+       which would grey out the form mid-sentence. */
+    const priceKey = JSON.stringify([
+        form.email, form.address1, form.city, form.zip, form.countryCode, chosen?.netCents ?? null,
+    ]);
+    const pricedKey = useRef<string>('');
+
+    useEffect(() => {
+        if (!addressComplete || pricedKey.current === priceKey) return;
+        const timer = setTimeout(async () => {
+            pricedKey.current = priceKey;
+            setPricing(true);
+            try {
+                await pushDetails();
+            } catch {
+                /* A half-typed address is the usual reason, and not worth shouting about —
+                   the figures simply stay marked as an estimate. */
+                setLiveCost(null);
+                pricedKey.current = '';
+            } finally {
+                setPricing(false);
+            }
+        }, 800);
+        return () => clearTimeout(timer);
+        /* eslint-disable-next-line react-hooks/exhaustive-deps */
+    }, [priceKey, addressComplete]);
 
     const pay = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -333,7 +377,7 @@ export default function CheckoutFlow({ locale, dict, rateCard }: {
                     <h2 className={styles.blockTitle}>{dict.contact}</h2>
                     <input
                         className={styles.input} type="email" required placeholder={dict.email}
-                        value={form.email} onChange={set('email')} onBlur={syncDetails} autoComplete="email"
+                        value={form.email} onChange={set('email')} autoComplete="email"
                     />
                     <input
                         className={styles.input} type="tel" placeholder={dict.phone}
@@ -355,7 +399,7 @@ export default function CheckoutFlow({ locale, dict, rateCard }: {
                     </div>
                     <input
                         className={styles.input} required placeholder={dict.address1}
-                        value={form.address1} onChange={set('address1')} onBlur={syncDetails}
+                        value={form.address1} onChange={set('address1')}
                         autoComplete="address-line1"
                     />
                     <input
@@ -365,17 +409,17 @@ export default function CheckoutFlow({ locale, dict, rateCard }: {
                     <div className={styles.row}>
                         <input
                             className={styles.input} required placeholder={dict.zip}
-                            value={form.zip} onChange={set('zip')} onBlur={syncDetails} autoComplete="postal-code"
+                            value={form.zip} onChange={set('zip')} autoComplete="postal-code"
                         />
                         <input
                             className={styles.input} required placeholder={dict.city}
-                            value={form.city} onChange={set('city')} onBlur={syncDetails}
+                            value={form.city} onChange={set('city')}
                             autoComplete="address-level2"
                         />
                     </div>
                     <select
                         className={styles.input} value={form.countryCode}
-                        onChange={(e) => { set('countryCode')(e); }} onBlur={syncDetails}
+                        onChange={(e) => { set('countryCode')(e); }}
                         aria-label={dict.country}
                     >
                         {countryOptions(locale, rateCard).map(({ code, name }) => (
@@ -388,7 +432,7 @@ export default function CheckoutFlow({ locale, dict, rateCard }: {
                     />
                     <input
                         className={styles.input} placeholder={dict.vatId}
-                        value={form.vatId} onChange={set('vatId')} onBlur={syncDetails}
+                        value={form.vatId} onChange={set('vatId')}
                     />
                     <p className={styles.note}>{dict.vatIdNote}</p>
                 </section>
@@ -543,7 +587,7 @@ export default function CheckoutFlow({ locale, dict, rateCard }: {
                         <dd>{liveTotal === null && needsShopifyCheckout ? dict.calculated : money(shownTotal)}</dd>
                     </div>
                 </dl>
-                {!confirmed && <p className={styles.note}>{dict.estimate}</p>}
+                {(!confirmed || pricing) && <p className={styles.note}>{dict.estimate}</p>}
             </aside>
         </form>
     );
