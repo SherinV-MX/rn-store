@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/components/shop/CartProvider';
 import { formatMoney } from '@/lib/shopify/format';
 import type { Cart } from '@/lib/shopify/types';
-import { quote, totals } from '@/lib/shipping/rates';
+import { quote, totals, vatIdLooksValid } from '@/lib/shipping/rates';
 import type { RateCard } from '@/lib/shipping/rates';
 import { itemsFromCart, goodsNetCents } from '@/lib/shipping/from-cart';
 import styles from './Checkout.module.css';
@@ -57,6 +57,9 @@ export interface CheckoutDict {
     noWeight: string;
     noZone: string;
     goods: string;
+    vatIdShopifyNote: string;
+    continueSecure: string;
+    estimate: string;
 }
 
 /* Section 6.1 requires the country to be picked from a list rather than typed, because every
@@ -111,6 +114,28 @@ export default function CheckoutFlow({ locale, dict, rateCard }: {
     /* Which shipping option the buyer picked. Section 7 can offer two for a German cart, and
        the choice is theirs, so it is held here rather than derived. */
     const [shippingChoice, setShippingChoice] = useState<string | null>(null);
+    /* What Shopify says this order costs, once it will tell us. Shopify computes the tax and
+       it is Shopify that takes the money, so its figures are the ones shown — ours are only
+       an estimate until the address is complete enough for Shopify to answer. */
+    const [liveCost, setLiveCost] = useState<Cart['cost'] | null>(null);
+    /* syncDetails runs from an onBlur that was created before the buyer picked a rate, so the
+       choice is read through a ref rather than closed over. */
+    const chosenRef = useRef<number | undefined>(undefined);
+    /* Shipping and VAT are worked out here, not read off the cart. Shopify quotes the dearest
+       rate in the destination's zone whatever the cart weighs, so its own figures cannot be
+       put in front of a buyer. See lib/shipping/rates — the numbers come from Shopify, the
+       rules from us. */
+    const shipping = rateCard && cart
+        ? quote(rateCard, itemsFromCart(cart), form.countryCode, form.vatId)
+        : null;
+    const chosen = shipping
+        ? shipping.options.find((o) => o.id === shippingChoice) ?? shipping.options[0] ?? null
+        : null;
+
+    /* The buyer may never touch the delivery options — the first is selected for them — so the
+       chosen rate is tracked here rather than only when one is clicked. syncDetails runs from
+       an onBlur created before any of this existed, hence the ref. */
+    useEffect(() => { chosenRef.current = chosen?.netCents; }, [chosen?.netCents]);
     const [card, setCard] = useState({ number: '', month: '', year: '', cvc: '', name: '' });
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -150,6 +175,8 @@ export default function CheckoutFlow({ locale, dict, rateCard }: {
                     city: form.city, zip: form.zip, countryCode: form.countryCode, phone: form.phone,
                 },
             });
+            /* Shopify can price it now, so replace our estimate with its figures. */
+            if (chosenRef.current !== undefined) await selectChosenDelivery(chosenRef.current);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'error');
         } finally {
@@ -169,18 +196,34 @@ export default function CheckoutFlow({ locale, dict, rateCard }: {
        buyer did not agree to is far worse than a failed checkout. */
     const selectChosenDelivery = async (netCents: number) => {
         await call({ action: 'prepare' });
-        const { cart: fresh } = await call({ action: 'cart' }) as { cart: Cart };
+        let fresh = (await call({ action: 'cart' }) as { cart: Cart }).cart;
 
         for (const group of fresh.deliveryGroups) {
             const match = group.deliveryOptions.find(
                 (o) => Math.round(Number.parseFloat(o.estimatedCost.amount) * 100) === netCents,
             );
             if (!match) continue;
-            if (group.selectedDeliveryOption?.handle === match.handle) return;
-            await call({ action: 'delivery', groupId: group.id, handle: match.handle });
+            if (group.selectedDeliveryOption?.handle !== match.handle) {
+                fresh = (await call({ action: 'delivery', groupId: group.id, handle: match.handle }) as { cart: Cart }).cart;
+                /* Prepare again so the tax is recalculated against the rate just chosen. */
+                await call({ action: 'prepare' });
+                fresh = (await call({ action: 'cart' }) as { cart: Cart }).cart;
+            }
+            setLiveCost(fresh.cost);
             return;
         }
         throw new Error('delivery_option_unavailable');
+    };
+
+    /* Asks Shopify to price the order as it stands. Quiet on failure: an address that is not
+       yet complete is the normal case, not an error worth showing. */
+    const refreshLiveCost = async (netCents: number | undefined) => {
+        if (netCents === undefined || !form.email || !form.address1 || !form.city || !form.zip) return;
+        try {
+            await selectChosenDelivery(netCents);
+        } catch {
+            setLiveCost(null);
+        }
     };
 
     const pay = async (e: React.FormEvent) => {
@@ -190,6 +233,12 @@ export default function CheckoutFlow({ locale, dict, rateCard }: {
         try {
             await syncDetails();
             if (chosen) await selectChosenDelivery(chosen.netCents);
+
+            /* A VAT number can only be entered, and only be checked, on Shopify's checkout. */
+            if (needsShopifyCheckout && cart?.checkoutUrl) {
+                window.location.assign(cart.checkoutUrl);
+                return;
+            }
             /* A cart that owes nothing skips the card entirely — there is nothing to charge,
                so asking for one would be theatre. */
             const sessionId = owesNothing ? undefined : await vaultCard(card);
@@ -245,12 +294,7 @@ export default function CheckoutFlow({ locale, dict, rateCard }: {
     const currencyCode = cart.cost.subtotalAmount.currencyCode;
     const money = (cents: number) => formatMoney({ amount: (cents / 100).toFixed(2), currencyCode }, locale);
 
-    const shipping = rateCard
-        ? quote(rateCard, itemsFromCart(cart), form.countryCode, form.vatId)
-        : null;
-    const chosen = shipping
-        ? shipping.options.find((o) => o.id === shippingChoice) ?? shipping.options[0] ?? null
-        : null;
+    /* Computed above, before the early returns, so an effect can watch the chosen rate. */
     const sums = totals(
         goodsNetCents(cart),
         chosen?.netCents ?? 0,
@@ -259,7 +303,26 @@ export default function CheckoutFlow({ locale, dict, rateCard }: {
     );
 
     const optionLabel = (id: string, label: string) => (id === 'small-item' ? dict.smallItemPost : label);
-    const owesNothing = sums.totalCents === 0;
+
+    /* Shopify's figures win wherever it has given us any. It computes the tax and it takes
+       the money, so showing our own arithmetic beside it would only invite the two to differ.
+       Ours stands in until the address is complete enough for Shopify to answer. */
+    const cents = (m: { amount: string } | null | undefined) =>
+        (m ? Math.round(Number.parseFloat(m.amount) * 100) : null);
+    const liveTotal = cents(liveCost?.totalAmount);
+    const liveTax = cents(liveCost?.totalTaxAmount);
+    const shownGoods = cents(liveCost?.subtotalAmount) ?? sums.goodsNetCents;
+    const shownShipping = chosen?.netCents ?? sums.shippingNetCents;
+    const shownTotal = liveTotal ?? sums.totalCents;
+    const confirmed = liveTotal !== null;
+
+    /* Section 6.4's reverse charge cannot happen here: the Storefront cart has no field for a
+       VAT number — only companyLocationId, which is Plus B2B — so Shopify never sees it and
+       would charge the tax anyway. Rather than show a net total Shopify will not honour, an
+       order carrying a VAT number is sent to Shopify's own checkout, which has the field and
+       validates it against VIES. */
+    const needsShopifyCheckout = vatIdLooksValid(form.vatId);
+    const owesNothing = shownTotal === 0;
 
     return (
         <form className={styles.layout} onSubmit={pay}>
@@ -348,7 +411,7 @@ export default function CheckoutFlow({ locale, dict, rateCard }: {
                                     <button
                                         key={option.id} type="button" disabled={busy}
                                         className={`${styles.option} ${on ? styles.optionOn : ''}`}
-                                        onClick={() => setShippingChoice(option.id)}
+                                        onClick={() => { setShippingChoice(option.id); void refreshLiveCost(option.netCents); }}
                                     >
                                         <span>{optionLabel(option.id, option.label)}</span>
                                         {/* Net, like the summary beside it and like Shopify's
@@ -403,12 +466,16 @@ export default function CheckoutFlow({ locale, dict, rateCard }: {
 
                 {error && <p className={styles.error} role="alert">{error}</p>}
 
+                {needsShopifyCheckout && <p className={styles.note}>{dict.vatIdShopifyNote}</p>}
+
                 <button type="submit" className={styles.pay} disabled={busy}>
                     {busy
                         ? dict.paying
-                        : owesNothing
-                            ? dict.placeOrder
-                            : `${dict.pay} ${money(sums.totalCents)}`}
+                        : needsShopifyCheckout
+                            ? dict.continueSecure
+                            : owesNothing
+                                ? dict.placeOrder
+                                : `${dict.pay} ${money(shownTotal)}`}
                 </button>
 
                 {/* PayPal, Klarna and the other redirect-based methods cannot be completed
@@ -452,23 +519,31 @@ export default function CheckoutFlow({ locale, dict, rateCard }: {
                     customer entitled to net pricing to see net prices before paying rather
                     than be charged and refunded afterwards. */}
                 <dl className={styles.totals}>
-                    <div><dt>{dict.goods}</dt><dd>{money(sums.goodsNetCents)}</dd></div>
+                    <div><dt>{dict.goods}</dt><dd>{money(shownGoods)}</dd></div>
                     <div>
                         <dt>{dict.shippingLine}</dt>
-                        <dd>{chosen ? money(sums.shippingNetCents) : dict.calculated}</dd>
+                        <dd>{chosen ? money(shownShipping) : dict.calculated}</dd>
                     </div>
                     <div>
                         <dt>{dict.tax}</dt>
                         <dd>
-                            {shipping?.vatApplies
-                                ? money(sums.vatCents)
-                                : (shipping?.zone?.eu ? dict.vatReverseCharge : dict.vatExport)}
+                            {liveTax !== null
+                                ? money(liveTax)
+                                /* A VAT number is checked by Shopify, not here, so until it
+                                   has ruled we say so instead of promising an exemption. */
+                                : needsShopifyCheckout
+                                    ? dict.calculated
+                                    : shipping?.vatApplies
+                                        ? money(sums.vatCents)
+                                        : (shipping?.zone?.eu ? dict.vatReverseCharge : dict.vatExport)}
                         </dd>
                     </div>
                     <div className={styles.grand}>
-                        <dt>{dict.total}</dt><dd>{money(sums.totalCents)}</dd>
+                        <dt>{dict.total}</dt>
+                        <dd>{liveTotal === null && needsShopifyCheckout ? dict.calculated : money(shownTotal)}</dd>
                     </div>
                 </dl>
+                {!confirmed && <p className={styles.note}>{dict.estimate}</p>}
             </aside>
         </form>
     );

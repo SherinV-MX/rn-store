@@ -87,7 +87,10 @@
         "smallItemPost": "Small item post",
         "noWeight": "This cart has no shipping weight, so it cannot be delivered. Please contact us.",
         "noZone": "We do not ship to that country yet.",
-        "goods": "Goods"
+        "goods": "Goods",
+        "vatIdShopifyNote": "VAT numbers are verified by our payment provider, so an order with one must be completed on the secure checkout.",
+        "continueSecure": "Continue to secure checkout",
+        "estimate": "Estimated — confirmed once the address is complete"
     },
     "catalogue": {
         "title": "Products",

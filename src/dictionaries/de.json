@@ -87,7 +87,10 @@
         "smallItemPost": "Warensendung",
         "noWeight": "Dieser Warenkorb hat kein Versandgewicht und kann nicht geliefert werden. Bitte kontaktieren Sie uns.",
         "noZone": "In dieses Land liefern wir derzeit nicht.",
-        "goods": "Waren"
+        "goods": "Waren",
+        "vatIdShopifyNote": "USt-IdNr. werden von unserem Zahlungsdienstleister geprüft. Bestellungen mit USt-IdNr. müssen daher über den sicheren Checkout abgeschlossen werden.",
+        "continueSecure": "Weiter zum sicheren Checkout",
+        "estimate": "Geschätzt — bestätigt, sobald die Adresse vollständig ist"
     },
     "catalogue": {
         "title": "Produkte",
