@@ -47,13 +47,25 @@ export default function RnHeader({ locale }: { locale: string }) {
     return (
         <header className={`${s.header} ${solid || open ? s.headerSolid : ''}`}>
             <div className={`rnRail ${s.bar}`}>
+                {/* Two marks, both in the markup and swapped by CSS: the symbol alone over the
+                    hero, the full lockup once the bar turns white — the black wordmark would
+                    be invisible on the picture and the symbol alone looks lost on the bar.
+                    Swapping the src instead would fetch an image mid-scroll. */}
                 <Link href={`/${locale}/rn`} className={s.brand} aria-label="Race Navigator">
                     <Image
-                        className={s.markImg}
+                        className={`${s.markImg} ${s.markMark}`}
                         src="/rn/logo.png"
                         alt="Race Navigator"
                         width={168}
                         height={96}
+                        priority
+                    />
+                    <Image
+                        className={`${s.markImg} ${s.markLockup}`}
+                        src="/rn/logo-lockup.png"
+                        alt=""
+                        width={340}
+                        height={60}
                         priority
                     />
                 </Link>
