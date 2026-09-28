@@ -1,6 +1,7 @@
 'use client';
 
 import { useId, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { rnCategories, rnHome } from '@/content/rn';
 import { RnDeviceMark } from './RnArt';
@@ -74,8 +75,11 @@ export default function RnProducts({ locale }: { locale: string }) {
                             const href = internal ? `/${locale}/rn/${p.href}` : '#';
                             return (
                                 <Link key={p.name} href={href} className={s.card}>
+                                    {p.image
+                                        ? <Image className={s.cardShot} src={p.image} alt="" fill
+                                                 sizes="(max-width: 700px) 100vw, 33vw" quality={78} />
+                                        : <RnDeviceMark className={s.cardArt} />}
                                     {p.badge && <span className={s.cardBadge}>{p.badge}</span>}
-                                    <RnDeviceMark className={s.cardArt} />
                                     <h3 className={s.cardName}>{p.name}</h3>
                                     <p className={s.cardTag}>{p.tagline}</p>
                                     <span className={s.cardGo}>

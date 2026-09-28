@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { rnOne } from '@/content/rn';
-import { RnDeviceMark } from '@/components/rn/RnArt';
+import RnGallery from '@/components/rn/RnGallery';
 import s from '@/components/rn/RnProduct.module.css';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -44,9 +44,10 @@ export default async function RnOnePage({ params }: { params: Promise<{ locale: 
                         </div>
                     </div>
 
-                    <div className={s.heroArt}>
-                        <RnDeviceMark />
-                    </div>
+                    <RnGallery
+                        shots={t.gallery}
+                        label={locale === 'de' ? 'Produktansichten' : 'Product views'}
+                    />
                 </div>
 
                 <div className="rnRail">

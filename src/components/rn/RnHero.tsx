@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { rnSlides } from '@/content/rn';
 import s from './RnHero.module.css';
@@ -79,6 +80,20 @@ export default function RnHero({ locale }: { locale: string }) {
                        needing to unmount and re-layout them on every change. */
                     inert={i !== index}
                 >
+                    {/* The photograph sits behind the type with a gradient over it, dark enough
+                        on the left that the headline holds its contrast whatever the frame shows.
+                        Only the first slide is priority — the rest load as they come up. */}
+                    <Image
+                        className={s.shot}
+                        src={slide.image}
+                        alt=""
+                        fill
+                        sizes="100vw"
+                        priority={i === 0}
+                        quality={82}
+                    />
+                    <div className={s.scrim} aria-hidden="true" />
+
                     <div className={`rnRail ${s.body}`}>
                         <p className={s.eyebrow}>{slide.eyebrow}</p>
                         <h1 className={s.title}>{slide.title}</h1>

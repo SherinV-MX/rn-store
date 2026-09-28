@@ -12,8 +12,8 @@ export type Locale = 'en' | 'de';
 const pick = <T,>(locale: string, en: T, de: T): T => (locale === 'de' ? de : en);
 
 export interface NavItem { label: string; href: string }
-export interface Slide { eyebrow: string; title: string; subtitle: string; cta: string; href: string }
-export interface ProductCard { name: string; tagline: string; href: string; badge?: string }
+export interface Slide { eyebrow: string; title: string; subtitle: string; cta: string; href: string; image: string }
+export interface ProductCard { name: string; tagline: string; href: string; badge?: string; image?: string }
 export interface Category { id: string; label: string; blurb: string; products: ProductCard[] }
 
 export function rnNav(locale: string) {
@@ -34,18 +34,18 @@ export function rnNav(locale: string) {
 export function rnSlides(locale: string): Slide[] {
     const cta = pick(locale, 'Learn more', 'Mehr erfahren');
     const en: Slide[] = [
-        { eyebrow: 'RN Analyzer', title: 'Data analysis made simple', subtitle: 'Professional lap evaluation on PC and iPad', cta, href: '#software' },
-        { eyebrow: 'RN One', title: 'The way of driving faster', subtitle: 'The all-in-one tool for trackday drivers', cta, href: 'rn-one' },
-        { eyebrow: 'RN Pro', title: 'From professionals, for professionals', subtitle: 'Modular systems built for motorsport', cta, href: '#systems' },
-        { eyebrow: 'RN Telemetry', title: 'Telemetry data in real time', subtitle: 'Vehicle data from the track straight to your laptop', cta, href: '#live' },
-        { eyebrow: 'RN TPMS', title: 'Tire pressure control', subtitle: 'Display and record tire pressure with TPMS', cta, href: '#data' },
+        { eyebrow: 'RN Analyzer', title: 'Data analysis made simple', subtitle: 'Professional lap evaluation on PC and iPad', cta, href: '#software', image: '/rn/hero/analyzer.jpg' },
+        { eyebrow: 'RN One', title: 'The way of driving faster', subtitle: 'The all-in-one tool for trackday drivers', cta, href: 'rn-one', image: '/rn/hero/one.jpg' },
+        { eyebrow: 'RN Pro', title: 'From professionals, for professionals', subtitle: 'Modular systems built for motorsport', cta, href: '#systems', image: '/rn/hero/pro.jpg' },
+        { eyebrow: 'RN Telemetry', title: 'Telemetry data in real time', subtitle: 'Vehicle data from the track straight to your laptop', cta, href: '#live', image: '/rn/hero/telemetry.jpg' },
+        { eyebrow: 'RN TPMS', title: 'Tire pressure control', subtitle: 'Display and record tire pressure with TPMS', cta, href: '#data', image: '/rn/hero/tpms.jpg' },
     ];
     const de: Slide[] = [
-        { eyebrow: 'RN Analyzer', title: 'Datenanalyse leicht gemacht', subtitle: 'Professionelle Rundenauswertung auf PC und iPad', cta, href: '#software' },
-        { eyebrow: 'RN One', title: 'The way of driving faster', subtitle: 'Das All-in-One-Tool für Trackdayfahrer', cta, href: 'rn-one' },
-        { eyebrow: 'RN Pro', title: 'Von Profis für Profis', subtitle: 'Modulare Systeme für den Motorsport-Einsatz', cta, href: '#systems' },
-        { eyebrow: 'RN Telemetry', title: 'Telemetrie-Daten in Echtzeit', subtitle: 'Fahrzeugdaten von der Strecke direkt auf den Laptop', cta, href: '#live' },
-        { eyebrow: 'RN TPMS', title: 'Reifendruck-Kontrolle', subtitle: 'Reifendruck anzeigen und aufzeichnen mit TPMS', cta, href: '#data' },
+        { eyebrow: 'RN Analyzer', title: 'Datenanalyse leicht gemacht', subtitle: 'Professionelle Rundenauswertung auf PC und iPad', cta, href: '#software', image: '/rn/hero/analyzer.jpg' },
+        { eyebrow: 'RN One', title: 'The way of driving faster', subtitle: 'Das All-in-One-Tool für Trackdayfahrer', cta, href: 'rn-one', image: '/rn/hero/one.jpg' },
+        { eyebrow: 'RN Pro', title: 'Von Profis für Profis', subtitle: 'Modulare Systeme für den Motorsport-Einsatz', cta, href: '#systems', image: '/rn/hero/pro.jpg' },
+        { eyebrow: 'RN Telemetry', title: 'Telemetrie-Daten in Echtzeit', subtitle: 'Fahrzeugdaten von der Strecke direkt auf den Laptop', cta, href: '#live', image: '/rn/hero/telemetry.jpg' },
+        { eyebrow: 'RN TPMS', title: 'Reifendruck-Kontrolle', subtitle: 'Reifendruck anzeigen und aufzeichnen mit TPMS', cta, href: '#data', image: '/rn/hero/tpms.jpg' },
     ];
     return pick(locale, en, de);
 }
@@ -56,9 +56,9 @@ export function rnCategories(locale: string): Category[] {
             id: 'systems', label: 'RN Systems',
             blurb: 'The recording and timing units themselves — pick the one that fits the car and the class.',
             products: [
-                { name: 'RN PRO', tagline: 'Autonomous, modular & flexible', href: '#', badge: 'Modular' },
-                { name: 'RN ONE', tagline: 'The all-in-one system', href: 'rn-one', badge: 'Most popular' },
-                { name: 'RN LITE', tagline: 'The compact Race Navigator', href: '#' },
+                { name: 'RN PRO', tagline: 'Autonomous, modular & flexible', href: '#', badge: 'Modular', image: '/rn/hero/pro.jpg' },
+                { name: 'RN ONE', tagline: 'The all-in-one system', href: 'rn-one', badge: 'Most popular', image: '/rn/product/rn-one-mood.jpg' },
+                { name: 'RN LITE', tagline: 'The compact Race Navigator', href: '#', image: '/rn/hero/analyzer.jpg' },
             ],
         },
         {
@@ -94,9 +94,9 @@ export function rnCategories(locale: string): Category[] {
             id: 'systems', label: 'RN Systeme',
             blurb: 'Die Aufzeichnungs- und Zeitnahmegeräte selbst — passend zum Fahrzeug und zur Klasse.',
             products: [
-                { name: 'RN PRO', tagline: 'Autonom, modular & flexibel', href: '#', badge: 'Modular' },
-                { name: 'RN ONE', tagline: 'Das All-in-One-System', href: 'rn-one', badge: 'Beliebt' },
-                { name: 'RN LITE', tagline: 'Der kompakteste Race Navigator', href: '#' },
+                { name: 'RN PRO', tagline: 'Autonom, modular & flexibel', href: '#', badge: 'Modular', image: '/rn/hero/pro.jpg' },
+                { name: 'RN ONE', tagline: 'Das All-in-One-System', href: 'rn-one', badge: 'Beliebt', image: '/rn/product/rn-one-mood.jpg' },
+                { name: 'RN LITE', tagline: 'Der kompakteste Race Navigator', href: '#', image: '/rn/hero/analyzer.jpg' },
             ],
         },
         {
@@ -130,11 +130,23 @@ export function rnCategories(locale: string): Category[] {
     return pick(locale, en, de);
 }
 
-/* Marks shown in the partner rail. Rendered as wordmarks rather than uploaded logos, so the
-   page ships without anyone else's artwork in the repository. */
-export const RN_PARTNERS = [
-    'BMW M', 'Porsche', 'AMG', 'Schnitzer Motorsport', 'GRIP', 'Fast Lap',
-    'JP Performance', 'Maserati', 'GetSpeed', 'Black Falcon', 'Atomic',
+/* The partner rail. Logos are the client's own files, served from /public rather than hotlinked
+   off their WordPress install. Width and height are the real pixel dimensions so nothing
+   reflows while they load. */
+export interface Partner { name: string; src: string; w: number; h: number }
+
+export const RN_PARTNERS: Partner[] = [
+    { name: 'BMW M', src: '/rn/partners/bmw-m.jpg', w: 180, h: 65 },
+    { name: 'Porsche', src: '/rn/partners/porsche.jpg', w: 180, h: 93 },
+    { name: 'AMG', src: '/rn/partners/amg.jpg', w: 180, h: 101 },
+    { name: 'Schnitzer Motorsport', src: '/rn/partners/schnitzer.jpg', w: 180, h: 21 },
+    { name: 'GRIP', src: '/rn/partners/grip.jpg', w: 180, h: 180 },
+    { name: 'Fast Lap', src: '/rn/partners/fast-lap.jpg', w: 180, h: 38 },
+    { name: 'JP Performance', src: '/rn/partners/jp-performance.jpg', w: 180, h: 39 },
+    { name: 'Maserati', src: '/rn/partners/maserati.png', w: 400, h: 183 },
+    { name: 'GetSpeed', src: '/rn/partners/getspeed.png', w: 400, h: 60 },
+    { name: 'Black Falcon', src: '/rn/partners/black-falcon.png', w: 400, h: 71 },
+    { name: 'Atomic', src: '/rn/partners/atomic.png', w: 400, h: 59 },
 ];
 
 export function rnHome(locale: string) {
@@ -213,6 +225,11 @@ export function rnOne(locale: string) {
         intro: 'A compact video and analysis system that sticks to the windscreen in seconds. Two built-in HD cameras record cockpit and track at once, the 5-inch touchscreen works in gloves, and the lap time, reference time and gain or loss sit in front of you while you drive.',
         buy: 'Order now',
         support: 'To the support area',
+        gallery: [
+            { src: '/rn/product/rn-one-1.png', alt: 'RN ONE from the front, screen showing a lap' },
+            { src: '/rn/product/rn-one-2.png', alt: 'RN ONE from the side with the suction mount' },
+            { src: '/rn/product/rn-one-3.png', alt: 'RN ONE from the rear showing the connections' },
+        ],
         quickSpecs: [
             { label: 'Weight', value: '884 g' },
             { label: 'Size', value: '165 × 147 × 113 mm' },
@@ -336,6 +353,11 @@ export function rnOne(locale: string) {
         intro: 'Ein kompaktes Video- und Analysesystem, das in Sekunden an der Scheibe sitzt. Zwei eingebaute HD-Kameras nehmen Cockpit und Strecke gleichzeitig auf, der 5-Zoll-Touchscreen lässt sich mit Handschuhen bedienen, und Rundenzeit, Referenzzeit sowie Gewinn oder Verlust stehen während der Fahrt vor Ihnen.',
         buy: 'Jetzt bestellen',
         support: 'Zum Support-Bereich',
+        gallery: [
+            { src: '/rn/product/rn-one-1.png', alt: 'RN ONE von vorn, Display mit Rundenanzeige' },
+            { src: '/rn/product/rn-one-2.png', alt: 'RN ONE von der Seite mit Saugnapfhalterung' },
+            { src: '/rn/product/rn-one-3.png', alt: 'RN ONE von hinten mit den Anschlüssen' },
+        ],
         quickSpecs: [
             { label: 'Gewicht', value: '884 g' },
             { label: 'Maße', value: '165 × 147 × 113 mm' },

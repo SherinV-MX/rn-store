@@ -1,6 +1,6 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { RN_PARTNERS, rnHome } from '@/content/rn';
-import { RnCaseArt } from './RnArt';
 import s from './RnHome.module.css';
 
 /* The partner rail. The list is rendered twice and the track translated by half its width, so
@@ -12,9 +12,18 @@ export function RnPartners() {
         <section className="rnLight" id="partners" aria-label="References">
             <div className={s.marquee}>
                 <div className={s.track}>
-                    {run.map((name, i) => (
-                        <span className={s.brand} key={`${name}-${i}`} aria-hidden={i >= RN_PARTNERS.length}>
-                            {name}
+                    {run.map((partner, i) => (
+                        <span className={s.brand} key={`${partner.name}-${i}`} aria-hidden={i >= RN_PARTNERS.length}>
+                            <Image
+                                src={partner.src}
+                                alt={i < RN_PARTNERS.length ? partner.name : ''}
+                                width={partner.w}
+                                height={partner.h}
+                                /* The rail animates continuously, so a logo parked off-screen
+                                   is seconds from being on it. Lazy-loading would pop it in
+                                   mid-travel; every file here is a few kilobytes. */
+                                loading="eager"
+                            />
                         </span>
                     ))}
                 </div>
@@ -53,6 +62,8 @@ export function RnQuote({ locale }: { locale: string }) {
     const t = rnHome(locale);
     return (
         <section className={`rnSection ${s.quote}`}>
+            {/* Christian Menzel behind the quote he gave. */}
+            <Image className={s.quoteShot} src="/rn/menzel.jpg" alt="" fill sizes="100vw" quality={80} />
             <div className="rnRail">
                 <figure className={s.quoteInner}>
                     <span className={s.quoteMark} aria-hidden="true">&ldquo;</span>
@@ -83,7 +94,7 @@ export function RnCaseBand({ locale }: { locale: string }) {
                     </p>
                 </div>
                 <div className={s.caseArt}>
-                    <RnCaseArt />
+                    <Image src="/rn/case.jpg" alt="RN ONE packed in its fitted case" width={400} height={427} />
                 </div>
             </div>
         </section>
