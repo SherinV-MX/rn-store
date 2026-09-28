@@ -115,21 +115,13 @@ export default function RnHero({ locale }: { locale: string }) {
                         <button
                             key={slide.title}
                             type="button"
-                            className={`${s.dot} ${i === index ? s.dotOn : ''} ${paused ? s.dotPaused : ''}`}
-                            style={{ ['--rn-dwell' as string]: `${DWELL_MS}ms` }}
+                            className={`${s.dot} ${i === index ? s.dotOn : ''}`}
                             aria-label={slide.title}
                             aria-current={i === index}
                             onClick={() => take(i)}
-                        >
-                            {/* Re-keyed on index so the fill restarts rather than resuming. */}
-                            <span className={s.dotFill} key={`${i}-${index}`} />
-                        </button>
+                        />
                     ))}
                 </div>
-
-                <span className={s.counter}>
-                    <b>{String(index + 1).padStart(2, '0')}</b> / {String(slides.length).padStart(2, '0')}
-                </span>
 
             </div>
 

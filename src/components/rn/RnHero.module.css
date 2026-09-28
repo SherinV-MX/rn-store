@@ -177,38 +177,25 @@
     gap: 1.25rem;
 }
 
-.dots { display: flex; gap: 0.5rem; }
+.dots { display: flex; gap: 0.85rem; }
 
+/* Plain dashes, the way the live site marks position: grey for the rest, solid red for the
+   one you are on. The bar used to fill across the dwell time and double as a timer, which
+   turned a position indicator into a countdown nobody asked for. */
 .dot {
-    position: relative;
     width: 34px;
-    height: 4px;
+    height: 3px;
     padding: 0;
     border: none;
-    background: rgb(255 255 255 / 0.22);
+    background: rgb(255 255 255 / 0.32);
     cursor: pointer;
-    overflow: hidden;
+    transition: background 0.2s var(--rn-ease);
 }
 
-.dot:hover { background: rgb(255 255 255 / 0.4); }
+.dot:hover { background: rgb(255 255 255 / 0.55); }
 
-/* The active dot fills across the slide's dwell time, so the bar doubles as the timer. */
-.dotFill {
-    position: absolute;
-    inset: 0;
-    background: var(--rn-red);
-    transform-origin: left;
-    transform: scaleX(0);
-}
-
-.dotOn .dotFill { animation: rnDwell var(--rn-dwell, 6500ms) linear forwards; }
-.dotPaused .dotFill { animation-play-state: paused; }
-
-@keyframes rnDwell { to { transform: scaleX(1); } }
-
-@media (prefers-reduced-motion: reduce) {
-    .dotOn .dotFill { animation: none; transform: scaleX(1); }
-}
+.dotOn,
+.dotOn:hover { background: var(--rn-red); }
 
 /* Pinned to the edges and vertically centred, so they frame the picture instead of crowding
    the dots. */
@@ -241,19 +228,6 @@
 }
 
 .arrow:hover { background: var(--rn-red); border-color: var(--rn-red); }
-
-.counter {
-    position: absolute;
-    right: var(--rn-gutter);
-    bottom: 0;
-    font-family: var(--rn-body);
-    font-size: 0.8125rem;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: 0.1em;
-    color: var(--rn-dim);
-}
-
-.counter b { color: var(--rn-white); font-weight: 700; }
 
 @media (max-width: 640px) {
     .arrows { display: none; }
