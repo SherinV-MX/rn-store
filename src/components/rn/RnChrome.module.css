@@ -23,6 +23,7 @@
 }
 
 .bar {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 1.5rem;
@@ -77,6 +78,21 @@
 .navLink:hover::after { transform: scaleX(1); }
 
 .actions { display: flex; align-items: center; gap: 0.75rem; margin-inline-start: auto; }
+
+/* Wide enough for the nav: the wordmark and links centre in the bar as one block, and the
+   actions come out of the flow and pin to the right so they do not pull it off centre.
+   Narrower than that there is no nav to centre, so the brand stays on the left. */
+@media (min-width: 1000px) {
+    .bar { justify-content: center; }
+
+    .actions {
+        position: absolute;
+        right: var(--rn-gutter);
+        top: 50%;
+        margin-inline-start: 0;
+        transform: translateY(-50%);
+    }
+}
 
 .lang {
     display: inline-flex;
