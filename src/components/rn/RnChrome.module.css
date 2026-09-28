@@ -6,14 +6,34 @@
     left: 0;
     right: 0;
     z-index: 60;
-    /* Over the hero, not above it: the picture runs to the top of the window and the nav sits
-       on it. A gradient rather than a panel, so the logo and links stay legible on a bright
-       frame without drawing a bar across the image. */
-    background: linear-gradient(180deg, rgb(8 8 10 / 0.72) 0%, rgb(8 8 10 / 0.34) 55%, transparent 100%);
+    background: transparent;
     border-bottom: 1px solid transparent;
     transition: background 0.3s var(--rn-ease), border-color 0.3s var(--rn-ease),
                 backdrop-filter 0.3s var(--rn-ease);
 }
+
+/* Over the hero, not above it: the picture runs to the top of the window and the nav sits on
+   it, on a wash rather than a panel, so the logo and links stay legible on a bright frame
+   without drawing a bar across the image.
+
+   The wash is drawn by this layer rather than as the header's own background because it has
+   to be taller than the header. Confined to the bar's 75px it has to go from opaque to nothing
+   in that distance, and a ramp that steep reads as a hard edge across the photograph — the
+   line. Given twice the room it simply disappears. */
+.header::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 190px;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgb(8 8 10 / 0.72) 0%, rgb(8 8 10 / 0.34) 32%,
+                                rgb(8 8 10 / 0.12) 62%, transparent 100%);
+    transition: opacity 0.3s var(--rn-ease);
+}
+
+/* Nothing to keep legible once the bar is a bar. */
+.headerSolid::before { opacity: 0; }
 
 /* Once the hero is behind us there is no picture to sit on, so it becomes a real bar — white,
    the way the live one is. Everything on it has to invert with it: the links, the language

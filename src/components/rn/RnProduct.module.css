@@ -1,11 +1,58 @@
+/* ── Banner ─────────────────────────────────────────────────────────────────
+   Deliberately the same shape as the home page's hero: the same height rule, the same centred
+   name over a photograph with a red rule under it. The two pages used to open quite
+   differently — one on a full-bleed picture, the other on a flat gradient — and moving between
+   them changed the size of the thing at the top of the window. */
+.banner {
+    position: relative;
+    min-height: clamp(560px, 82vh, 820px);
+    display: grid;
+    align-items: center;
+    overflow: hidden;
+    background: var(--rn-black);
+    isolation: isolate;
+}
+
+.bannerShot {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    object-fit: cover;
+    object-position: center 45%;
+}
+
+/* Light, like the home hero's: the type carries its own shadow rather than the picture being
+   dimmed to make room for it. */
+.bannerScrim {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+        linear-gradient(0deg, rgb(8 8 10 / 0.55) 0%, transparent 34%),
+        linear-gradient(180deg, rgb(8 8 10 / 0.45) 0%, transparent 24%);
+}
+
+.bannerBody {
+    position: relative;
+    padding-block: clamp(96px, 14vh, 150px) clamp(72px, 10vh, 120px);
+    text-align: center;
+}
+
+.rule {
+    width: min(100%, 30rem);
+    height: 3px;
+    margin: 1.5rem auto 0;
+    background: var(--rn-red);
+}
+
 /* The RN ONE page. */
 
 .hero {
     position: relative;
     background: linear-gradient(165deg, #14161b 0%, var(--rn-black) 62%);
     overflow: hidden;
-    /* The header floats over this page too, so the hero opens below it rather than under it. */
-    padding-block: calc(74px + clamp(48px, 6vw, 84px)) clamp(48px, 7vw, 88px);
+    /* The banner above already clears the floating header, so this opens on its own spacing. */
+    padding-block: clamp(48px, 6vw, 84px) clamp(48px, 7vw, 88px);
 }
 
 .hero::before {
@@ -31,6 +78,8 @@
     display: flex;
     gap: 0.5rem;
     align-items: center;
+    justify-content: center;
+    text-shadow: 1px 1px 4px rgb(0 0 0 / 0.85);
     font-size: 0.75rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -46,6 +95,7 @@
     font-size: clamp(3rem, 8vw, 5.6rem);
     font-weight: 800;
     line-height: 0.9;
+    text-shadow: 2px 2px 5px rgb(0 0 0 / 0.85);
     letter-spacing: -0.035em;
     text-transform: uppercase;
     margin: 0;
@@ -58,6 +108,7 @@
     text-transform: uppercase;
     letter-spacing: 0.02em;
     color: var(--rn-red);
+    text-shadow: 1px 1px 5px rgb(0 0 0 / 0.9);
     margin: 0.8rem 0 0;
 }
 

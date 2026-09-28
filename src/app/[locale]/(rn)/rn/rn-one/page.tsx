@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { rnOne } from '@/content/rn';
 import RnGallery from '@/components/rn/RnGallery';
@@ -23,19 +24,38 @@ export default async function RnOnePage({ params }: { params: Promise<{ locale: 
 
     return (
         <>
+            {/* The same banner the home page opens with, at the same height, so moving between
+                the two does not change the shape of the page. */}
+            <section className={s.banner}>
+                <Image
+                    className={s.bannerShot}
+                    src="/rn/hero/rn-one-banner.jpg"
+                    alt=""
+                    fill
+                    sizes="100vw"
+                    priority
+                    quality={82}
+                />
+                <div className={s.bannerScrim} aria-hidden="true" />
+
+                <div className={`rnRail ${s.bannerBody}`}>
+                    <nav className={s.crumbs} aria-label="Breadcrumb">
+                        <Link href={`/${locale}/rn`}>Race Navigator</Link>
+                        <span aria-hidden="true">/</span>
+                        <Link href={`/${locale}/rn#systems`}>{t.eyebrow}</Link>
+                        <span aria-hidden="true">/</span>
+                        <span>{t.name}</span>
+                    </nav>
+
+                    <h1 className={s.name}>{t.name}</h1>
+                    <div className={s.rule} aria-hidden="true" />
+                    <p className={s.tagline}>{t.tagline}</p>
+                </div>
+            </section>
+
             <section className={s.hero}>
                 <div className={`rnRail ${s.heroGrid}`}>
                     <div>
-                        <nav className={s.crumbs} aria-label="Breadcrumb">
-                            <Link href={`/${locale}/rn`}>Race Navigator</Link>
-                            <span aria-hidden="true">/</span>
-                            <Link href={`/${locale}/rn#systems`}>{t.eyebrow}</Link>
-                            <span aria-hidden="true">/</span>
-                            <span>{t.name}</span>
-                        </nav>
-
-                        <h1 className={s.name}>{t.name}</h1>
-                        <p className={s.tagline}>{t.tagline}</p>
                         <p className={s.intro}>{t.intro}</p>
 
                         <div className={s.heroActions}>
