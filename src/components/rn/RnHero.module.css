@@ -43,22 +43,17 @@
     position: absolute;
     inset: 0;
     z-index: -2;
-    /* The type is centred now, so the darkening is too: a soft pool under the middle of the
-       frame plus weight top and bottom for the nav and the dots. A one-sided gradient would
-       leave the end of every headline sitting on bare photograph. */
-    background:
-        radial-gradient(76% 62% at 50% 52%, rgb(8 8 10 / 0.74) 0%, rgb(8 8 10 / 0.42) 55%, transparent 100%),
-        linear-gradient(0deg, rgb(8 8 10 / 0.8) 0%, transparent 38%),
-        linear-gradient(180deg, rgb(8 8 10 / 0.6) 0%, transparent 32%);
+    /* The live hero puts nothing over its pictures at all — no tint, no filter — and carries
+       the type on a drop shadow instead. Darkening the frame to make white text safe costs
+       more than it buys: it dulls every photograph, and on the ambassador slide it dimmed the
+       driver's name, which is part of the artwork rather than something laid over it. */
+    background: none;
 }
 
 @media (max-width: 760px) {
-    /* Portrait leaves no room for the picture to breathe beside the type, so the type wins. */
-    .scrim {
-        background:
-            linear-gradient(0deg, rgb(8 8 10 / 0.92) 22%, rgb(8 8 10 / 0.55) 100%),
-            linear-gradient(180deg, rgb(8 8 10 / 0.7) 0%, transparent 30%);
-    }
+    /* Cropped to a portrait slice, the picture is busy right where the type sits and the
+       shadow alone is not enough, so this one width keeps a light wash. */
+    .scrim { background: linear-gradient(0deg, rgb(8 8 10 / 0.62) 18%, rgb(8 8 10 / 0.2) 72%, transparent 100%); }
 }
 
 /* The backdrop is built rather than photographed: a low sweep of red through near-black, with
@@ -107,6 +102,7 @@
 }
 
 .eyebrow {
+    text-shadow: 1px 1px 4px rgb(0 0 0 / 0.85);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -137,6 +133,8 @@
     text-transform: uppercase;
     text-wrap: balance;
     margin: 0;
+    /* What the live hero uses in place of a tint over the picture. */
+    text-shadow: 2px 2px 5px rgb(0 0 0 / 0.85);
 }
 
 /* The rule under the headline. It stretches to the text rather than to the column, so a short
@@ -169,6 +167,8 @@
     text-transform: uppercase;
     text-wrap: balance;
     margin: 0;
+    /* What the live hero uses in place of a tint over the picture. */
+    text-shadow: 2px 2px 5px rgb(0 0 0 / 0.85);
 }
 
 /* Typographic marks rather than characters in the string, so the quote reads as one sentence
@@ -195,26 +195,34 @@
     .bodyQuote .actions { justify-content: flex-start; }
 }
 
-/* The artwork is already black where the quote goes and already red where the portrait is, so
-   the usual pool of darkness would only mute it. A light wash is enough. */
-.scrimQuote {
-    background:
-        linear-gradient(0deg, rgb(8 8 10 / 0.55) 0%, transparent 32%),
-        linear-gradient(180deg, rgb(8 8 10 / 0.5) 0%, transparent 26%);
+/* The artwork carries its own blacks and its own reds, and the driver's name is printed into
+   the picture. Anything over it dims that name. */
+.scrimQuote { background: none; }
+
+/* This one is a composed graphic, not a photograph: the portrait is cut out, the driver's
+   name is set into the bottom left and the right is left black for the quote. Cropping it to
+   fill the frame cuts that name off and scales the lettering soft. So it is fitted whole
+   instead — the bands that leaves top and bottom are the same black the artwork already ends
+   in, so there is no visible seam. */
+.shotQuote { object-fit: contain; object-position: center; }
+
+@media (max-width: 899px) {
+    /* A 2.24:1 graphic fitted whole into a portrait window is a thin band with black above and
+       below it. At this width the quote is centred over the picture anyway, so it goes back to
+       filling the frame, anchored low to keep the driver's name in shot. */
+    .shotQuote { object-fit: cover; object-position: center 72%; }
 }
 
 @media (max-width: 899px) {
-    /* Cropped to the portrait at this width, so the type needs its own ground again. */
-    .scrimQuote {
-        background:
-            linear-gradient(0deg, rgb(8 8 10 / 0.92) 22%, rgb(8 8 10 / 0.55) 100%),
-            linear-gradient(180deg, rgb(8 8 10 / 0.7) 0%, transparent 30%);
-    }
+    .scrimQuote { background: linear-gradient(0deg, rgb(8 8 10 / 0.55) 16%, transparent 70%); }
 }
 
 .subtitle {
     font-size: clamp(1.0625rem, 1.5vw, 1.375rem);
-    color: var(--rn-dim);
+    /* White rather than the muted grey the rest of the site uses: grey over a photograph with
+       no tint under it is not readable. */
+    color: var(--rn-white);
+    text-shadow: 1px 1px 4px rgb(0 0 0 / 0.8);
     margin: 1.4rem auto 0;
     max-width: 44ch;
 }
@@ -226,6 +234,17 @@
     gap: 0.85rem;
     margin-top: 2.4rem;
 }
+
+/* The outline button is transparent everywhere else on the site, where it sits on a flat
+   panel. Here it sits on bare photograph, so it needs a ground of its own — otherwise its
+   label disappears the moment a slide is bright behind it. */
+.actions :global(.rnBtnGhost) {
+    background: rgb(8 8 10 / 0.42);
+    backdrop-filter: blur(3px);
+    text-shadow: 1px 1px 3px rgb(0 0 0 / 0.7);
+}
+
+.actions :global(.rnBtnGhost):hover { background: rgb(8 8 10 / 0.6); }
 
 /* ── Controls ───────────────────────────────────────────────────────────── */
 
@@ -247,6 +266,7 @@
    slide you are on. They used to be bars that filled across the dwell time, which turned a
    position indicator into a countdown nobody asked for. */
 .dot {
+    filter: drop-shadow(0 1px 3px rgb(0 0 0 / 0.6));
     width: 15px;
     height: 15px;
     padding: 0;

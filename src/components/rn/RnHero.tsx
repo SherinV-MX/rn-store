@@ -79,7 +79,7 @@ export default function RnHero({ locale }: { locale: string }) {
                         on the left that the headline holds its contrast whatever the frame shows.
                         Only the first slide is priority — the rest load as they come up. */}
                     <Image
-                        className={s.shot}
+                        className={`${s.shot} ${slide.variant === 'quote' ? s.shotQuote : ''}`}
                         src={slide.image}
                         alt={slide.variant === 'quote'
                             ? (locale === 'de'
