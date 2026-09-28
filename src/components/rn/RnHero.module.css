@@ -177,25 +177,26 @@
     gap: 1.25rem;
 }
 
-.dots { display: flex; gap: 0.85rem; }
+.dots { display: flex; gap: 8px; }
 
-/* Plain dashes, the way the live site marks position: grey for the rest, solid red for the
-   one you are on. The bar used to fill across the dwell time and double as a timer, which
-   turned a position indicator into a countdown nobody asked for. */
+/* The live site's pager, measured off it: 15px rings in white, filled solid white for the
+   slide you are on. They used to be bars that filled across the dwell time, which turned a
+   position indicator into a countdown nobody asked for. */
 .dot {
-    width: 34px;
-    height: 3px;
+    width: 15px;
+    height: 15px;
     padding: 0;
-    border: none;
-    background: rgb(255 255 255 / 0.32);
+    border: 1.6px solid var(--rn-white);
+    border-radius: 50%;
+    background: transparent;
     cursor: pointer;
-    transition: background 0.2s var(--rn-ease);
+    transition: background 0.2s var(--rn-ease), transform 0.2s var(--rn-ease);
 }
 
-.dot:hover { background: rgb(255 255 255 / 0.55); }
+.dot:hover { background: rgb(255 255 255 / 0.45); }
 
 .dotOn,
-.dotOn:hover { background: var(--rn-red); }
+.dotOn:hover { background: var(--rn-white); }
 
 /* Pinned to the edges and vertically centred, so they frame the picture instead of crowding
    the dots. */
