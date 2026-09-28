@@ -26,7 +26,7 @@ export interface Slide {
     variant?: 'quote';
 }
 export interface ProductCard { name: string; tagline: string; href: string; badge?: string; image?: string }
-export interface Category { id: string; label: string; blurb: string; products: ProductCard[] }
+export interface Category { id: string; label: string; icon: string; blurb: string; products: ProductCard[] }
 
 export function rnNav(locale: string) {
     return {
@@ -85,77 +85,77 @@ export function rnSlides(locale: string): Slide[] {
 export function rnCategories(locale: string): Category[] {
     const en: Category[] = [
         {
-            id: 'systems', label: 'RN Systems',
+            id: 'systems', label: 'RN Systems', icon: '/rn/tabs/systems.jpg',
             blurb: 'The recording and timing units themselves — pick the one that fits the car and the class.',
             products: [
-                { name: 'RN PRO', tagline: 'Autonomous, modular & flexible', href: '#', badge: 'Modular', image: '/rn/hero/pro.jpg' },
-                { name: 'RN ONE', tagline: 'The all-in-one system', href: 'rn-one', badge: 'Most popular', image: '/rn/product/rn-one-mood.jpg' },
-                { name: 'RN LITE', tagline: 'The compact Race Navigator', href: '#', image: '/rn/hero/analyzer.jpg' },
+                { name: 'RN PRO', tagline: 'Autonomous, modular & flexible', href: '#', badge: 'Modular', image: '/rn/cards/rn-pro.jpg' },
+                { name: 'RN ONE', tagline: 'The all-in-one system', href: 'rn-one', badge: 'Most popular', image: '/rn/cards/rn-one.jpg' },
+                { name: 'RN LITE', tagline: 'The compact Race Navigator', href: '#', image: '/rn/cards/rn-lite.jpg' },
             ],
         },
         {
-            id: 'data', label: 'RN Data & TPMS',
+            id: 'data', label: 'RN Data & TPMS', icon: '/rn/tabs/data.png',
             blurb: 'Pull the numbers the car already knows, and the ones it does not.',
             products: [
-                { name: 'RN OBD PLUG', tagline: 'Read vehicle data over OBD-II', href: '#' },
-                { name: 'RN CAN CABLE', tagline: 'Additional vehicle data over CAN bus', href: '#' },
-                { name: 'RN TPMS', tagline: 'Display and record tire pressure', href: '#' },
+                { name: 'RN OBD PLUG', tagline: 'Read vehicle data over OBD-II', href: '#', image: '/rn/cards/obd-plug.jpg' },
+                { name: 'RN CAN CABLE', tagline: 'Additional vehicle data over CAN bus', href: '#', image: '/rn/cards/can-cable.jpg' },
+                { name: 'RN TPMS', tagline: 'Display and record tire pressure', href: '#', image: '/rn/cards/tpms.jpg' },
             ],
         },
         {
-            id: 'live', label: 'RN Live & EMS',
+            id: 'live', label: 'RN Live & EMS', icon: '/rn/tabs/live.png',
             blurb: 'Get it off the car and in front of the people who need it, while the session runs.',
             products: [
-                { name: 'RN TELEMETRY', tagline: 'Receive vehicle data live', href: '#' },
-                { name: 'RN LIVE', tagline: 'Video streaming from the cockpit', href: '#' },
-                { name: 'RN EMS', tagline: 'Automatic management of driving events', href: '#' },
+                { name: 'RN TELEMETRY', tagline: 'Receive vehicle data live', href: '#', image: '/rn/cards/telemetry.jpg' },
+                { name: 'RN LIVE', tagline: 'Video streaming from the cockpit', href: '#', image: '/rn/cards/live.jpg' },
+                { name: 'RN EMS', tagline: 'Automatic management of driving events', href: '#', image: '/rn/cards/ems.jpg' },
             ],
         },
         {
-            id: 'software', label: 'Software & Apps',
+            id: 'software', label: 'Software & Apps', icon: '/rn/tabs/software.png',
             blurb: 'Where the lap gets taken apart afterwards.',
             products: [
-                { name: 'RN ANALYZER', tagline: 'Professional, intuitive lap evaluation', href: '#' },
-                { name: 'RN CONNECT', tagline: 'Control the Race Navigator from iPhone and iPad', href: '#' },
-                { name: 'RN TELEMETRY SOFTWARE', tagline: 'With team and spectator modes', href: '#' },
+                { name: 'RN ANALYZER', tagline: 'Professional, intuitive lap evaluation', href: '#', image: '/rn/cards/analyzer.jpg' },
+                { name: 'RN CONNECT', tagline: 'Control the Race Navigator from iPhone and iPad', href: '#', image: '/rn/cards/connect.jpg' },
+                { name: 'RN TELEMETRY SOFTWARE', tagline: 'With team and spectator modes', href: '#', image: '/rn/cards/telemetry-software.jpg' },
             ],
         },
     ];
     const de: Category[] = [
         {
-            id: 'systems', label: 'RN Systeme',
+            id: 'systems', label: 'RN Systeme', icon: '/rn/tabs/systems.jpg',
             blurb: 'Die Aufzeichnungs- und Zeitnahmegeräte selbst — passend zum Fahrzeug und zur Klasse.',
             products: [
-                { name: 'RN PRO', tagline: 'Autonom, modular & flexibel', href: '#', badge: 'Modular', image: '/rn/hero/pro.jpg' },
-                { name: 'RN ONE', tagline: 'Das All-in-One-System', href: 'rn-one', badge: 'Beliebt', image: '/rn/product/rn-one-mood.jpg' },
-                { name: 'RN LITE', tagline: 'Der kompakteste Race Navigator', href: '#', image: '/rn/hero/analyzer.jpg' },
+                { name: 'RN PRO', tagline: 'Autonom, modular & flexibel', href: '#', badge: 'Modular', image: '/rn/cards/rn-pro.jpg' },
+                { name: 'RN ONE', tagline: 'Das All-in-One-System', href: 'rn-one', badge: 'Beliebt', image: '/rn/cards/rn-one.jpg' },
+                { name: 'RN LITE', tagline: 'Der kompakteste Race Navigator', href: '#', image: '/rn/cards/rn-lite.jpg' },
             ],
         },
         {
-            id: 'data', label: 'RN Data & TPMS',
+            id: 'data', label: 'RN Data & TPMS', icon: '/rn/tabs/data.png',
             blurb: 'Die Daten holen, die das Fahrzeug schon kennt — und die, die es nicht kennt.',
             products: [
-                { name: 'RN OBD PLUG', tagline: 'Fahrzeugdaten über OBD-II auslesen', href: '#' },
+                { name: 'RN OBD PLUG', tagline: 'Fahrzeugdaten über OBD-II auslesen', href: '#', image: '/rn/cards/obd-plug.jpg' },
                 { name: 'RN CAN-KABEL', tagline: 'Zusätzliche Fahrzeugdaten über CAN-Bus', href: '#' },
-                { name: 'RN TPMS', tagline: 'Reifendruck anzeigen und aufzeichnen', href: '#' },
+                { name: 'RN TPMS', tagline: 'Reifendruck anzeigen und aufzeichnen', href: '#', image: '/rn/cards/tpms.jpg' },
             ],
         },
         {
-            id: 'live', label: 'RN Live & EMS',
+            id: 'live', label: 'RN Live & EMS', icon: '/rn/tabs/live.png',
             blurb: 'Daten vom Fahrzeug zu den Menschen, die sie brauchen — noch während der Session.',
             products: [
-                { name: 'RN TELEMETRY', tagline: 'Fahrzeugdaten live empfangen', href: '#' },
-                { name: 'RN LIVE', tagline: 'Videostreaming aus dem Cockpit', href: '#' },
-                { name: 'RN EMS', tagline: 'Automatische Verwaltung von Driving Events', href: '#' },
+                { name: 'RN TELEMETRY', tagline: 'Fahrzeugdaten live empfangen', href: '#', image: '/rn/cards/telemetry.jpg' },
+                { name: 'RN LIVE', tagline: 'Videostreaming aus dem Cockpit', href: '#', image: '/rn/cards/live.jpg' },
+                { name: 'RN EMS', tagline: 'Automatische Verwaltung von Driving Events', href: '#', image: '/rn/cards/ems.jpg' },
             ],
         },
         {
-            id: 'software', label: 'Software & Apps',
+            id: 'software', label: 'Software & Apps', icon: '/rn/tabs/software.png',
             blurb: 'Hier wird die Runde hinterher auseinandergenommen.',
             products: [
-                { name: 'RN ANALYZER', tagline: 'Professionelle und intuitive Rundenauswertung', href: '#' },
-                { name: 'RN CONNECT', tagline: 'Race Navigator via iPhone und iPad steuern', href: '#' },
-                { name: 'RN TELEMETRY SOFTWARE', tagline: 'Mit Team- und Zuschauermodus', href: '#' },
+                { name: 'RN ANALYZER', tagline: 'Professionelle und intuitive Rundenauswertung', href: '#', image: '/rn/cards/analyzer.jpg' },
+                { name: 'RN CONNECT', tagline: 'Race Navigator via iPhone und iPad steuern', href: '#', image: '/rn/cards/connect.jpg' },
+                { name: 'RN TELEMETRY SOFTWARE', tagline: 'Mit Team- und Zuschauermodus', href: '#', image: '/rn/cards/telemetry-software.jpg' },
             ],
         },
     ];
@@ -374,7 +374,7 @@ export function rnOne(locale: string) {
         accessories: [
             { name: 'RN Camera', note: 'Full HD, HD, SD or night vision' },
             { name: 'Motorsport holder', note: 'Bolted mount for competition' },
-            { name: 'RN LIVE', note: 'LTE livestream module' },
+            { name: 'RN LIVE', note: 'LTE livestream module', image: '/rn/cards/live.jpg' },
             { name: 'RN Telemetry', note: 'LTE video and data transmission' },
             { name: 'RN Case', note: 'Fitted protective case' },
         ],
@@ -425,7 +425,7 @@ export function rnOne(locale: string) {
         accessories: [
             { name: 'RN Camera', note: 'Full HD, HD, SD oder Nachtsicht' },
             { name: 'Motorsport-Halterung', note: 'Verschraubte Halterung für den Wettbewerb' },
-            { name: 'RN LIVE', note: 'LTE-Livestream-Modul' },
+            { name: 'RN LIVE', note: 'LTE-Livestream-Modul', image: '/rn/cards/live.jpg' },
             { name: 'RN Telemetry', note: 'LTE-Video- und Datenübertragung' },
             { name: 'RN Case', note: 'Passgenauer Schutzkoffer' },
         ],

@@ -4,45 +4,66 @@
 
 /* ── Product tabs ───────────────────────────────────────────────────────── */
 
+/* Four equal columns, each an icon over a label, divided by hairlines — the live site's own
+   arrangement. A row rather than a scroller, because there are only ever four. */
 .tabs {
-    display: flex;
-    gap: 0.25rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     margin: 2.6rem 0 0;
-    padding-bottom: 2px;
-    border-bottom: 1px solid var(--rn-line-ink);
-    overflow-x: auto;
-    scrollbar-width: none;
 }
 
-.tabs::-webkit-scrollbar { display: none; }
+@media (min-width: 760px) { .tabs { grid-template-columns: repeat(4, 1fr); } }
 
 .tab {
     position: relative;
-    flex: none;
-    padding: 0.9rem 1.15rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 1.4rem 0.75rem 1rem;
     border: none;
     background: transparent;
     font-family: var(--rn-body);
-    font-size: 0.8125rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
+    font-size: 0.9375rem;
+    font-weight: 700;
     text-transform: uppercase;
-    color: var(--rn-ink-dim);
+    color: var(--rn-ink);
     cursor: pointer;
-    white-space: nowrap;
     transition: color 0.2s var(--rn-ease);
 }
 
-.tab:hover { color: var(--rn-ink); }
+/* The divider belongs between tabs, so it is drawn by every tab but the first. It is inset
+   from the top and bottom, the way a rule between columns is. */
+.tab + .tab::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 12%;
+    bottom: 22%;
+    border-left: 1px solid var(--rn-line-ink);
+}
 
-.tabOn { color: var(--rn-ink); }
+.tabIcon {
+    width: 71px;
+    height: 71px;
+    object-fit: contain;
+    /* One of the four is a JPEG on white, which would otherwise sit on the section as a pale
+       rectangle. Multiplying drops its white out against the light background and leaves the
+       three transparent PNGs untouched. */
+    mix-blend-mode: multiply;
+}
 
+.tabLabel { display: block; text-align: center; }
+
+.tab:hover .tabLabel { color: var(--rn-red); }
+
+/* The mark for the selected family: a red rule under that column only. */
 .tabOn::after {
     content: '';
     position: absolute;
     left: 0;
     right: 0;
-    bottom: -2px;
+    bottom: 0;
     height: 3px;
     background: var(--rn-red);
 }
@@ -54,11 +75,22 @@
     max-width: 56ch;
 }
 
+/* The live grid: the family's flagship takes a tall card on the left and the other two stack
+   beside it. One column below 760px, where a mosaic is just three cards in a row anyway. */
 .cards {
     display: grid;
     gap: 1.25rem;
     margin-top: 2rem;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 760px) {
+    .cards {
+        grid-template-columns: 1fr 1fr;
+        grid-auto-rows: 1fr;
+    }
+
+    .cards > :first-child { grid-row: span 2; }
 }
 
 .card {
@@ -66,51 +98,40 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    min-height: 300px;
-    padding: 1.6rem;
-    border: 1px solid var(--rn-line-ink);
+    min-height: 260px;
+    padding: 1.9rem;
+    border-radius: 6px;
     background: linear-gradient(165deg, #1a1c22 0%, #0d0e11 100%);
+    box-shadow: 0 10px 30px rgb(11 11 13 / 0.18);
     color: var(--rn-white);
     text-decoration: none;
     overflow: hidden;
-    transition: transform 0.35s var(--rn-ease), border-color 0.35s var(--rn-ease);
+    transition: transform 0.35s var(--rn-ease), box-shadow 0.35s var(--rn-ease);
 }
 
-.card:hover { transform: translateY(-4px); border-color: var(--rn-red); }
+/* The tall card has twice the height to fill, so it is given a floor of its own. */
+.cards > :first-child { min-height: 420px; }
 
-/* A diagonal red wedge sweeps in from the corner — the site's own graphic language, and the
-   only motion a card gets. */
-.card::before {
-    content: '';
-    position: absolute;
-    inset: auto -30% -60% auto;
-    width: 120%;
-    height: 120%;
-    background: linear-gradient(135deg, transparent 52%, rgb(220 7 20 / 0.55) 52%);
-    transform: translate(35%, 35%);
-    transition: transform 0.45s var(--rn-ease);
-}
-
-.card:hover::before { transform: translate(22%, 22%); }
+.card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgb(11 11 13 / 0.28); }
 
 .cardShot {
     position: absolute;
     inset: 0;
     z-index: 0;
     object-fit: cover;
-    /* Desaturated at rest so the card reads as one object, colour on hover. */
-    filter: grayscale(0.55) brightness(0.52);
-    transition: filter 0.4s var(--rn-ease), transform 0.6s var(--rn-ease);
+    /* Shown as shot. These are the client's own photographs and the live site does not drain
+       them; the gradient below carries the type on its own. */
+    transition: transform 0.6s var(--rn-ease);
 }
 
-.card:hover .cardShot { filter: grayscale(0) brightness(0.66); transform: scale(1.04); }
+.card:hover .cardShot { transform: scale(1.04); }
 
 /* With a photograph underneath, the card needs a floor for the type to sit on. */
 .card:has(.cardShot)::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(0deg, rgb(8 8 10 / 0.92) 8%, rgb(8 8 10 / 0.30) 55%, transparent 100%);
+    background: linear-gradient(0deg, rgb(8 8 10 / 0.9) 0%, rgb(8 8 10 / 0.62) 30%, rgb(8 8 10 / 0.18) 62%, transparent 92%);
 }
 
 .cardArt {
@@ -120,51 +141,32 @@
     opacity: 0.85;
 }
 
-.cardBadge {
-    position: absolute;
-    top: 1.4rem;
-    left: 1.4rem;
-    padding: 0.25rem 0.55rem;
-    background: var(--rn-white);
-    color: var(--rn-ink);
-    font-size: 0.625rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-}
-
 .cardName {
     position: relative;
     font-family: var(--rn-display);
-    font-size: clamp(1.6rem, 2.4vw, 2.1rem);
+    font-size: clamp(1.9rem, 3.4vw, 3rem);
     font-weight: 800;
     letter-spacing: -0.02em;
     text-transform: uppercase;
+    line-height: 1;
     margin: 0;
+    /* These photographs are bright in places and are shown as shot, so the name carries its
+       own contrast rather than relying on the gradient alone. */
+    text-shadow: 0 2px 10px rgb(0 0 0 / 0.55);
 }
+
+/* The full stop after the name is the one piece of colour on the card. */
+.cardName span { color: var(--rn-red); }
 
 .cardTag {
     position: relative;
-    margin: 0.45rem 0 0;
+    margin: 0.5rem 0 0;
     font-size: 0.9375rem;
-    color: var(--rn-dim);
-}
-
-.cardGo {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    margin-top: 1.1rem;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    font-weight: 600;
     color: var(--rn-white);
+    text-shadow: 0 1px 6px rgb(0 0 0 / 0.6);
 }
 
-.card:hover .cardGo svg { transform: translateX(4px); }
-.cardGo svg { transition: transform 0.25s var(--rn-ease); }
 
 /* ── Partner rail ───────────────────────────────────────────────────────── */
 
