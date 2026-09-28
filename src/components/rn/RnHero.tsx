@@ -81,19 +81,35 @@ export default function RnHero({ locale }: { locale: string }) {
                     <Image
                         className={s.shot}
                         src={slide.image}
-                        alt=""
+                        alt={slide.variant === 'quote'
+                            ? (locale === 'de'
+                                ? 'Christian Menzel, Rennfahrer und Markenbotschafter'
+                                : 'Christian Menzel, racing driver and brand ambassador')
+                            : ''}
                         fill
                         sizes="100vw"
                         priority={i === 0}
                         quality={82}
                     />
-                    <div className={s.scrim} aria-hidden="true" />
+                    <div
+                        className={`${s.scrim} ${slide.variant === 'quote' ? s.scrimQuote : ''}`}
+                        aria-hidden="true"
+                    />
 
-                    <div className={s.body}>
-                        <p className={s.eyebrow}>{slide.eyebrow}</p>
-                        <h1 className={s.title}>{slide.title}</h1>
-                        <div className={s.rule} aria-hidden="true" />
-                        <p className={s.subtitle}>{slide.subtitle}</p>
+                    <div className={`${s.body} ${slide.variant === 'quote' ? s.bodyQuote : ''}`}>
+                        {slide.variant === 'quote' ? (
+                            <blockquote className={s.quote}>
+                                <h1 className={s.quoteText}>{slide.title}</h1>
+                            </blockquote>
+                        ) : (
+                            <>
+                                <p className={s.eyebrow}>{slide.eyebrow}</p>
+                                <h1 className={s.title}>{slide.title}</h1>
+                                <div className={s.rule} aria-hidden="true" />
+                                <p className={s.subtitle}>{slide.subtitle}</p>
+                            </>
+                        )}
+
                         <div className={s.actions}>
                             <Link
                                 href={slide.href.startsWith('#') ? slide.href : `/${locale}/rn/${slide.href}`}
@@ -101,9 +117,13 @@ export default function RnHero({ locale }: { locale: string }) {
                             >
                                 {slide.cta}
                             </Link>
-                            <Link href={`/${locale}/products`} className="rnBtn rnBtnGhost">
-                                {locale === 'de' ? 'Zum Shop' : 'To the store'}
-                            </Link>
+                            {/* The ambassador slide carries one call to action on the live site,
+                                and a second button beside a pull quote reads as a form. */}
+                            {slide.variant !== 'quote' && (
+                                <Link href={`/${locale}/products`} className="rnBtn rnBtnGhost">
+                                    {locale === 'de' ? 'Zum Shop' : 'To the store'}
+                                </Link>
+                            )}
                         </div>
                     </div>
                 </div>

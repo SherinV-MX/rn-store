@@ -12,7 +12,19 @@ export type Locale = 'en' | 'de';
 const pick = <T,>(locale: string, en: T, de: T): T => (locale === 'de' ? de : en);
 
 export interface NavItem { label: string; href: string }
-export interface Slide { eyebrow: string; title: string; subtitle: string; cta: string; href: string; image: string }
+/* `quote` marks the brand-ambassador slide. Its artwork is not a photograph the type sits on
+   top of — the left half is a cut-out portrait with the driver's name set into it, and the
+   right half is left black for the quote. So that slide gets its own arrangement rather than
+   the centred caption the other five use. */
+export interface Slide {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    cta: string;
+    href: string;
+    image: string;
+    variant?: 'quote';
+}
 export interface ProductCard { name: string; tagline: string; href: string; badge?: string; image?: string }
 export interface Category { id: string; label: string; blurb: string; products: ProductCard[] }
 
@@ -34,12 +46,22 @@ export function rnNav(locale: string) {
 export function rnSlides(locale: string): Slide[] {
     const cta = pick(locale, 'Learn more', 'Mehr erfahren');
     const en: Slide[] = [
-        { eyebrow: 'RN Analyzer', title: 'Data analysis made simple', subtitle: 'Professional lap evaluation on PC and iPad', cta, href: '#software', image: '/rn/hero/analyzer.jpg' },
+        { eyebrow: 'RN Analyzer', title: 'Intuitive data analysis', subtitle: 'Professional lap evaluation', cta, href: '#software', image: '/rn/hero/analyzer.jpg' },
         { eyebrow: 'RN One', title: 'The way of driving faster', subtitle: 'The all-in-one tool for trackday drivers', cta, href: 'rn-one', image: '/rn/hero/one.jpg' },
-        { eyebrow: 'RN Pro', title: 'Built for professionals', subtitle: 'Modular systems built for motorsport', cta, href: '#systems', image: '/rn/hero/pro.jpg' },
-        { eyebrow: 'RN Telemetry', title: 'Telemetry data in real time', subtitle: 'Vehicle data from the track straight to your laptop', cta, href: '#live', image: '/rn/hero/telemetry.jpg' },
+        { eyebrow: 'RN Pro', title: 'By pros, for pros', subtitle: 'Modular systems for professional motorsport', cta, href: '#systems', image: '/rn/hero/pro.jpg' },
+        { eyebrow: 'RN Telemetry', title: 'Real time telemetry data', subtitle: 'Car data straight from the track to your laptop', cta, href: '#live', image: '/rn/hero/telemetry.jpg' },
         { eyebrow: 'RN TPMS', title: 'Tire pressure control', subtitle: 'Display and record tire pressure with TPMS', cta, href: '#data', image: '/rn/hero/tpms.jpg' },
-        { eyebrow: 'Brand ambassador', title: 'The one to beat', subtitle: 'Christian Menzel, racing driver', cta: 'View brand ambassadors', href: '#partners', image: '/rn/menzel.jpg' },
+        {
+            eyebrow: 'Brand ambassador',
+            title: 'Intuitive handling and attention to detail. Race Navigator sets the benchmark.',
+            /* The name and role are set into the artwork itself, so repeating them here would
+               print them twice on the slide. */
+            subtitle: '',
+            cta: 'View brand ambassadors',
+            href: '#partners',
+            image: '/rn/menzel.jpg',
+            variant: 'quote',
+        },
     ];
     const de: Slide[] = [
         { eyebrow: 'RN Analyzer', title: 'Datenanalyse leicht gemacht', subtitle: 'Professionelle Rundenauswertung auf PC und iPad', cta, href: '#software', image: '/rn/hero/analyzer.jpg' },
@@ -47,7 +69,15 @@ export function rnSlides(locale: string): Slide[] {
         { eyebrow: 'RN Pro', title: 'Von Profis für Profis', subtitle: 'Modulare Systeme für den Motorsport-Einsatz', cta, href: '#systems', image: '/rn/hero/pro.jpg' },
         { eyebrow: 'RN Telemetry', title: 'Telemetrie-Daten in Echtzeit', subtitle: 'Fahrzeugdaten von der Strecke direkt auf den Laptop', cta, href: '#live', image: '/rn/hero/telemetry.jpg' },
         { eyebrow: 'RN TPMS', title: 'Reifendruck-Kontrolle', subtitle: 'Reifendruck anzeigen und aufzeichnen mit TPMS', cta, href: '#data', image: '/rn/hero/tpms.jpg' },
-        { eyebrow: 'Markenbotschafter', title: 'Das Gerät, das es zu schlagen gilt', subtitle: 'Christian Menzel, Rennfahrer', cta: 'Markenbotschafter ansehen', href: '#partners', image: '/rn/menzel.jpg' },
+        {
+            eyebrow: 'Markenbotschafter',
+            title: 'Intuitive Bedienung und Liebe zum Detail. Race Navigator setzt den Maßstab.',
+            subtitle: '',
+            cta: 'Markenbotschafter ansehen',
+            href: '#partners',
+            image: '/rn/menzel.jpg',
+            variant: 'quote',
+        },
     ];
     return pick(locale, en, de);
 }

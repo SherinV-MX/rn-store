@@ -148,6 +148,70 @@
     background: var(--rn-red);
 }
 
+/* ── The brand-ambassador slide ──────────────────────────────────────────────
+   Its artwork does half the layout: a cut-out portrait fills the left of the frame with the
+   driver's name set into it, and the right is left black to be written on. So the quote moves
+   to that right half and is set flush left inside it, which is where the live slide puts it.
+   Below 900px there is no room for the two halves side by side, so it falls back to the
+   centred arrangement the other slides use. */
+.bodyQuote {
+    text-align: center;
+}
+
+.quote { margin: 0; }
+
+.quoteText {
+    font-family: var(--rn-display);
+    font-size: clamp(1.6rem, 4vw, 2.9rem);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    text-wrap: balance;
+    margin: 0;
+}
+
+/* Typographic marks rather than characters in the string, so the quote reads as one sentence
+   to a screen reader and the marks can take the brand red. */
+.quoteText::before { content: '„'; color: var(--rn-red); }
+.quoteText::after { content: '“'; color: var(--rn-red); }
+
+@media (min-width: 900px) {
+    /* Two equal columns: the portrait owns the left one, the quote starts exactly where it
+       ends. Not flush to the right edge — the live slide leaves the far right black, and the
+       quote reads as set against the cut-out rather than pushed away from it. */
+    .bodyQuote {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        justify-items: start;
+        text-align: left;
+    }
+
+    .bodyQuote > * {
+        grid-column: 2;
+        max-width: 30rem;
+    }
+
+    .bodyQuote .actions { justify-content: flex-start; }
+}
+
+/* The artwork is already black where the quote goes and already red where the portrait is, so
+   the usual pool of darkness would only mute it. A light wash is enough. */
+.scrimQuote {
+    background:
+        linear-gradient(0deg, rgb(8 8 10 / 0.55) 0%, transparent 32%),
+        linear-gradient(180deg, rgb(8 8 10 / 0.5) 0%, transparent 26%);
+}
+
+@media (max-width: 899px) {
+    /* Cropped to the portrait at this width, so the type needs its own ground again. */
+    .scrimQuote {
+        background:
+            linear-gradient(0deg, rgb(8 8 10 / 0.92) 22%, rgb(8 8 10 / 0.55) 100%),
+            linear-gradient(180deg, rgb(8 8 10 / 0.7) 0%, transparent 30%);
+    }
+}
+
 .subtitle {
     font-size: clamp(1.0625rem, 1.5vw, 1.375rem);
     color: var(--rn-dim);
