@@ -34,7 +34,10 @@
 
 .bannerBody {
     position: relative;
-    padding-block: clamp(96px, 14vh, 150px) clamp(72px, 10vh, 120px);
+    /* The same padding the home hero's body uses, so the block sits at the same height in an
+       identically sized section. The heavier bottom is what lifts the type off centre; with a
+       lighter one the name sat noticeably lower here than on the home page. */
+    padding-block: clamp(96px, 14vh, 150px) clamp(120px, 16vh, 180px);
     text-align: center;
 }
 
