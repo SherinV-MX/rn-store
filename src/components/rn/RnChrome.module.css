@@ -47,12 +47,15 @@
 
 .headerSolid .navLink { color: var(--rn-ink); }
 
+/* On the white bar it goes back to being a quiet outline — there is no photograph to fight. */
 .headerSolid .lang {
     border-color: var(--rn-line-ink);
-    color: var(--rn-ink-dim);
+    background: transparent;
+    color: var(--rn-ink);
+    text-shadow: none;
 }
 
-.headerSolid .lang:hover { border-color: var(--rn-ink); color: var(--rn-ink); }
+.headerSolid .lang:hover { border-color: var(--rn-ink); background: rgb(11 11 13 / 0.05); }
 
 .headerSolid .burger { border-color: var(--rn-line-ink); }
 .headerSolid .burger span { background: var(--rn-ink); }
@@ -134,20 +137,25 @@
     align-items: center;
     gap: 0.4rem;
     padding: 0.5rem 0.7rem;
-    border: 1px solid var(--rn-line);
+    /* Muted grey on a hairline works on a flat panel. Over the hero there is no panel and no
+       tint under it, so it was a grey mark on a photograph. White on a dark ground, at the
+       weight of the links beside it. */
+    border: 1px solid rgb(255 255 255 / 0.35);
     border-radius: 2px;
-    background: transparent;
-    color: var(--rn-dim);
+    background: rgb(8 8 10 / 0.42);
+    color: var(--rn-white);
     font-family: var(--rn-body);
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     text-decoration: none;
-    transition: border-color 0.2s var(--rn-ease), color 0.2s var(--rn-ease);
+    text-shadow: 1px 1px 3px rgb(0 0 0 / 0.7);
+    transition: border-color 0.2s var(--rn-ease), color 0.2s var(--rn-ease),
+                background 0.2s var(--rn-ease);
 }
 
-.lang:hover { border-color: var(--rn-line-strong); color: var(--rn-white); }
+.lang:hover { border-color: var(--rn-white); background: rgb(8 8 10 / 0.62); }
 
 .store {
     padding: 0.7rem 1.4rem;
