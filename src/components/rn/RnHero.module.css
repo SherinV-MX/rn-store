@@ -43,14 +43,22 @@
     position: absolute;
     inset: 0;
     z-index: -2;
+    /* The type is centred now, so the darkening is too: a soft pool under the middle of the
+       frame plus weight top and bottom for the nav and the dots. A one-sided gradient would
+       leave the end of every headline sitting on bare photograph. */
     background:
-        linear-gradient(90deg, rgb(8 8 10 / 0.92) 0%, rgb(8 8 10 / 0.72) 42%, rgb(8 8 10 / 0.25) 100%),
-        linear-gradient(0deg, rgb(8 8 10 / 0.85) 0%, transparent 45%);
+        radial-gradient(76% 62% at 50% 52%, rgb(8 8 10 / 0.74) 0%, rgb(8 8 10 / 0.42) 55%, transparent 100%),
+        linear-gradient(0deg, rgb(8 8 10 / 0.8) 0%, transparent 38%),
+        linear-gradient(180deg, rgb(8 8 10 / 0.6) 0%, transparent 32%);
 }
 
 @media (max-width: 760px) {
     /* Portrait leaves no room for the picture to breathe beside the type, so the type wins. */
-    .scrim { background: linear-gradient(0deg, rgb(8 8 10 / 0.94) 22%, rgb(8 8 10 / 0.62) 100%); }
+    .scrim {
+        background:
+            linear-gradient(0deg, rgb(8 8 10 / 0.92) 22%, rgb(8 8 10 / 0.55) 100%),
+            linear-gradient(180deg, rgb(8 8 10 / 0.7) 0%, transparent 30%);
+    }
 }
 
 /* The backdrop is built rather than photographed: a low sweep of red through near-black, with
@@ -116,15 +124,26 @@
     .tracePath { animation: none; stroke-dashoffset: 0; }
 }
 
+/* Centred, the way the live hero is: one line of headline, a red rule under it, then the
+   subtitle and the button stacked beneath. The slide is a picture with a sentence on it, not
+   a column of copy beside one. */
 .body {
     position: relative;
     padding-block: clamp(96px, 14vh, 150px) clamp(120px, 16vh, 180px);
-    max-width: 44rem;
+    /* Wider than the reading rail on purpose: these headlines are signage, and the point of
+       the set is that each one lands as a single line. The rail's measure would break the
+       longer German titles across two. */
+    width: 100%;
+    max-width: 84rem;
+    margin-inline: auto;
+    padding-inline: var(--rn-gutter);
+    text-align: center;
 }
 
 .eyebrow {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.6rem;
     font-size: 0.6875rem;
     font-weight: 700;
@@ -143,23 +162,40 @@
 
 .title {
     font-family: var(--rn-display);
-    font-size: clamp(2.5rem, 7.2vw, 5.4rem);
+    /* Sized so the actual headlines fit on one line from about 900px up; below that they
+       wrap, balanced, rather than shrinking into illegibility. */
+    font-size: clamp(2rem, 4.6vw, 3.6rem);
     font-weight: 800;
-    line-height: 0.93;
+    line-height: 0.98;
     letter-spacing: -0.03em;
     text-transform: uppercase;
     text-wrap: balance;
     margin: 0;
 }
 
+/* The rule under the headline. It stretches to the text rather than to the column, so a short
+   title gets a short line — which is what makes it read as an underline and not a divider. */
+.rule {
+    width: min(100%, 30rem);
+    height: 3px;
+    margin: 1.5rem auto 0;
+    background: var(--rn-red);
+}
+
 .subtitle {
     font-size: clamp(1.0625rem, 1.5vw, 1.375rem);
     color: var(--rn-dim);
-    margin: 1.4rem 0 0;
-    max-width: 38ch;
+    margin: 1.4rem auto 0;
+    max-width: 44ch;
 }
 
-.actions { display: flex; flex-wrap: wrap; gap: 0.85rem; margin-top: 2.4rem; }
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.85rem;
+    margin-top: 2.4rem;
+}
 
 /* ── Controls ───────────────────────────────────────────────────────────── */
 
@@ -171,10 +207,11 @@
     z-index: 3;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 1.25rem;
 }
 
-.dots { display: flex; gap: 0.5rem; margin-right: auto; }
+.dots { display: flex; gap: 0.5rem; }
 
 .dot {
     position: relative;
@@ -207,7 +244,22 @@
     .dotOn .dotFill { animation: none; transform: scaleX(1); }
 }
 
-.arrows { display: flex; gap: 0.5rem; }
+/* Pinned to the edges and vertically centred, so they frame the picture instead of crowding
+   the dots. */
+.arrows {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    z-index: 3;
+    display: flex;
+    justify-content: space-between;
+    padding-inline: clamp(12px, 2.5vw, 34px);
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.arrows button { pointer-events: auto; }
 
 .arrow {
     display: grid;
@@ -225,6 +277,9 @@
 .arrow:hover { background: var(--rn-red); border-color: var(--rn-red); }
 
 .counter {
+    position: absolute;
+    right: var(--rn-gutter);
+    bottom: 0;
     font-family: var(--rn-body);
     font-size: 0.8125rem;
     font-variant-numeric: tabular-nums;

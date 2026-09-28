@@ -36,10 +36,10 @@ export function rnSlides(locale: string): Slide[] {
     const en: Slide[] = [
         { eyebrow: 'RN Analyzer', title: 'Data analysis made simple', subtitle: 'Professional lap evaluation on PC and iPad', cta, href: '#software', image: '/rn/hero/analyzer.jpg' },
         { eyebrow: 'RN One', title: 'The way of driving faster', subtitle: 'The all-in-one tool for trackday drivers', cta, href: 'rn-one', image: '/rn/hero/one.jpg' },
-        { eyebrow: 'RN Pro', title: 'From professionals, for professionals', subtitle: 'Modular systems built for motorsport', cta, href: '#systems', image: '/rn/hero/pro.jpg' },
+        { eyebrow: 'RN Pro', title: 'Built for professionals', subtitle: 'Modular systems built for motorsport', cta, href: '#systems', image: '/rn/hero/pro.jpg' },
         { eyebrow: 'RN Telemetry', title: 'Telemetry data in real time', subtitle: 'Vehicle data from the track straight to your laptop', cta, href: '#live', image: '/rn/hero/telemetry.jpg' },
         { eyebrow: 'RN TPMS', title: 'Tire pressure control', subtitle: 'Display and record tire pressure with TPMS', cta, href: '#data', image: '/rn/hero/tpms.jpg' },
-        { eyebrow: 'Brand ambassador', title: 'Race Navigator sets the benchmark', subtitle: 'Christian Menzel, racing driver', cta: 'View brand ambassadors', href: '#partners', image: '/rn/menzel.jpg' },
+        { eyebrow: 'Brand ambassador', title: 'The one to beat', subtitle: 'Christian Menzel, racing driver', cta: 'View brand ambassadors', href: '#partners', image: '/rn/menzel.jpg' },
     ];
     const de: Slide[] = [
         { eyebrow: 'RN Analyzer', title: 'Datenanalyse leicht gemacht', subtitle: 'Professionelle Rundenauswertung auf PC und iPad', cta, href: '#software', image: '/rn/hero/analyzer.jpg' },

@@ -94,9 +94,10 @@ export default function RnHero({ locale }: { locale: string }) {
                     />
                     <div className={s.scrim} aria-hidden="true" />
 
-                    <div className={`rnRail ${s.body}`}>
+                    <div className={s.body}>
                         <p className={s.eyebrow}>{slide.eyebrow}</p>
                         <h1 className={s.title}>{slide.title}</h1>
+                        <div className={s.rule} aria-hidden="true" />
                         <p className={s.subtitle}>{slide.subtitle}</p>
                         <div className={s.actions}>
                             <Link
@@ -135,18 +136,21 @@ export default function RnHero({ locale }: { locale: string }) {
                     <b>{String(index + 1).padStart(2, '0')}</b> / {String(slides.length).padStart(2, '0')}
                 </span>
 
-                <div className={s.arrows}>
-                    <button type="button" className={s.arrow} onClick={() => take(index - 1)} aria-label="Previous slide">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                            <path d="M10 2 4 8l6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                    </button>
-                    <button type="button" className={s.arrow} onClick={() => take(index + 1)} aria-label="Next slide">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                            <path d="M6 2l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                    </button>
-                </div>
+            </div>
+
+            {/* Outside the control bar: they sit at the left and right edges of the picture, and
+                nesting them in a positioned bar would resolve them against it instead. */}
+            <div className={s.arrows}>
+                <button type="button" className={s.arrow} onClick={() => take(index - 1)} aria-label="Previous slide">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                        <path d="M10 2 4 8l6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                </button>
+                <button type="button" className={s.arrow} onClick={() => take(index + 1)} aria-label="Next slide">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                        <path d="M6 2l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                </button>
             </div>
         </section>
     );
