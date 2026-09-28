@@ -33,11 +33,13 @@
     display: inline-flex;
     align-items: center;
     gap: 0.75rem;
+    margin-inline-end: 1rem;
     text-decoration: none;
     color: inherit;
-    margin-right: auto;
 }
 
+/* The nav sits with the wordmark rather than drifting to the middle: the two together read as
+   one identity block, and the actions on the far right are then plainly a separate thing. */
 .nav {
     display: none;
     align-items: center;
@@ -74,7 +76,7 @@
 
 .navLink:hover::after { transform: scaleX(1); }
 
-.actions { display: flex; align-items: center; gap: 0.75rem; }
+.actions { display: flex; align-items: center; gap: 0.75rem; margin-inline-start: auto; }
 
 .lang {
     display: inline-flex;
