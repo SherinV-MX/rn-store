@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { rnNav } from '@/content/rn';
 import s from './RnChrome.module.css';
@@ -12,7 +13,16 @@ import s from './RnChrome.module.css';
 export default function RnHeader({ locale }: { locale: string }) {
     const t = rnNav(locale);
     const [open, setOpen] = useState(false);
+    /* Transparent over the hero, solid once past it. */
+    const [solid, setSolid] = useState(false);
     const other = locale === 'de' ? 'en' : 'de';
+
+    useEffect(() => {
+        const onScroll = () => setSolid(window.scrollY > 40);
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return () => window.removeEventListener('scroll', onScroll);
+    }, []);
 
     /* A sheet that stays open while the page scrolls underneath is a trap on a phone. */
     useEffect(() => {
@@ -35,16 +45,17 @@ export default function RnHeader({ locale }: { locale: string }) {
     ];
 
     return (
-        <header className={s.header}>
+        <header className={`${s.header} ${solid || open ? s.headerSolid : ''}`}>
             <div className={`rnRail ${s.bar}`}>
                 <Link href={`/${locale}/rn`} className={s.brand} aria-label="Race Navigator">
-                    <span className={s.mark}>
-                        <span className={s.markGlyph} aria-hidden="true">RN</span>
-                        <span className={s.markWord}>
-                            Race
-                            <small>Navigator</small>
-                        </span>
-                    </span>
+                    <Image
+                        className={s.markImg}
+                        src="/rn/logo.png"
+                        alt="Race Navigator"
+                        width={168}
+                        height={96}
+                        priority
+                    />
                 </Link>
 
                 <nav className={s.nav} aria-label="Primary">

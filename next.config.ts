@@ -5,6 +5,10 @@ const nextConfig: NextConfig = {
         /* Product imagery is served by Shopify's CDN. Nothing else is allowed, so a wrong
            handle in a query cannot turn this site into an open image proxy. */
         remotePatterns: [{ protocol: 'https', hostname: 'cdn.shopify.com' }],
+        /* Next only serves the qualities listed here. The Race Navigator photography is
+           large and dark, where 75 shows banding in the gradients, so a couple of higher
+           steps are allowed rather than raising it for every image on the site. */
+        qualities: [75, 78, 82],
     },
 };
 

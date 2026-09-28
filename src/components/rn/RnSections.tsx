@@ -56,23 +56,3 @@ export function RnStats({ locale }: { locale: string }) {
         </section>
     );
 }
-
-export function RnQuote({ locale }: { locale: string }) {
-    const t = rnHome(locale);
-    return (
-        <section className={`rnSection ${s.quote}`}>
-            {/* Christian Menzel behind the quote he gave. */}
-            <Image className={s.quoteShot} src="/rn/menzel.jpg" alt="" fill sizes="100vw" quality={80} />
-            <div className="rnRail">
-                <figure className={s.quoteInner}>
-                    <span className={s.quoteMark} aria-hidden="true">&ldquo;</span>
-                    <blockquote className={s.quoteText}>{t.quote}</blockquote>
-                    <figcaption>
-                        <p className={s.quoteName}>{t.quoteName}</p>
-                        <p className={s.quoteRole}>{t.quoteRole}</p>
-                    </figcaption>
-                </figure>
-            </div>
-        </section>
-    );
-}

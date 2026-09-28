@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { rnFooter } from '@/content/rn';
 import s from './RnChrome.module.css';
 
@@ -9,13 +10,8 @@ export default function RnFooter({ locale }: { locale: string }) {
             <div className="rnRail">
                 <div className={s.footTop}>
                     <div>
-                        <span className={s.mark}>
-                            <span className={s.markGlyph} aria-hidden="true">RN</span>
-                            <span className={s.markWord}>
-                                Race
-                                <small>Navigator</small>
-                            </span>
-                        </span>
+                        <Image className={s.markImg} src="/rn/logo.png" alt="Race Navigator"
+                               width={168} height={96} />
                         <p className={s.footTag}>{t.tagline}</p>
                     </div>
 

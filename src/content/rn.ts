@@ -39,6 +39,7 @@ export function rnSlides(locale: string): Slide[] {
         { eyebrow: 'RN Pro', title: 'From professionals, for professionals', subtitle: 'Modular systems built for motorsport', cta, href: '#systems', image: '/rn/hero/pro.jpg' },
         { eyebrow: 'RN Telemetry', title: 'Telemetry data in real time', subtitle: 'Vehicle data from the track straight to your laptop', cta, href: '#live', image: '/rn/hero/telemetry.jpg' },
         { eyebrow: 'RN TPMS', title: 'Tire pressure control', subtitle: 'Display and record tire pressure with TPMS', cta, href: '#data', image: '/rn/hero/tpms.jpg' },
+        { eyebrow: 'Brand ambassador', title: 'Race Navigator sets the benchmark', subtitle: 'Christian Menzel, racing driver', cta: 'View brand ambassadors', href: '#partners', image: '/rn/menzel.jpg' },
     ];
     const de: Slide[] = [
         { eyebrow: 'RN Analyzer', title: 'Datenanalyse leicht gemacht', subtitle: 'Professionelle Rundenauswertung auf PC und iPad', cta, href: '#software', image: '/rn/hero/analyzer.jpg' },
@@ -46,6 +47,7 @@ export function rnSlides(locale: string): Slide[] {
         { eyebrow: 'RN Pro', title: 'Von Profis für Profis', subtitle: 'Modulare Systeme für den Motorsport-Einsatz', cta, href: '#systems', image: '/rn/hero/pro.jpg' },
         { eyebrow: 'RN Telemetry', title: 'Telemetrie-Daten in Echtzeit', subtitle: 'Fahrzeugdaten von der Strecke direkt auf den Laptop', cta, href: '#live', image: '/rn/hero/telemetry.jpg' },
         { eyebrow: 'RN TPMS', title: 'Reifendruck-Kontrolle', subtitle: 'Reifendruck anzeigen und aufzeichnen mit TPMS', cta, href: '#data', image: '/rn/hero/tpms.jpg' },
+        { eyebrow: 'Markenbotschafter', title: 'Das Gerät, das es zu schlagen gilt', subtitle: 'Christian Menzel, Rennfahrer', cta: 'Markenbotschafter ansehen', href: '#partners', image: '/rn/menzel.jpg' },
     ];
     return pick(locale, en, de);
 }

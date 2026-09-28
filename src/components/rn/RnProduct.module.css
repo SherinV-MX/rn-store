@@ -4,7 +4,8 @@
     position: relative;
     background: linear-gradient(165deg, #14161b 0%, var(--rn-black) 62%);
     overflow: hidden;
-    padding-block: clamp(56px, 8vw, 96px) clamp(48px, 7vw, 88px);
+    /* The header floats over this page too, so the hero opens below it rather than under it. */
+    padding-block: calc(74px + clamp(48px, 6vw, 84px)) clamp(48px, 7vw, 88px);
 }
 
 .hero::before {
