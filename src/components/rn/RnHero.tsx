@@ -63,11 +63,6 @@ export default function RnHero({ locale }: { locale: string }) {
         >
             <div className={s.canvas} aria-hidden="true" />
 
-            <svg className={s.trace} viewBox="0 0 1440 820" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-                <path className={s.traceGhost} d="M-40 640 C 240 640, 300 380, 520 360 S 860 520, 1010 420 S 1180 150, 1480 190" />
-                <path className={s.tracePath} d="M-40 640 C 240 640, 300 380, 520 360 S 860 520, 1010 420 S 1180 150, 1480 190" />
-            </svg>
-
             {slides.map((slide, i) => (
                 <div
                     key={slide.title}
