@@ -1,0 +1,138 @@
+'use client';
+
+import { useCallback, useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
+import { rnSlides } from '@/content/rn';
+import s from './RnHero.module.css';
+
+const DWELL_MS = 6500;
+
+/* The hero carousel.
+
+   Five slides on a timer, with arrows, a dot rail that doubles as the progress bar, keyboard
+   arrows, and a pause whenever the visitor is plainly looking at it — hover, focus, or the tab
+   in the background. Auto-advance stops permanently the moment someone takes control, because
+   a carousel that keeps moving under a reader is the thing everyone hates about carousels. */
+export default function RnHero({ locale }: { locale: string }) {
+    const slides = rnSlides(locale);
+    const [index, setIndex] = useState(0);
+    const [paused, setPaused] = useState(false);
+    const [surrendered, setSurrendered] = useState(false);
+    const region = useRef<HTMLDivElement>(null);
+
+    const go = useCallback((next: number) => {
+        setIndex((next + slides.length) % slides.length);
+    }, [slides.length]);
+
+    const take = useCallback((next: number) => {
+        setSurrendered(true);
+        go(next);
+    }, [go]);
+
+    useEffect(() => {
+        if (paused || surrendered) return;
+        const timer = setTimeout(() => go(index + 1), DWELL_MS);
+        return () => clearTimeout(timer);
+    }, [index, paused, surrendered, go]);
+
+    /* A tab in the background should not burn through all five slides unseen. */
+    useEffect(() => {
+        const onVisibility = () => setPaused(document.hidden);
+        document.addEventListener('visibilitychange', onVisibility);
+        return () => document.removeEventListener('visibilitychange', onVisibility);
+    }, []);
+
+    const onKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'ArrowRight') { e.preventDefault(); take(index + 1); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); take(index - 1); }
+    };
+
+    return (
+        <section
+            className={s.hero}
+            aria-roledescription="carousel"
+            aria-label="Race Navigator"
+            onMouseEnter={() => setPaused(true)}
+            onMouseLeave={() => setPaused(false)}
+            onFocus={() => setPaused(true)}
+            onBlur={() => setPaused(false)}
+            onKeyDown={onKeyDown}
+            ref={region}
+            tabIndex={-1}
+        >
+            <div className={s.canvas} aria-hidden="true" />
+
+            <svg className={s.trace} viewBox="0 0 1440 820" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                <path className={s.traceGhost} d="M-40 640 C 240 640, 300 380, 520 360 S 860 520, 1010 420 S 1180 150, 1480 190" />
+                <path className={s.tracePath} d="M-40 640 C 240 640, 300 380, 520 360 S 860 520, 1010 420 S 1180 150, 1480 190" />
+            </svg>
+
+            {slides.map((slide, i) => (
+                <div
+                    key={slide.title}
+                    className={`${s.slide} ${i === index ? s.slideOn : ''}`}
+                    role="group"
+                    aria-roledescription="slide"
+                    aria-label={`${i + 1} of ${slides.length}`}
+                    aria-hidden={i !== index}
+                    /* inert keeps the hidden slides' links out of the tab order without
+                       needing to unmount and re-layout them on every change. */
+                    inert={i !== index}
+                >
+                    <div className={`rnRail ${s.body}`}>
+                        <p className={s.eyebrow}>{slide.eyebrow}</p>
+                        <h1 className={s.title}>{slide.title}</h1>
+                        <p className={s.subtitle}>{slide.subtitle}</p>
+                        <div className={s.actions}>
+                            <Link
+                                href={slide.href.startsWith('#') ? slide.href : `/${locale}/rn/${slide.href}`}
+                                className="rnBtn rnBtnSolid"
+                            >
+                                {slide.cta}
+                            </Link>
+                            <Link href={`/${locale}/products`} className="rnBtn rnBtnGhost">
+                                {locale === 'de' ? 'Zum Shop' : 'To the store'}
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            ))}
+
+            <div className={`rnRail ${s.controls}`}>
+                <div className={s.dots}>
+                    {slides.map((slide, i) => (
+                        <button
+                            key={slide.title}
+                            type="button"
+                            className={`${s.dot} ${i === index ? s.dotOn : ''} ${paused ? s.dotPaused : ''}`}
+                            style={{ ['--rn-dwell' as string]: `${DWELL_MS}ms` }}
+                            aria-label={slide.title}
+                            aria-current={i === index}
+                            onClick={() => take(i)}
+                        >
+                            {/* Re-keyed on index so the fill restarts rather than resuming. */}
+                            <span className={s.dotFill} key={`${i}-${index}`} />
+                        </button>
+                    ))}
+                </div>
+
+                <span className={s.counter}>
+                    <b>{String(index + 1).padStart(2, '0')}</b> / {String(slides.length).padStart(2, '0')}
+                </span>
+
+                <div className={s.arrows}>
+                    <button type="button" className={s.arrow} onClick={() => take(index - 1)} aria-label="Previous slide">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                            <path d="M10 2 4 8l6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                    </button>
+                    <button type="button" className={s.arrow} onClick={() => take(index + 1)} aria-label="Next slide">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                            <path d="M6 2l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+    );
+}

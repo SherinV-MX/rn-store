@@ -1,0 +1,263 @@
+/* Header, footer and the RN wordmark. */
+
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    background: rgb(11 11 13 / 0.82);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--rn-line);
+}
+
+.bar {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    min-height: 74px;
+}
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: inherit;
+    margin-right: auto;
+}
+
+.nav {
+    display: none;
+    align-items: center;
+    gap: 2rem;
+}
+
+@media (min-width: 1000px) { .nav { display: flex; } }
+
+.navLink {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--rn-white);
+    text-decoration: none;
+    padding-block: 0.4rem;
+    position: relative;
+}
+
+/* The underline grows from the left rather than fading in, which reads as movement — the one
+   place the header allows itself any. */
+.navLink::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: 100%;
+    background: var(--rn-red);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s var(--rn-ease);
+}
+
+.navLink:hover::after { transform: scaleX(1); }
+
+.actions { display: flex; align-items: center; gap: 0.75rem; }
+
+.lang {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.7rem;
+    border: 1px solid var(--rn-line);
+    border-radius: 2px;
+    background: transparent;
+    color: var(--rn-dim);
+    font-family: var(--rn-body);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: border-color 0.2s var(--rn-ease), color 0.2s var(--rn-ease);
+}
+
+.lang:hover { border-color: var(--rn-line-strong); color: var(--rn-white); }
+
+.store {
+    padding: 0.7rem 1.4rem;
+    font-size: 0.8125rem;
+}
+
+.burger {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 42px;
+    height: 42px;
+    padding: 0 10px;
+    border: 1px solid var(--rn-line);
+    border-radius: 2px;
+    background: transparent;
+    cursor: pointer;
+}
+
+@media (min-width: 1000px) { .burger { display: none; } }
+
+.burger span {
+    display: block;
+    height: 2px;
+    background: var(--rn-white);
+    transition: transform 0.25s var(--rn-ease), opacity 0.2s var(--rn-ease);
+}
+
+.burgerOpen span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.burgerOpen span:nth-child(2) { opacity: 0; }
+.burgerOpen span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.sheet {
+    border-top: 1px solid var(--rn-line);
+    background: var(--rn-black);
+}
+
+.sheetInner {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding-block: 1rem 1.5rem;
+}
+
+.sheetLink {
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--rn-line);
+    font-family: var(--rn-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: var(--rn-white);
+    text-decoration: none;
+}
+
+.sheetActions { display: flex; gap: 0.75rem; margin-top: 1.25rem; }
+
+/* ── Wordmark ───────────────────────────────────────────────────────────── */
+
+.mark { display: inline-flex; align-items: center; gap: 0.6rem; }
+
+.markGlyph {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 30px;
+    background: var(--rn-red);
+    font-family: var(--rn-display);
+    font-size: 1.0625rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: #fff;
+    /* The clipped corners echo the chamfer on the device housing. */
+    clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+}
+
+.markWord {
+    display: none;
+    font-family: var(--rn-display);
+    font-size: 0.9375rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    line-height: 1.05;
+    text-transform: uppercase;
+}
+
+@media (min-width: 560px) { .markWord { display: block; } }
+
+.markWord small {
+    display: block;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    color: var(--rn-dim);
+}
+
+/* ── Footer ─────────────────────────────────────────────────────────────── */
+
+.footer {
+    background: var(--rn-black);
+    border-top: 1px solid var(--rn-line);
+    padding-block: clamp(48px, 6vw, 80px) 2rem;
+}
+
+.footTop {
+    display: grid;
+    gap: 2.5rem;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 720px) { .footTop { grid-template-columns: 1.2fr 2fr; } }
+
+.footGroups {
+    display: grid;
+    gap: 2rem 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+
+.footHead {
+    font-family: var(--rn-body);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--rn-white);
+    margin: 0 0 0.9rem;
+}
+
+.footList { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+
+.footList a {
+    font-size: 0.875rem;
+    color: var(--rn-dim);
+    text-decoration: none;
+    transition: color 0.2s var(--rn-ease);
+}
+
+.footList a:hover { color: var(--rn-white); }
+
+.footTag {
+    font-family: var(--rn-display);
+    font-size: 1.125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin: 1.1rem 0 0;
+    max-width: 18ch;
+    line-height: 1.15;
+}
+
+.footBottom {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.5rem;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rn-line);
+    font-size: 0.8125rem;
+    color: var(--rn-dimmer);
+}
+
+.social { display: flex; gap: 1.25rem; }
+.social a { color: var(--rn-dimmer); text-decoration: none; transition: color 0.2s var(--rn-ease); }
+.social a:hover { color: var(--rn-white); }
+
+/* A demo of someone else's site should say so where anyone can see it. */
+.demoNote {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--rn-line);
+    border-radius: 2px;
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--rn-dimmer);
+}

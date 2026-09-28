@@ -1,0 +1,168 @@
+/* Race Navigator — the section's own palette and type.
+
+   Scoped to [data-site="rn"] rather than :root because the BSS LogisQ store lives in the same
+   application with a blue palette and its own tokens. Nothing here leaks into it.
+
+   The colours come off the product itself: anodised black aluminium, a signal red that only
+   ever marks the one thing that matters on a screen, and a cool grey that reads as instrument
+   rather than as paper. */
+
+[data-site='rn'] {
+    --rn-red: #dc0714;
+    --rn-red-hot: #ff2b38;
+    --rn-red-deep: #a3050f;
+
+    --rn-black: #0b0b0d;
+    --rn-carbon: #131418;
+    --rn-carbon-2: #1b1d22;
+    --rn-line: rgb(255 255 255 / 0.10);
+    --rn-line-strong: rgb(255 255 255 / 0.22);
+
+    --rn-white: #ffffff;
+    --rn-dim: #9ba1a9;
+    --rn-dimmer: #6a7078;
+
+    --rn-paper: #f1f2f3;
+    --rn-paper-2: #e6e8ea;
+    --rn-ink: #0b0b0d;
+    --rn-ink-dim: #565c63;
+    --rn-line-ink: rgb(11 11 13 / 0.12);
+
+    --rn-display: var(--font-rn-display), 'Archivo', system-ui, sans-serif;
+    --rn-body: var(--font-rn-body), 'Barlow', system-ui, sans-serif;
+
+    /* One rail width for every section, so section edges line up down the page. */
+    --rn-max: 1320px;
+    --rn-gutter: clamp(20px, 5vw, 64px);
+    --rn-section: clamp(64px, 8vw, 128px);
+
+    --rn-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+    color-scheme: dark;
+    font-family: var(--rn-body);
+    background: var(--rn-black);
+    color: var(--rn-white);
+}
+
+[data-site='rn'] *,
+[data-site='rn'] *::before,
+[data-site='rn'] *::after { box-sizing: border-box; }
+
+/* Shared building blocks. Component modules handle everything specific. */
+
+.rnRail {
+    width: 100%;
+    max-width: var(--rn-max);
+    margin-inline: auto;
+    padding-inline: var(--rn-gutter);
+}
+
+.rnSection { padding-block: var(--rn-section); }
+
+.rnLight {
+    background: var(--rn-paper);
+    color: var(--rn-ink);
+}
+
+.rnEyebrow {
+    font-family: var(--rn-body);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--rn-red);
+    margin: 0;
+}
+
+.rnH2 {
+    font-family: var(--rn-display);
+    font-size: clamp(1.9rem, 4.4vw, 3.4rem);
+    font-weight: 800;
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    text-wrap: balance;
+    margin: 0;
+}
+
+/* The red underscore is the site's one recurring mark; it sits under a heading and nowhere
+   else, so it keeps meaning "this starts a section". */
+.rnUnderline::after {
+    content: '';
+    display: block;
+    width: 68px;
+    height: 4px;
+    margin-top: 1.1rem;
+    background: var(--rn-red);
+}
+
+.rnLead {
+    font-size: clamp(1rem, 1.2vw, 1.125rem);
+    line-height: 1.6;
+    color: var(--rn-dim);
+    max-width: 58ch;
+    margin: 1.25rem 0 0;
+}
+
+.rnLight .rnLead { color: var(--rn-ink-dim); }
+
+/* Buttons. Solid red is the commitment; the ghost is everything else. */
+.rnBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.85rem 1.7rem;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    font-family: var(--rn-body);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s var(--rn-ease), color 0.2s var(--rn-ease), border-color 0.2s var(--rn-ease), transform 0.2s var(--rn-ease);
+}
+
+.rnBtnSolid { background: var(--rn-red); color: #fff; }
+.rnBtnSolid:hover { background: var(--rn-red-hot); transform: translateY(-1px); }
+
+.rnBtnGhost { border-color: var(--rn-line-strong); color: var(--rn-white); background: transparent; }
+.rnBtnGhost:hover { border-color: var(--rn-white); background: rgb(255 255 255 / 0.06); }
+
+.rnLight .rnBtnGhost { border-color: var(--rn-line-ink); color: var(--rn-ink); }
+.rnLight .rnBtnGhost:hover { border-color: var(--rn-ink); background: rgb(11 11 13 / 0.04); }
+
+[data-site='rn'] a:focus-visible,
+[data-site='rn'] button:focus-visible {
+    outline: 2px solid var(--rn-red-hot);
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    [data-site='rn'] *,
+    [data-site='rn'] *::before,
+    [data-site='rn'] *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+    }
+}
+
+/* Visible only when tabbed to — the first stop for a keyboard user, invisible to everyone else. */
+.rnSkip {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 100;
+    padding: 0.75rem 1.25rem;
+    background: var(--rn-red);
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+.rnSkip:focus { left: 1rem; top: 1rem; }

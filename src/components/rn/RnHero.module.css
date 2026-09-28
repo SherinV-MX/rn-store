@@ -1,0 +1,205 @@
+.hero {
+    position: relative;
+    min-height: clamp(560px, 82vh, 820px);
+    display: grid;
+    overflow: hidden;
+    background: var(--rn-black);
+    isolation: isolate;
+}
+
+/* Each slide stacks in the same grid cell and cross-fades. Kept in the DOM rather than
+   swapped, so the browser has already laid out the type before it is shown. */
+.slide {
+    grid-area: 1 / 1;
+    display: grid;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.7s var(--rn-ease), visibility 0.7s;
+}
+
+.slideOn { opacity: 1; visibility: visible; }
+
+/* The backdrop is built rather than photographed: a low sweep of red through near-black, with
+   a fine grid over it like a sector map. No stock photography, nothing borrowed. */
+.canvas {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+}
+
+.canvas::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(120% 80% at 78% 18%, rgb(220 7 20 / 0.30), transparent 58%),
+        radial-gradient(90% 70% at 10% 90%, rgb(60 70 90 / 0.28), transparent 60%),
+        linear-gradient(160deg, #101116 0%, #0b0b0d 55%, #08080a 100%);
+}
+
+.canvas::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgb(255 255 255 / 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgb(255 255 255 / 0.045) 1px, transparent 1px);
+    background-size: 78px 78px;
+    mask-image: radial-gradient(120% 90% at 50% 40%, #000 20%, transparent 78%);
+}
+
+/* A racing line traced across the hero, drawn once on load. */
+.trace {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    opacity: 0.55;
+}
+
+.tracePath {
+    fill: none;
+    stroke: var(--rn-red);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-dasharray: 2400;
+    stroke-dashoffset: 2400;
+    animation: rnTrace 3.4s var(--rn-ease) 0.3s forwards;
+}
+
+.traceGhost {
+    fill: none;
+    stroke: rgb(255 255 255 / 0.10);
+    stroke-width: 12;
+    stroke-linecap: round;
+}
+
+@keyframes rnTrace { to { stroke-dashoffset: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+    .tracePath { animation: none; stroke-dashoffset: 0; }
+}
+
+.body {
+    position: relative;
+    padding-block: clamp(96px, 14vh, 150px) clamp(120px, 16vh, 180px);
+    max-width: 44rem;
+}
+
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--rn-white);
+    margin: 0 0 1.4rem;
+}
+
+.eyebrow::before {
+    content: '';
+    width: 30px;
+    height: 3px;
+    background: var(--rn-red);
+}
+
+.title {
+    font-family: var(--rn-display);
+    font-size: clamp(2.5rem, 7.2vw, 5.4rem);
+    font-weight: 800;
+    line-height: 0.93;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    text-wrap: balance;
+    margin: 0;
+}
+
+.subtitle {
+    font-size: clamp(1.0625rem, 1.5vw, 1.375rem);
+    color: var(--rn-dim);
+    margin: 1.4rem 0 0;
+    max-width: 38ch;
+}
+
+.actions { display: flex; flex-wrap: wrap; gap: 0.85rem; margin-top: 2.4rem; }
+
+/* ── Controls ───────────────────────────────────────────────────────────── */
+
+.controls {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: clamp(28px, 4vh, 48px);
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.dots { display: flex; gap: 0.5rem; margin-right: auto; }
+
+.dot {
+    position: relative;
+    width: 34px;
+    height: 4px;
+    padding: 0;
+    border: none;
+    background: rgb(255 255 255 / 0.22);
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.dot:hover { background: rgb(255 255 255 / 0.4); }
+
+/* The active dot fills across the slide's dwell time, so the bar doubles as the timer. */
+.dotFill {
+    position: absolute;
+    inset: 0;
+    background: var(--rn-red);
+    transform-origin: left;
+    transform: scaleX(0);
+}
+
+.dotOn .dotFill { animation: rnDwell var(--rn-dwell, 6500ms) linear forwards; }
+.dotPaused .dotFill { animation-play-state: paused; }
+
+@keyframes rnDwell { to { transform: scaleX(1); } }
+
+@media (prefers-reduced-motion: reduce) {
+    .dotOn .dotFill { animation: none; transform: scaleX(1); }
+}
+
+.arrows { display: flex; gap: 0.5rem; }
+
+.arrow {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border: 1px solid var(--rn-line-strong);
+    border-radius: 2px;
+    background: rgb(11 11 13 / 0.5);
+    color: var(--rn-white);
+    cursor: pointer;
+    transition: background 0.2s var(--rn-ease), border-color 0.2s var(--rn-ease);
+}
+
+.arrow:hover { background: var(--rn-red); border-color: var(--rn-red); }
+
+.counter {
+    font-family: var(--rn-body);
+    font-size: 0.8125rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.1em;
+    color: var(--rn-dim);
+}
+
+.counter b { color: var(--rn-white); font-weight: 700; }
+
+@media (max-width: 640px) {
+    .arrows { display: none; }
+}

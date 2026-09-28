@@ -2,8 +2,6 @@ import type { Metadata } from 'next';
 import { Inter, Outfit } from 'next/font/google';
 import '../globals.css';
 import CartProvider from '@/components/shop/CartProvider';
-import CartDrawer from '@/components/shop/CartDrawer';
-import StoreHeader from '@/components/layout/StoreHeader';
 import { getDictionary } from '@/dictionaries/get-dictionary';
 
 const inter = Inter({
@@ -38,19 +36,17 @@ export default async function RootLayout({
     params,
 }: Readonly<{ children: React.ReactNode; params: Promise<{ locale: string }> }>) {
     const { locale } = await params;
-    const dict = await getDictionary(locale);
 
     /* CartProvider wraps the whole document rather than the product page, because the header's
        cart count and the drawer both read it — and a cart that resets when someone opens a
-       second page is not a cart. */
+       second page is not a cart.
+
+       Headers and footers belong to the route groups below, not here: the store and the Race
+       Navigator site each carry their own. */
     return (
         <html lang={locale} className={`${inter.variable} ${outfit.variable}`}>
             <body>
-                <CartProvider locale={locale}>
-                    <StoreHeader locale={locale} dict={dict.header} />
-                    <main>{children}</main>
-                    <CartDrawer locale={locale} dict={dict.cart} />
-                </CartProvider>
+                <CartProvider locale={locale}>{children}</CartProvider>
             </body>
         </html>
     );
