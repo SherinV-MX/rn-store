@@ -183,9 +183,7 @@ export const RN_PARTNERS: Partner[] = [
 
 export function rnHome(locale: string) {
     return pick(locale, {
-        productsEyebrow: 'Hardware & software',
         productsHead: 'RN Products',
-        productsIntro: 'Four families, one ecosystem. Everything records to the same timeline, so a lap looks the same whichever box is in the car.',
         statsHead: 'Every corner already measured',
         statsIntro: 'The device recognises the circuit by GPS the moment you roll out. No setup, no picking a track from a list.',
         stats: [
@@ -203,9 +201,7 @@ export function rnHome(locale: string) {
         ctaButton: 'Show now',
         caseItems: ['RN ONE unit, 64 GB', 'Windscreen suction mount', 'External GPS antenna', '12 V and 230 V supply'],
     }, {
-        productsEyebrow: 'Hardware & Software',
         productsHead: 'RN Produkte',
-        productsIntro: 'Vier Familien, ein Ökosystem. Alles zeichnet auf derselben Zeitachse auf — eine Runde sieht gleich aus, egal welches Gerät im Auto sitzt.',
         statsHead: 'Jede Kurve bereits vermessen',
         statsIntro: 'Das Gerät erkennt die Strecke per GPS, sobald Sie ausrollen. Kein Setup, keine Auswahl aus einer Liste.',
         stats: [

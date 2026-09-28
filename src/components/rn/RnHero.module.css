@@ -235,16 +235,6 @@
     margin-top: 2.4rem;
 }
 
-/* The outline button is transparent everywhere else on the site, where it sits on a flat
-   panel. Here it sits on bare photograph, so it needs a ground of its own — otherwise its
-   label disappears the moment a slide is bright behind it. */
-.actions :global(.rnBtnGhost) {
-    background: rgb(8 8 10 / 0.42);
-    backdrop-filter: blur(3px);
-    text-shadow: 1px 1px 3px rgb(0 0 0 / 0.7);
-}
-
-.actions :global(.rnBtnGhost):hover { background: rgb(8 8 10 / 0.6); }
 
 /* ── Controls ───────────────────────────────────────────────────────────── */
 

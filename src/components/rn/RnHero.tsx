@@ -110,6 +110,8 @@ export default function RnHero({ locale }: { locale: string }) {
                             </>
                         )}
 
+                        {/* One call to action per slide, as on the live hero. The store has
+                            its own button in the header, where it stays put between slides. */}
                         <div className={s.actions}>
                             <Link
                                 href={slide.href.startsWith('#') ? slide.href : `/${locale}/rn/${slide.href}`}
@@ -117,13 +119,6 @@ export default function RnHero({ locale }: { locale: string }) {
                             >
                                 {slide.cta}
                             </Link>
-                            {/* The ambassador slide carries one call to action on the live site,
-                                and a second button beside a pull quote reads as a form. */}
-                            {slide.variant !== 'quote' && (
-                                <Link href={`/${locale}/products`} className="rnBtn rnBtnGhost">
-                                    {locale === 'de' ? 'Zum Shop' : 'To the store'}
-                                </Link>
-                            )}
                         </div>
                     </div>
                 </div>

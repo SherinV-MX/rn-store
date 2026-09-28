@@ -1,6 +1,18 @@
 /* The home page below the hero: product tabs, partner rail, figures, quote, closing band. */
 
-.head { max-width: 46rem; }
+/* The live section opens straight onto the tabs — no eyebrow, no heading, no standfirst. The
+   heading is kept for the document outline and for whatever reads the page aloud, but it is
+   taken out of the flow rather than hidden with display: none, which would take it from both. */
+.headHidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
 
 /* ── Product tabs ───────────────────────────────────────────────────────── */
 
@@ -9,7 +21,6 @@
 .tabs {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    margin: 2.6rem 0 0;
 }
 
 @media (min-width: 760px) { .tabs { grid-template-columns: repeat(4, 1fr); } }

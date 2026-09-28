@@ -37,11 +37,7 @@ export default function RnProducts({ locale }: { locale: string }) {
     return (
         <section className="rnSection rnLight" id="systems">
             <div className="rnRail">
-                <div className={s.head}>
-                    <p className="rnEyebrow">{copy.productsEyebrow}</p>
-                    <h2 className="rnH2 rnUnderline">{copy.productsHead}</h2>
-                    <p className="rnLead">{copy.productsIntro}</p>
-                </div>
+                <h2 className={s.headHidden}>{copy.productsHead}</h2>
 
                 <div className={s.tabs} role="tablist" aria-label={copy.productsHead} onKeyDown={onKeyDown}>
                     {categories.map((c, i) => (
