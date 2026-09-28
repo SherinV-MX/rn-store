@@ -341,12 +341,23 @@
     gap: 0.6rem;
 }
 
+/* The contents arrive behind the lid rather than sitting there already — each item slides up
+   on its own delay, set per item so the stagger follows the clip instead of guessing. */
 .ctaList li {
     display: flex;
     gap: 0.7rem;
     align-items: baseline;
     font-size: 0.9375rem;
     color: var(--rn-ink-dim);
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.ctaListOn li {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.5s var(--rn-ease) var(--rn-delay, 0ms),
+                transform 0.5s var(--rn-ease) var(--rn-delay, 0ms);
 }
 
 .ctaList li::before {
@@ -358,14 +369,66 @@
     transform: translateY(1px);
 }
 
-.caseArt {
-    position: relative;
-    aspect-ratio: 4 / 3;
-    background: linear-gradient(160deg, #22252b 0%, #0e1013 100%);
-    border: 1px solid rgb(11 11 13 / 0.18);
-    display: grid;
-    place-items: center;
-    padding: clamp(1.5rem, 4vw, 3rem);
+/* Reduced motion gets the finished state, no travel. */
+@media (prefers-reduced-motion: reduce) {
+    .ctaList li { opacity: 1; transform: none; }
 }
 
-.caseArt img { width: 100%; height: auto; max-width: 420px; object-fit: contain; }
+.ctaActions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem;
+    margin-top: 2rem;
+}
+
+.replay {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.4rem 0;
+    border: none;
+    background: none;
+    font-family: var(--rn-body);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--rn-ink-dim);
+    cursor: pointer;
+    transition: color 0.2s var(--rn-ease);
+}
+
+.replay:hover { color: var(--rn-red); }
+
+/* The stage. A soft floor under the case so it does not float on flat paper. */
+.caseStage {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1 / 1;
+    background: radial-gradient(58% 52% at 50% 46%, rgb(255 255 255 / 0.9), transparent 72%);
+}
+
+.caseStage::after {
+    content: '';
+    position: absolute;
+    left: 14%;
+    right: 14%;
+    bottom: 13%;
+    height: 26px;
+    border-radius: 50%;
+    background: radial-gradient(50% 50% at 50% 50%, rgb(11 11 13 / 0.22), transparent 70%);
+}
+
+.caseVideo {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: auto;
+    max-width: 550px;
+    /* The clip is matted on white; multiply drops that onto the paper without a visible box. */
+    mix-blend-mode: multiply;
+}
+
+

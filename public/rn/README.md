@@ -7,7 +7,8 @@ client's own images and belong to RN Vision GmbH — nothing here is ours to lic
     hero/               five slide backgrounds, ~1900 px wide
     product/            RN ONE MKII cut-outs (3) and one mood shot
     partners/           eleven reference logos, mixed JPEG and PNG
-    case.jpg            the fitted case, used in the closing band
+    case-open.mp4       RN's own case animation, 550 x 534, silent, 2.02 s
+    case.jpg            a still of the case (the Elementor thumbnail)
     menzel.jpg          Christian Menzel, behind the quote
 
 Two things to fix before this is anything but a demo:
@@ -17,6 +18,11 @@ Two things to fix before this is anything but a demo:
   thumbnail and is soft at full width.
 - **Check the partner logos.** They are third-party marks shown as references. The client
   presumably has permission; we should confirm it rather than assume it carries over.
+
+`case-open.mp4` runs closed to open and back to closed — the original file is named "2-way"
+for that reason. Played straight through it shuts the case in the visitor's face, so the
+showcase stops it at the halfway frame and leaves the lid up. If the clip is ever replaced,
+check whether that still holds.
 
 The partner rail applies `mix-blend-mode: multiply` so the white-background JPEGs sit on the
 light rail without boxes around them. If a logo is ever supplied with a transparent background

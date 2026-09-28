@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import RnHero from '@/components/rn/RnHero';
 import RnProducts from '@/components/rn/RnProducts';
-import { RnPartners, RnStats, RnQuote, RnCaseBand } from '@/components/rn/RnSections';
+import { RnPartners, RnStats, RnQuote } from '@/components/rn/RnSections';
+import RnCaseShowcase from '@/components/rn/RnCaseShowcase';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
     const { locale } = await params;
@@ -23,7 +24,7 @@ export default async function RnHomePage({ params }: { params: Promise<{ locale:
             <RnPartners />
             <RnStats locale={locale} />
             <RnQuote locale={locale} />
-            <RnCaseBand locale={locale} />
+            <RnCaseShowcase locale={locale} />
         </>
     );
 }

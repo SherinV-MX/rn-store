@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import Link from 'next/link';
 import { RN_PARTNERS, rnHome } from '@/content/rn';
 import s from './RnHome.module.css';
 
@@ -73,29 +72,6 @@ export function RnQuote({ locale }: { locale: string }) {
                         <p className={s.quoteRole}>{t.quoteRole}</p>
                     </figcaption>
                 </figure>
-            </div>
-        </section>
-    );
-}
-
-export function RnCaseBand({ locale }: { locale: string }) {
-    const t = rnHome(locale);
-    return (
-        <section className={`rnSection ${s.cta}`}>
-            <div className={`rnRail ${s.ctaGrid}`}>
-                <div>
-                    <h2 className="rnH2 rnUnderline">{t.ctaHead}</h2>
-                    <p className="rnLead">{t.ctaBody}</p>
-                    <ul className={s.ctaList}>
-                        {t.caseItems.map((item) => <li key={item}>{item}</li>)}
-                    </ul>
-                    <p style={{ marginTop: '2rem' }}>
-                        <Link href={`/${locale}/rn/rn-one`} className="rnBtn rnBtnSolid">{t.ctaButton}</Link>
-                    </p>
-                </div>
-                <div className={s.caseArt}>
-                    <Image src="/rn/case.jpg" alt="RN ONE packed in its fitted case" width={400} height={427} />
-                </div>
             </div>
         </section>
     );
