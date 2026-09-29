@@ -26,7 +26,7 @@ export interface Slide {
     variant?: 'quote';
 }
 export interface ProductCard { name: string; tagline: string; href: string; badge?: string; image?: string }
-export interface Category { id: string; label: string; icon: string; blurb: string; products: ProductCard[] }
+export interface Category { id: string; label: string; icon: string; products: ProductCard[] }
 
 export function rnNav(locale: string) {
     return {
@@ -35,6 +35,7 @@ export function rnNav(locale: string) {
         partners: pick(locale, 'Partners', 'Partner'),
         contact: pick(locale, 'Contact us', 'Kontakt'),
         store: pick(locale, 'Store', 'Shop'),
+        cart: pick(locale, 'Cart', 'Warenkorb'),
         menu: pick(locale, 'Menu', 'Menü'),
         close: pick(locale, 'Close', 'Schließen'),
         switchTo: pick(locale, 'Auf Deutsch ansehen', 'View in English'),
@@ -86,7 +87,6 @@ export function rnCategories(locale: string): Category[] {
     const en: Category[] = [
         {
             id: 'systems', label: 'RN Systems', icon: '/rn/tabs/systems.jpg',
-            blurb: 'The recording and timing units themselves — pick the one that fits the car and the class.',
             products: [
                 { name: 'RN PRO', tagline: 'Autonomous, modular & flexible', href: '#', badge: 'Modular', image: '/rn/cards/rn-pro.jpg' },
                 { name: 'RN ONE', tagline: 'The all-in-one system', href: 'rn-one', badge: 'Most popular', image: '/rn/cards/rn-one.jpg' },
@@ -95,7 +95,6 @@ export function rnCategories(locale: string): Category[] {
         },
         {
             id: 'data', label: 'RN Data & TPMS', icon: '/rn/tabs/data.png',
-            blurb: 'Pull the numbers the car already knows, and the ones it does not.',
             products: [
                 { name: 'RN OBD PLUG', tagline: 'Read vehicle data over OBD-II', href: '#', image: '/rn/cards/obd-plug.jpg' },
                 { name: 'RN CAN CABLE', tagline: 'Additional vehicle data over CAN bus', href: '#', image: '/rn/cards/can-cable.jpg' },
@@ -104,7 +103,6 @@ export function rnCategories(locale: string): Category[] {
         },
         {
             id: 'live', label: 'RN Live & EMS', icon: '/rn/tabs/live.png',
-            blurb: 'Get it off the car and in front of the people who need it, while the session runs.',
             products: [
                 { name: 'RN TELEMETRY', tagline: 'Receive vehicle data live', href: '#', image: '/rn/cards/telemetry.jpg' },
                 { name: 'RN LIVE', tagline: 'Video streaming from the cockpit', href: '#', image: '/rn/cards/live.jpg' },
@@ -113,7 +111,6 @@ export function rnCategories(locale: string): Category[] {
         },
         {
             id: 'software', label: 'Software & Apps', icon: '/rn/tabs/software.png',
-            blurb: 'Where the lap gets taken apart afterwards.',
             products: [
                 { name: 'RN ANALYZER', tagline: 'Professional, intuitive lap evaluation', href: '#', image: '/rn/cards/analyzer.jpg' },
                 { name: 'RN CONNECT', tagline: 'Control the Race Navigator from iPhone and iPad', href: '#', image: '/rn/cards/connect.jpg' },
@@ -124,7 +121,6 @@ export function rnCategories(locale: string): Category[] {
     const de: Category[] = [
         {
             id: 'systems', label: 'RN Systeme', icon: '/rn/tabs/systems.jpg',
-            blurb: 'Die Aufzeichnungs- und Zeitnahmegeräte selbst — passend zum Fahrzeug und zur Klasse.',
             products: [
                 { name: 'RN PRO', tagline: 'Autonom, modular & flexibel', href: '#', badge: 'Modular', image: '/rn/cards/rn-pro.jpg' },
                 { name: 'RN ONE', tagline: 'Das All-in-One-System', href: 'rn-one', badge: 'Beliebt', image: '/rn/cards/rn-one.jpg' },
@@ -133,7 +129,6 @@ export function rnCategories(locale: string): Category[] {
         },
         {
             id: 'data', label: 'RN Data & TPMS', icon: '/rn/tabs/data.png',
-            blurb: 'Die Daten holen, die das Fahrzeug schon kennt — und die, die es nicht kennt.',
             products: [
                 { name: 'RN OBD PLUG', tagline: 'Fahrzeugdaten über OBD-II auslesen', href: '#', image: '/rn/cards/obd-plug.jpg' },
                 { name: 'RN CAN-KABEL', tagline: 'Zusätzliche Fahrzeugdaten über CAN-Bus', href: '#' },
@@ -142,7 +137,6 @@ export function rnCategories(locale: string): Category[] {
         },
         {
             id: 'live', label: 'RN Live & EMS', icon: '/rn/tabs/live.png',
-            blurb: 'Daten vom Fahrzeug zu den Menschen, die sie brauchen — noch während der Session.',
             products: [
                 { name: 'RN TELEMETRY', tagline: 'Fahrzeugdaten live empfangen', href: '#', image: '/rn/cards/telemetry.jpg' },
                 { name: 'RN LIVE', tagline: 'Videostreaming aus dem Cockpit', href: '#', image: '/rn/cards/live.jpg' },
@@ -151,7 +145,6 @@ export function rnCategories(locale: string): Category[] {
         },
         {
             id: 'software', label: 'Software & Apps', icon: '/rn/tabs/software.png',
-            blurb: 'Hier wird die Runde hinterher auseinandergenommen.',
             products: [
                 { name: 'RN ANALYZER', tagline: 'Professionelle und intuitive Rundenauswertung', href: '#', image: '/rn/cards/analyzer.jpg' },
                 { name: 'RN CONNECT', tagline: 'Race Navigator via iPhone und iPad steuern', href: '#', image: '/rn/cards/connect.jpg' },
@@ -165,6 +158,17 @@ export function rnCategories(locale: string): Category[] {
 /* The partner rail. Logos are the client's own files, served from /public rather than hotlinked
    off their WordPress install. Width and height are the real pixel dimensions so nothing
    reflows while they load. */
+export interface TrackRegion { name: string; src: string; href: string }
+
+/* The four regions RN break their track list into, each a darkened circuit photograph. The
+   names are theirs. */
+export const RN_TRACKS: TrackRegion[] = [
+    { name: 'Europe', src: '/rn/tracks/europe.jpg', href: '#' },
+    { name: 'Middle East & Asia', src: '/rn/tracks/asia.jpg', href: '#' },
+    { name: 'North- & South America', src: '/rn/tracks/americas.jpg', href: '#' },
+    { name: 'Australia & Oceania', src: '/rn/tracks/oceania.jpg', href: '#' },
+];
+
 export interface Partner { name: string; src: string; w: number; h: number }
 
 export const RN_PARTNERS: Partner[] = [
@@ -184,40 +188,29 @@ export const RN_PARTNERS: Partner[] = [
 export function rnHome(locale: string) {
     return pick(locale, {
         productsHead: 'RN Products',
-        statsHead: 'Every corner already measured',
-        statsIntro: 'The device recognises the circuit by GPS the moment you roll out. No setup, no picking a track from a list.',
-        stats: [
-            { value: '160+', label: 'Circuits mapped' },
-            { value: '270', label: 'Layout variants' },
-            { value: '10 Hz', label: 'GPS / GLONASS' },
-            { value: '20 Hz', label: 'Acceleration sensor' },
-        ],
-        statsFoot: 'Europe, Middle East, Asia, North and South America, Australia and Oceania.',
         quote: 'Intuitive handling and attention to detail. Race Navigator sets the benchmark.',
         quoteName: 'Christian Menzel',
         quoteRole: 'Racing driver · Brand ambassador',
-        ctaHead: 'Everything packed, let’s go to the track.',
-        ctaBody: 'Unit, mount, GPS antenna, cabling and charger in one fitted case. Lift it out, stick it to the windscreen, drive.',
+        ctaHead: 'Everything packed,\nlet’s go to the track.',
         ctaButton: 'Show now',
-        caseItems: ['RN ONE unit, 64 GB', 'Windscreen suction mount', 'External GPS antenna', '12 V and 230 V supply'],
+        nightHead: 'Full vision -\nalso at night!',
+        nightButton: 'Shop now',
+        tracksHead: 'Support on over 160 tracks',
+        tracksBody: 'The Race Navigator systems support over 160 race tracks worldwide, including 270 track variants. The list of supported tracks is continuously updated. For the best track experience, wherever you drive.',
+        newsHead: 'News.',
     }, {
         productsHead: 'RN Produkte',
-        statsHead: 'Jede Kurve bereits vermessen',
-        statsIntro: 'Das Gerät erkennt die Strecke per GPS, sobald Sie ausrollen. Kein Setup, keine Auswahl aus einer Liste.',
-        stats: [
-            { value: '160+', label: 'Strecken erfasst' },
-            { value: '270', label: 'Streckenvarianten' },
-            { value: '10 Hz', label: 'GPS / GLONASS' },
-            { value: '20 Hz', label: 'Beschleunigungssensor' },
-        ],
-        statsFoot: 'Europa, Naher Osten, Asien, Nord- und Südamerika, Australien und Ozeanien.',
         quote: 'Intuitive Bedienung und Liebe zum Detail. Race Navigator — das Gerät, das es zu schlagen gilt.',
         quoteName: 'Christian Menzel',
         quoteRole: 'Rennfahrer · Markenbotschafter',
-        ctaHead: 'Alles gepackt, ab auf die Strecke.',
-        ctaBody: 'Gerät, Halterung, GPS-Antenne, Kabel und Ladegerät in einem passgenauen Koffer. Herausnehmen, an die Scheibe, losfahren.',
+        ctaHead: 'Alles gepackt,\nab auf die Strecke.',
         ctaButton: 'Jetzt ansehen',
-        caseItems: ['RN ONE Gerät, 64 GB', 'Scheibenhalterung mit Saugnapf', 'Externe GPS-Antenne', '12 V und 230 V Versorgung'],
+        /* The live German page runs this heading in English too. */
+        nightHead: 'Full vision -\nalso at night!',
+        nightButton: 'Jetzt kaufen',
+        tracksHead: 'Unterstützung auf über 160 Strecken',
+        tracksBody: 'Die Race Navigator Systeme unterstützen über 160 Rennstrecken weltweit, inklusive 270 Streckenvarianten. Die Liste der unterstützten Strecken wird laufend erweitert. Für das beste Streckenerlebnis, wo immer Sie fahren.',
+        newsHead: 'News.',
     });
 }
 

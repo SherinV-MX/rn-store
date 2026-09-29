@@ -3,6 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { rnOne } from '@/content/rn';
 import RnGallery from '@/components/rn/RnGallery';
+import RnOrderButton from '@/components/rn/RnOrderButton';
+import { getProduct } from '@/lib/shopify';
 import s from '@/components/rn/RnProduct.module.css';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -14,9 +16,28 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     };
 }
 
+/* The RN ONE listing in the shop. Its variant is what "Order now" puts in the cart, so it is
+   fetched here rather than in the button: the page is server-rendered anyway, and the click
+   then costs one request instead of two. A shop that is unreachable or missing the product
+   leaves `variantId` null and the buttons fall back to linking at the catalogue. */
+const RN_ONE_HANDLE = 'rn-one-race-navigator';
+
+async function rnOneVariantId(locale: string): Promise<string | null> {
+    try {
+        const product = await getProduct(RN_ONE_HANDLE, locale);
+        const variant = product?.variants.find((v) => v.availableForSale) ?? product?.variants[0];
+        return variant?.id ?? null;
+    } catch {
+        /* The rebuild is a shop-window first: it must render with or without Shopify. */
+        return null;
+    }
+}
+
 export default async function RnOnePage({ params }: { params: Promise<{ locale: string }> }) {
     const { locale } = await params;
     const t = rnOne(locale);
+    const variantId = await rnOneVariantId(locale);
+    const ordering = locale === 'de' ? 'Wird hinzugefügt…' : 'Adding…';
 
     /* The two versions differ by exactly one line. Marking it rather than leaving the reader to
        diff two lists is the whole job of this section. */
@@ -59,7 +80,10 @@ export default async function RnOnePage({ params }: { params: Promise<{ locale: 
                         <p className={s.intro}>{t.intro}</p>
 
                         <div className={s.heroActions}>
-                            <Link href={`/${locale}/products`} className="rnBtn rnBtnSolid">{t.buy}</Link>
+                            {variantId
+                                ? <RnOrderButton variantId={variantId} label={t.buy} busyLabel={ordering}
+                                                 className="rnBtn rnBtnSolid" />
+                                : <Link href={`/${locale}/products`} className="rnBtn rnBtnSolid">{t.buy}</Link>}
                             <a href="#spec" className="rnBtn rnBtnGhost">{t.specHead}</a>
                         </div>
                     </div>
@@ -178,8 +202,11 @@ export default async function RnOnePage({ params }: { params: Promise<{ locale: 
                         {locale === 'de' ? 'Bereit für die nächste Session?' : 'Ready for the next session?'}
                     </h2>
                     <div className={s.closeActions}>
-                        <Link href={`/${locale}/products`} className={`rnBtn ${s.closeBtn}`}>{t.buy}</Link>
-                        <Link href={`/${locale}/rn#support`} className={`rnBtn rnBtnGhost ${s.closeGhost}`}>{t.support}</Link>
+                        {variantId
+                            ? <RnOrderButton variantId={variantId} label={t.buy} busyLabel={ordering}
+                                             className={`rnBtn ${s.closeBtn}`} />
+                            : <Link href={`/${locale}/products`} className={`rnBtn ${s.closeBtn}`}>{t.buy}</Link>}
+                        <Link href={`/${locale}/rn#contact`} className={`rnBtn rnBtnGhost ${s.closeGhost}`}>{t.support}</Link>
                     </div>
                 </div>
             </section>

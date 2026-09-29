@@ -19,6 +19,7 @@
 /* Four equal columns, each an icon over a label, divided by hairlines — the live site's own
    arrangement. A row rather than a scroller, because there are only ever four. */
 .tabs {
+    position: relative;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
 }
@@ -68,30 +69,85 @@
 
 .tab:hover .tabLabel { color: var(--rn-red); }
 
-/* The mark for the selected family: a red rule under that column only. */
-.tabOn::after {
-    content: '';
+/* The mark for the selected family. One rule that slides from column to column, so the switch
+   reads as the same object moving rather than two separate marks blinking. It overshoots very
+   slightly on arrival, which is what makes it feel like it was thrown rather than faded.
+
+   Below 760px the tabs wrap onto two rows and a rule that travels along one line would be
+   pointing at the wrong column half the time, so there it simply marks the selected tab. */
+.tabInk {
     position: absolute;
     left: 0;
-    right: 0;
     bottom: 0;
     height: 3px;
     background: var(--rn-red);
+    /* Width and offset come from the component; this only says how it moves. */
+    transition: transform 0.45s cubic-bezier(0.22, 1.4, 0.36, 1);
 }
 
-.blurb {
-    margin: 1.75rem 0 0;
-    font-size: 1rem;
-    color: var(--rn-ink-dim);
-    max-width: 56ch;
+@media (max-width: 759px) {
+    /* Two rows: the rule cannot travel, so it stays put and each tab marks itself. */
+    .tabInk { display: none; }
+
+    .tabOn::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 3px;
+        background: var(--rn-red);
+    }
 }
+
+/* The icon lifts a little when its family is the one on show. */
+.tabIcon { transition: transform 0.35s var(--rn-ease); }
+.tabOn .tabIcon { transform: translateY(-4px) scale(1.06); }
+
+/* The handover. The set that is leaving goes first, tightly spaced and quick; the set
+   arriving follows, spread a little wider so it lands rather than snaps. Both travel along
+   --rn-dir, which the component sets to +1 or -1 depending on which way along the tabs the
+   visitor moved, so the cards go the same way the red rule does.
+
+   `backwards`, not `both`, on the entrance: it holds the first frame through the delay, which
+   stops each card flashing at full opacity before its turn, but lets go at the end. `both`
+   would keep the last frame's `transform: none` on the element for good, and a held animation
+   beats a rule, so the cards would stop lifting on hover.
+
+   The exit does want `forwards` — those cards are about to be replaced and should stay gone
+   once they have left. */
+@keyframes rnPanelIn {
+    from { opacity: 0; transform: translate3d(calc(var(--rn-dir, 1) * 40px), 14px, 0) scale(0.985); }
+    to { opacity: 1; transform: none; }
+}
+
+@keyframes rnPanelOut {
+    from { opacity: 1; transform: none; }
+    to { opacity: 0; transform: translate3d(calc(var(--rn-dir, 1) * -30px), 0, 0) scale(0.99); }
+}
+
+.card {
+    animation: rnPanelIn 0.52s cubic-bezier(0.2, 0.8, 0.3, 1) var(--rn-in, 0ms) backwards;
+    /* Promoted for the length of the change so three photographs moving at once stay smooth;
+       held permanently it would pin them all to their own layers for nothing. */
+    will-change: transform, opacity;
+}
+
+.cardsLeaving .card {
+    animation: rnPanelOut 0.24s cubic-bezier(0.4, 0, 0.7, 0.2) var(--rn-out, 0ms) forwards;
+    /* Nothing leaving should respond to the pointer. */
+    pointer-events: none;
+}
+
+/* The grid keeps its height through the change — every family has the same three cards in the
+   same mosaic — so nothing below it moves while the swap happens. */
 
 /* The live grid: the family's flagship takes a tall card on the left and the other two stack
    beside it. One column below 760px, where a mosaic is just three cards in a row anyway. */
 .cards {
     display: grid;
     gap: 1.25rem;
-    margin-top: 2rem;
+    margin-top: 2.5rem;
     grid-template-columns: 1fr;
 }
 
@@ -156,8 +212,8 @@
     position: relative;
     font-family: var(--rn-display);
     font-size: clamp(1.9rem, 3.4vw, 3rem);
-    font-weight: 800;
-    letter-spacing: -0.02em;
+    font-weight: 600;
+    letter-spacing: normal;
     text-transform: uppercase;
     line-height: 1;
     margin: 0;
@@ -181,12 +237,17 @@
 
 /* ── Partner rail ───────────────────────────────────────────────────────── */
 
+/* Measured against the live rail: a white band, logos in a 160x90 box, and a red rule between
+   each one. Mine were a third of the size, greyed out to 62% and divided by faint grey lines,
+   which turned a wall of recognisable marks into a smudge. These are the client's references —
+   the point of the section is that you can read them. No edge fade either; the live rail runs
+   its logos straight off both sides. */
 .marquee {
     position: relative;
-    padding-block: clamp(32px, 4vw, 52px);
+    background: var(--rn-white);
+    padding-block: 14px;
     border-block: 1px solid var(--rn-line-ink);
     overflow: hidden;
-    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 }
 
 .track {
@@ -197,37 +258,54 @@
 
 .marquee:hover .track { animation-play-state: paused; }
 
-@keyframes rnMarquee { to { transform: translateX(-50%); } }
+/* Rightwards, the way the live rail runs. The track holds the logos twice over, so it starts
+   half a length to the left and travels back to zero; at the moment it lands the second copy
+   is exactly where the first started and the loop is invisible. */
+@keyframes rnMarquee {
+    from { transform: translateX(-50%); }
+    to { transform: translateX(0); }
+}
 
 @media (prefers-reduced-motion: reduce) {
     .track { animation: none; }
+    .brand img { transition: none; }
     .marquee { overflow-x: auto; }
 }
 
 .brand img {
     display: block;
-    width: auto;
-    height: clamp(22px, 2.4vw, 34px);
+    width: clamp(110px, 12.5vw, 160px);
+    height: clamp(62px, 7vw, 90px);
     object-fit: contain;
-    /* The supplied files are a mix of white-background JPEGs and transparent PNGs; multiply
-       drops the white so both sit on the same rail, and grey keeps one brand from shouting. */
-    mix-blend-mode: multiply;
-    filter: grayscale(1) contrast(1.05);
-    opacity: 0.62;
-    transition: opacity 0.25s var(--rn-ease), filter 0.25s var(--rn-ease);
+    /* Read off the live rail: grey, and nothing else. It sits at full opacity with no contrast
+       adjustment and no blend mode — the drop to colour on hover is the whole effect. I had
+       stacked a 55% fade and a contrast bump on top of the same greyscale, which is why these
+       looked washed out next to theirs rather than simply desaturated.
+
+       No multiply either: half the files are white-background JPEGs, but the band behind them
+       is white, so they sit flat on it anyway. */
+    filter: grayscale(1);
+    opacity: 1;
+    transition: filter 0.3s var(--rn-ease);
 }
 
-.brand:hover img { opacity: 1; filter: grayscale(0); }
+/* The rail stops when the pointer is on it, so there is something steady to hover. */
+.brand:hover img,
+.brand:focus-visible img { filter: grayscale(0); }
 
 .brand {
     flex: none;
     display: grid;
     place-items: center;
-    padding-inline: clamp(1.75rem, 3.5vw, 3.25rem);
-    border-right: 1px solid var(--rn-line-ink);
+    width: clamp(170px, 19.5vw, 250px);
+    min-height: clamp(110px, 12vw, 150px);
+    padding-inline: clamp(0.75rem, 1.5vw, 1.5rem);
+    /* Red, and the full height of the cell, so the rail reads as a row of plates rather than a
+       strip of floating images. */
+    border-right: 1px solid var(--rn-red);
     font-family: var(--rn-display);
     font-size: clamp(0.9375rem, 1.5vw, 1.25rem);
-    font-weight: 800;
+    font-weight: 600;
     letter-spacing: 0.04em;
     text-transform: uppercase;
     color: #2b3036;
@@ -235,47 +313,6 @@
 }
 
 /* ── Figures ────────────────────────────────────────────────────────────── */
-
-.stats { background: var(--rn-black); }
-
-.statGrid {
-    display: grid;
-    gap: 1px;
-    margin-top: 3rem;
-    background: var(--rn-line);
-    border: 1px solid var(--rn-line);
-    grid-template-columns: repeat(2, 1fr);
-}
-
-@media (min-width: 860px) { .statGrid { grid-template-columns: repeat(4, 1fr); } }
-
-.stat {
-    background: var(--rn-black);
-    padding: clamp(1.5rem, 3vw, 2.4rem);
-}
-
-.statValue {
-    font-family: var(--rn-display);
-    font-size: clamp(2.2rem, 4.5vw, 3.4rem);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
-}
-
-.statLabel {
-    margin: 0.7rem 0 0;
-    font-size: 0.8125rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--rn-dimmer);
-}
-
-.statsFoot {
-    margin: 2rem 0 0;
-    font-size: 0.875rem;
-    color: var(--rn-dimmer);
-}
 
 /* ── Quote ──────────────────────────────────────────────────────────────── */
 
@@ -317,7 +354,7 @@
     font-size: clamp(1.5rem, 3.2vw, 2.6rem);
     font-weight: 700;
     line-height: 1.12;
-    letter-spacing: -0.02em;
+    letter-spacing: normal;
     text-transform: uppercase;
     text-wrap: balance;
     margin: 1rem 0 0;
@@ -327,7 +364,7 @@
     margin: 2rem 0 0;
     font-family: var(--rn-display);
     font-size: 1.125rem;
-    font-weight: 800;
+    font-weight: 600;
     text-transform: uppercase;
 }
 
@@ -336,6 +373,19 @@
 /* ── Closing band ───────────────────────────────────────────────────────── */
 
 .cta { background: var(--rn-paper); color: var(--rn-ink); }
+
+/* The break after the comma is in the copy, the way it is on the live heading. `rnH2` balances
+   its lines by default, which is right for a heading that has to fit whatever width it lands
+   in — but here it overrode the break that was written and evened the two lines out into a
+   shape nobody chose. */
+.ctaHead {
+    white-space: pre-line;
+    text-wrap: wrap;
+    /* Live sets this heading in a measure narrower than its column, so it stacks four deep and
+       the block reads as a slab beside the case rather than two long lines running at it. Set
+       in em so it holds that shape as the type scales. */
+    max-width: 9.3em;
+}
 
 .ctaGrid {
     display: grid;
@@ -346,45 +396,48 @@
 
 @media (min-width: 860px) { .ctaGrid { grid-template-columns: 1fr 1fr; } }
 
-.ctaList {
-    list-style: none;
-    margin: 1.75rem 0 0;
-    padding: 0;
+/* This one band does not use the site's 1140 rail. Live lays it out in a 1400px container of
+   its own, which is why the camera sits outside where everything else lines up — at 1440 the
+   container starts at 13 and the camera at 23, at 1900 they are 243 and 253. Measured at both
+   widths rather than guessed, since the offset looks arbitrary until you find the container.
+   The columns are 605 and the rest, so 43/57 rather than even. */
+.nightRail {
+    width: min(100% - 25px, 1400px);
+    margin-inline: auto;
+}
+
+@media (min-width: 860px) {
+    /* A fixed 605 and a 10px gutter, not a ratio: live's text starts 628 into a container that
+       begins at 13, which is 605 + 10 exactly. A proportional split put it 26px further out. */
+    .nightGrid {
+        grid-template-columns: minmax(0, 605px) 1fr;
+        gap: 10px;
+    }
+}
+
+/* Live draws this camera at its own 400x427 and no larger — it is a product shot on white,
+   and blowing it up to fill a column both softens it and makes it tower over the sentence
+   beside it, which is what mine was doing at 475x507. */
+.nightShot {
     display: grid;
-    gap: 0.6rem;
+    justify-items: start;
+    align-items: center;
+    /* The widget's own 10px inset, which is the whole of the gap between the container edge
+       and the camera on the live page. */
+    padding-left: 10px;
 }
 
-/* The contents arrive behind the lid rather than sitting there already — each item slides up
-   on its own delay, set per item so the stagger follows the clip instead of guessing. */
-.ctaList li {
-    display: flex;
-    gap: 0.7rem;
-    align-items: baseline;
-    font-size: 0.9375rem;
-    color: var(--rn-ink-dim);
-    opacity: 0;
-    transform: translateY(10px);
+.nightShot img {
+    display: block;
+    width: 400px;
+    max-width: 100%;
+    height: auto;
 }
 
-.ctaListOn li {
-    opacity: 1;
-    transform: none;
-    transition: opacity 0.5s var(--rn-ease) var(--rn-delay, 0ms),
-                transform 0.5s var(--rn-ease) var(--rn-delay, 0ms);
-}
-
-.ctaList li::before {
-    content: '';
-    flex: none;
-    width: 8px;
-    height: 8px;
-    background: var(--rn-red);
-    transform: translateY(1px);
-}
-
-/* Reduced motion gets the finished state, no travel. */
-@media (prefers-reduced-motion: reduce) {
-    .ctaList li { opacity: 1; transform: none; }
+/* The band is as tall as the photograph and little else: live runs 517px at this width, with
+   the camera nearly flush to the top and the sentence beside it centred against it. */
+.night {
+    padding-block: clamp(16px, 2vw, 24px) clamp(48px, 6vw, 80px);
 }
 
 .ctaActions {
@@ -395,43 +448,15 @@
     margin-top: 2rem;
 }
 
-.replay {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    padding: 0.4rem 0;
-    border: none;
-    background: none;
-    font-family: var(--rn-body);
-    font-size: 0.8125rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--rn-ink-dim);
-    cursor: pointer;
-    transition: color 0.2s var(--rn-ease);
-}
-
-.replay:hover { color: var(--rn-red); }
-
-/* The stage. A soft floor under the case so it does not float on flat paper. */
+/* No stage. I had a white glow behind the case and a soft shadow under it, on the reasoning
+   that it would otherwise float on flat paper — but the live section puts the case straight
+   onto the background with nothing behind it, and the invented lighting only announced that
+   the two were different objects. */
 .caseStage {
     position: relative;
     display: grid;
     place-items: center;
     aspect-ratio: 1 / 1;
-    background: radial-gradient(58% 52% at 50% 46%, rgb(255 255 255 / 0.9), transparent 72%);
-}
-
-.caseStage::after {
-    content: '';
-    position: absolute;
-    left: 14%;
-    right: 14%;
-    bottom: 13%;
-    height: 26px;
-    border-radius: 50%;
-    background: radial-gradient(50% 50% at 50% 50%, rgb(11 11 13 / 0.22), transparent 70%);
 }
 
 .caseVideo {
@@ -440,8 +465,236 @@
     width: 100%;
     height: auto;
     max-width: 550px;
-    /* The clip is matted on white; multiply drops that onto the paper without a visible box. */
-    mix-blend-mode: multiply;
+    /* No blend mode. The clip is matted on #f8f8f8, which is exactly the page colour, so it
+       needs nothing to disappear into it — and multiply actively broke that: multiplying the
+       matte by the identical background gives #f1f1f1, printing the dark box it was meant to
+       prevent. It only looked right before because there was a white glow behind it. */
 }
 
+
+
+@media (prefers-reduced-motion: reduce) {
+    .tabInk { transition: none; }
+    .tabOn .tabIcon { transform: none; }
+    .card,
+    .cardsLeaving .card { animation: none; }
+}
+
+/* ── The film band ───────────────────────────────────────────────────────────
+   Their brush-stroke backdrop runs the full width behind a centred film. Live's band is 802px
+   tall around a 907px-wide player; the cover artwork is wider than the player because the
+   frame and the corner flash sit outside it. */
+/* Measured off the live band at 1440: 802px tall, the film 120px down from the top and 172px
+   clear of the bottom — it sits high rather than centred, which is what leaves the long sweep
+   of brush underneath it. The backdrop is anchored top-left, not centred, so the stroke falls
+   across the band the same way. Mine was centred in a 650px band and read as a much tighter,
+   more symmetrical panel. */
+.film {
+    position: relative;
+    display: grid;
+    place-items: start center;
+    padding-block: clamp(40px, 8.33vw, 120px) clamp(56px, 11.94vw, 172px);
+    background-image: url('/rn/video/brush-bg.jpg');
+    background-size: cover;
+    background-position: 0% 0%;
+}
+
+.filmInner {
+    /* Live sizes this box at 907px wide, not the artwork's natural 1045. Mine was rendering the
+       PNG at full size, so the whole film sat noticeably larger than theirs. */
+    width: min(100% - 2 * var(--rn-gutter), 907px);
+}
+
+/* The artwork is the frame and never moves. The film plays inside its window, so pressing
+   play changes nothing about the surround — the rounded case, the drop shadow and the red
+   "NEU!" flash are all part of this one picture and stay exactly where they were. */
+.filmFrame {
+    position: relative;
+    line-height: 0;
+}
+
+.filmArt {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: none;
+}
+
+/* The badge occupies 918,46 to 997,125 of the 1045x583 artwork, which is inside the window the
+   film fills. Rather than cut a notch out of the film, the artwork is drawn a second time on
+   top and clipped to that rectangle, so the flash sits over the picture exactly as it does in
+   the original. */
+.filmBadge {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    width: 100%;
+    height: auto;
+    clip-path: inset(7.89% 4.59% 78.39% 87.85%);
+    pointer-events: none;
+}
+
+/* Measured off menzel-cover.png (1045x583): the photograph inside the frame starts at 17,21
+   and runs 940x519, so these are its edges as percentages. Percentages rather than pixels
+   because the artwork scales with the column. */
+.filmWindow {
+    position: absolute;
+    left: 1.63%;
+    top: 3.6%;
+    width: 89.95%;
+    height: 89.02%;
+    overflow: hidden;
+}
+
+/* On screen from the moment the page loads, showing the film's own first frame. Nothing
+   fades and nothing is swapped: pressing play sets the picture that is already there moving. */
+.filmVideo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: var(--rn-black);
+    cursor: pointer;
+    /* Nothing in this player animates. */
+    transition: none;
+}
+
+/* The artwork's printed play button is behind the film now, so the player brings its own. */
+.filmPlay {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: grid;
+    place-items: center;
+    width: 76px;
+    height: 76px;
+    margin: -38px 0 0 -38px;
+    padding: 0 0 0 5px;
+    border: none;
+    border-radius: 50%;
+    background: rgb(8 8 10 / 0.55);
+    color: var(--rn-white);
+    cursor: pointer;
+}
+
+.filmPlay:hover { background: var(--rn-red); }
+
+
+/* ── Track coverage ──────────────────────────────────────────────────────────
+   The heading band runs on the reading rail: live puts the heading 99px down and the
+   standfirst under it, the whole band 261px tall. */
+.tracksHead {
+    padding-block: clamp(56px, 7vw, 99px) clamp(20px, 2.5vw, 26px);
+    /* Live's widget sits 10px inside the rail, which is where its heading starts. */
+    padding-inline: 10px;
+}
+
+.tracksBody {
+    margin: 1.75rem 0 0;
+    font-size: 1rem;
+    color: var(--rn-ink-dim);
+    max-width: 1120px;
+}
+
+/* Four regions edge to edge, no rail — the row is the full width of the window. */
+.tracksRow {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    margin: 0;
+    padding: 0;
+}
+
+@media (min-width: 760px) { .tracksRow { grid-template-columns: repeat(4, 1fr); } }
+
+/* `trackTile`, not `track`: the partner rail already owns `.track` in this stylesheet, and a
+   second rule of the same name merged into it — the tiles quietly inherited the rail's
+   `display: flex`, `width: max-content` and its 42-second marquee animation, which is why they
+   sat at a different offset every time they were measured. */
+.trackTile {
+    position: relative;
+    display: block;
+    /* Stated rather than left to `auto`: both children are taken out of the flow, so the
+       anchor has nothing to derive a width from and collapses — which then makes the
+       photograph's `calc(100% + 50px)` resolve to 50px. */
+    width: 100%;
+    height: clamp(300px, 36vw, 520px);
+    overflow: hidden;
+    text-decoration: none;
+}
+
+/* RN's own hover, taken off their tiles rather than invented: the photograph is drawn 50px
+   wider than its frame and parked 40px left, and the name sits 40px below where it belongs.
+   On hover both travel to zero, so the picture drifts right as the name rises — the two moving
+   against each other is what gives it depth. */
+.trackShot {
+    position: absolute;
+    inset: 0;
+    width: calc(100% + 50px);
+    max-width: none;
+    height: 100%;
+    object-fit: cover;
+    /* The slide and the zoom are one transform, so they run off a single interpolation rather
+       than fighting each other — declaring `transform` twice would simply drop the first. */
+    transform: translate3d(-40px, 0, 0) scale(1);
+    transform-origin: center;
+    transition: transform 0.55s var(--rn-ease);
+}
+
+/* Live's wrap: the bottom half of the tile, padded 2em, with the name sitting at the top of
+   that half. Mine was pinned to the very bottom, so shifting it down 40px at rest pushed it
+   out through the clipped edge and the names were half gone until you hovered. Here the 40px
+   has room to travel and the name reads at rest, which is how the live tiles look. */
+.trackName {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    height: 50%;
+    padding: 2em;
+    font-family: var(--rn-display);
+    font-size: clamp(1.6rem, 3.2vw, 3.125rem);
+    font-weight: 400;
+    line-height: 1.1;
+    text-transform: uppercase;
+    color: var(--rn-white);
+    transform: translate3d(0, 40px, 0);
+    transition: transform 0.35s var(--rn-ease);
+}
+
+/* The picture comes to rest and pushes in at the same time; the name rises to meet it. */
+.trackTile:hover .trackShot,
+.trackTile:focus-visible .trackShot {
+    transform: translate3d(0, 0, 0) scale(1.08);
+}
+
+.trackTile:hover .trackName,
+.trackTile:focus-visible .trackName {
+    transform: translate3d(0, 0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .trackShot,
+    .trackName { transition: none; }
+}
+
+/* ── News ────────────────────────────────────────────────────────────────────
+   Live's heading band is 88px with the heading 10px down. What sits under it there is a
+   social-stream plugin printing an error, so this holds the client's real channels instead. */
+.newsHead {
+    padding-block: clamp(40px, 5vw, 64px) clamp(20px, 2.5vw, 32px);
+}
+
+/* Live runs its feed on a brush-stroke backdrop of its own — a different stroke from the film
+   band's, anchored top-left the same way. The band is theirs; what sits on it is ours, because
+   what sits on theirs is a plugin error. */
+.newsBand {
+    background-image: url('/rn/video/brush-news.jpg');
+    background-size: cover;
+    background-position: 0% 0%;
+    /* Live's band is 254px with nothing in it. */
+    min-height: clamp(180px, 18vw, 254px);
+}
 

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { rnNav } from '@/content/rn';
+import { useCart } from '@/components/shop/CartProvider';
 import s from './RnChrome.module.css';
 
 /* The site header: sticky, with the nav collapsing to a sheet below 1000px.
@@ -12,6 +13,8 @@ import s from './RnChrome.module.css';
    without JavaScript and can be crawled — the store next door does the same. */
 export default function RnHeader({ locale }: { locale: string }) {
     const t = rnNav(locale);
+    const { cart, setOpen: setCartOpen } = useCart();
+    const count = cart?.totalQuantity ?? 0;
     const [open, setOpen] = useState(false);
     /* Transparent over the hero, solid once past it. */
     const [solid, setSolid] = useState(false);
@@ -39,7 +42,9 @@ export default function RnHeader({ locale }: { locale: string }) {
 
     const links = [
         { label: t.products, href: `/${locale}/rn#systems` },
-        { label: t.support, href: `/${locale}/rn#support` },
+        /* The live site has a support section of its own; this rebuild does not, so the
+           link goes to the footer rather than to an anchor that is not there. */
+        { label: t.support, href: `/${locale}/rn#contact` },
         { label: t.partners, href: `/${locale}/rn#partners` },
         { label: t.contact, href: `/${locale}/rn#contact` },
     ];
@@ -47,6 +52,9 @@ export default function RnHeader({ locale }: { locale: string }) {
     return (
         <header className={`${s.header} ${solid || open ? s.headerSolid : ''}`}>
             <div className={`rnRail ${s.bar}`}>
+                {/* Wordmark and nav travel together as one block, so the bar can centre them
+                    without the actions beside them having to leave the flow. */}
+                <div className={s.group}>
                 {/* Two marks, both in the markup and swapped by CSS: the symbol alone over the
                     hero, the full lockup once the bar turns white — the black wordmark would
                     be invisible on the picture and the symbol alone looks lost on the bar.
@@ -72,11 +80,31 @@ export default function RnHeader({ locale }: { locale: string }) {
 
                 <nav className={s.nav} aria-label="Primary">
                     {links.map((l) => (
-                        <Link key={l.href} href={l.href} className={s.navLink}>{l.label}</Link>
+                        <Link key={l.label} href={l.href} className={s.navLink}>{l.label}</Link>
                     ))}
                 </nav>
+                </div>
 
                 <div className={s.actions}>
+                    {/* The rebuild and the shop share one cart, so this opens the same drawer
+                        the store does, over the same lines. Always in the bar, whether or not
+                        there is anything in it — a control that comes and goes is one people
+                        have to hunt for. The count rides the corner only when there is one. */}
+                    <button
+                        type="button"
+                        className={s.cartBtn}
+                        onClick={() => setCartOpen(true)}
+                        aria-label={count > 0 ? `${t.cart} (${count})` : t.cart}
+                    >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M6 7h12l-1.2 11.2a2 2 0 0 1-2 1.8H9.2a2 2 0 0 1-2-1.8L6 7z"
+                                  stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+                            <path d="M9 7V5.5a3 3 0 0 1 6 0V7" stroke="currentColor" strokeWidth="1.8"
+                                  strokeLinecap="round" />
+                        </svg>
+                        {count > 0 && <span className={s.cartCount}>{count}</span>}
+                    </button>
+
                     <Link href={`/${other}/rn`} className={s.lang} hrefLang={other} title={t.switchTo}>
                         {other}
                     </Link>
@@ -99,7 +127,7 @@ export default function RnHeader({ locale }: { locale: string }) {
             <div id="rn-menu" className={s.sheet} hidden={!open}>
                 <div className={`rnRail ${s.sheetInner}`}>
                     {links.map((l) => (
-                        <Link key={l.href} href={l.href} className={s.sheetLink} onClick={() => setOpen(false)}>
+                        <Link key={l.label} href={l.href} className={s.sheetLink} onClick={() => setOpen(false)}>
                             {l.label}
                         </Link>
                     ))}

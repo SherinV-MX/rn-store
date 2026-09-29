@@ -96,10 +96,10 @@
 .name {
     font-family: var(--rn-display);
     font-size: clamp(3rem, 8vw, 5.6rem);
-    font-weight: 800;
+    font-weight: 600;
     line-height: 0.9;
     text-shadow: 2px 2px 5px rgb(0 0 0 / 0.85);
-    letter-spacing: -0.035em;
+    letter-spacing: normal;
     text-transform: uppercase;
     margin: 0;
 }
@@ -203,7 +203,7 @@
 .quickValue {
     font-family: var(--rn-display);
     font-size: 1.375rem;
-    font-weight: 800;
+    font-weight: 600;
     margin-top: 0.35rem;
     font-variant-numeric: tabular-nums;
 }
@@ -242,8 +242,8 @@
 .featureTitle {
     font-family: var(--rn-display);
     font-size: 1.25rem;
-    font-weight: 800;
-    letter-spacing: -0.01em;
+    font-weight: 600;
+    letter-spacing: normal;
     text-transform: uppercase;
     margin: 0.7rem 0 0;
     text-wrap: balance;
@@ -314,9 +314,9 @@
 .versionName {
     font-family: var(--rn-display);
     font-size: 1.6rem;
-    font-weight: 800;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: -0.02em;
+    letter-spacing: normal;
     margin: 0;
 }
 
@@ -382,7 +382,7 @@
 .optionName {
     font-family: var(--rn-display);
     font-size: 1.0625rem;
-    font-weight: 800;
+    font-weight: 600;
     text-transform: uppercase;
     margin: 0;
 }
@@ -400,9 +400,9 @@
 .closeHead {
     font-family: var(--rn-display);
     font-size: clamp(1.9rem, 4.6vw, 3.4rem);
-    font-weight: 800;
+    font-weight: 600;
     line-height: 1;
-    letter-spacing: -0.025em;
+    letter-spacing: normal;
     text-transform: uppercase;
     margin: 0;
     text-wrap: balance;

@@ -27,3 +27,20 @@ check whether that still holds.
 The partner rail applies `mix-blend-mode: multiply` so the white-background JPEGs sit on the
 light rail without boxes around them. If a logo is ever supplied with a transparent background
 and a dark mark, that rule still works; a white mark on transparent would not.
+
+## video/reel.webm — placeholder, not RN's
+
+Public domain. "Fuji Speedway", U.S. Navy AFN-T, via Wikimedia Commons:
+https://commons.wikimedia.org/wiki/File:Fuji_Speedway_(953856).webm
+
+A stand-in for the demo only. RN's own Christian Menzel film
+(youtube.com/watch?v=L0aLgDfwkO0) is on YouTube and is not ours to copy, so it is not
+included here. Replace CLIP in src/components/rn/RnVideo.tsx when the client supplies the
+real file.
+
+Note: the clip opens on ~0.75s of black, which the player skips with its START constant. A
+trimmed file would let that constant go back to 0.
+
+## video/menzel-cover.png, video/brush-bg.jpg — RN's own
+
+Taken from race-navigator.de. The client's artwork, used here to rebuild their page.

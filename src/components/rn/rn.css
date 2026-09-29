@@ -22,19 +22,26 @@
     --rn-dim: #9ba1a9;
     --rn-dimmer: #6a7078;
 
-    --rn-paper: #f1f2f3;
-    --rn-paper-2: #e6e8ea;
+    /* The live page sits on #f8f8f8 — near enough to white that the white partner rail reads
+       as a band on it rather than a different surface. Mine was several steps darker, which
+       made every light section look like a grey panel. */
+    --rn-paper: #f8f8f8;
+    --rn-paper-2: #eeeeee;
     --rn-ink: #0b0b0d;
     --rn-ink-dim: #565c63;
     --rn-line-ink: rgb(11 11 13 / 0.12);
 
-    --rn-display: var(--font-rn-display), 'Archivo', system-ui, sans-serif;
-    --rn-body: var(--font-rn-body), 'Barlow', system-ui, sans-serif;
+    --rn-display: var(--font-rn-display), 'Titillium Web', system-ui, sans-serif;
+    --rn-body: var(--font-rn-body), 'Source Sans 3', system-ui, sans-serif;
 
     /* One rail width for every section, so section edges line up down the page. */
-    --rn-max: 1320px;
+    /* The live site lays its content out in a 1140px container. Mine was 1320, which put every
+       heading and every card 35px further out than theirs and made each section read wider and
+       looser than the original. */
+    --rn-max: 1140px;
     --rn-gutter: clamp(20px, 5vw, 64px);
-    --rn-section: clamp(64px, 8vw, 128px);
+    /* Live's closing band is 763px tall around a 534px image, which is 115px of air each side. */
+    --rn-section: clamp(56px, 7vw, 115px);
 
     --rn-ease: cubic-bezier(0.22, 1, 0.36, 1);
 
@@ -50,11 +57,12 @@
 
 /* Shared building blocks. Component modules handle everything specific. */
 
+/* The container is exactly --rn-max wide once there is room for it, and the gutter only eats
+   into it below that. Padding on top of the max-width pushed the content a further 64px in at
+   desktop, which is what put every heading out of place against the live site. */
 .rnRail {
-    width: 100%;
-    max-width: var(--rn-max);
+    width: min(100% - 2 * var(--rn-gutter), var(--rn-max));
     margin-inline: auto;
-    padding-inline: var(--rn-gutter);
 }
 
 .rnSection { padding-block: var(--rn-section); }
@@ -76,10 +84,15 @@
 
 .rnH2 {
     font-family: var(--rn-display);
-    font-size: clamp(1.9rem, 4.4vw, 3.4rem);
-    font-weight: 800;
-    line-height: 0.98;
-    letter-spacing: -0.02em;
+    /* Live declares 50px/600 Titillium Web but never actually loads the face, so it renders in
+       the browser's fallback sans — about 15% wider on the page. Setting real Titillium at 50px
+       therefore came out visibly smaller than theirs: "EVERYTHING" measures 281px here against
+       323px there. Matching what the visitor sees rather than what the stylesheet claims means
+       57.5px, and a 60px line to keep their four-line block exactly 240px deep. */
+    font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: normal;
     text-transform: uppercase;
     text-wrap: balance;
     margin: 0;
@@ -111,11 +124,13 @@
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
-    padding: 0.85rem 1.7rem;
+    /* 42px tall and 16px type, as the live buttons are. Mine sat at 52 with smaller lettering,
+       which reads as a chunkier, more generic button than theirs. */
+    padding: 0.5rem 1.85rem;
     border: 1px solid transparent;
     border-radius: 2px;
     font-family: var(--rn-body);
-    font-size: 0.875rem;
+    font-size: 1rem;
     font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;

@@ -38,6 +38,8 @@
 /* Once the hero is behind us there is no picture to sit on, so it becomes a real bar — white,
    the way the live one is. Everything on it has to invert with it: the links, the language
    switch, the burger and the wordmark. The store button is red on both and does not move. */
+.headerSolid .bar { min-height: 66px; }
+
 .headerSolid {
     background: var(--rn-white);
     backdrop-filter: none;
@@ -60,12 +62,26 @@
 .headerSolid .burger { border-color: var(--rn-line-ink); }
 .headerSolid .burger span { background: var(--rn-ink); }
 
+/* Three columns with the middle one centred: the wordmark and nav live in it, the actions in
+   the third. Everything stays in the flow, so the two blocks cannot overlap however wide
+   either grows — which is exactly what went wrong when the cart was added and the actions,
+   pinned out of the flow on the right, spread left across the nav. */
 .bar {
     position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1.5rem;
+    /* Live's bar is 97px over the hero and drops to about 66 once it turns white. Mine was a
+       flat 74, which is why the logo and links sat tighter than theirs. */
+    min-height: 97px;
+}
+
+.group {
+    grid-column: 2;
     display: flex;
     align-items: center;
     gap: 1.5rem;
-    min-height: 74px;
 }
 
 .brand {
@@ -88,9 +104,11 @@
 @media (min-width: 1000px) { .nav { display: flex; } }
 
 .navLink {
-    font-size: 0.8125rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
+    /* Measured off live: 14px at 700 with no tracking at all. Mine was 13px at 600 spaced out
+       by 0.12em, which reads lighter and wider — the single biggest difference in the bar. */
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: normal;
     text-transform: uppercase;
     color: var(--rn-white);
     text-decoration: none;
@@ -115,21 +133,66 @@
 
 .navLink:hover::after { transform: scaleX(1); }
 
-.actions { display: flex; align-items: center; gap: 0.75rem; margin-inline-start: auto; }
+.actions { grid-column: 3; justify-self: end; display: flex; align-items: center; gap: 0.75rem; }
+
+/* The cart, when there is one. White over the hero and dark once the bar turns, like every
+   other control up here. */
+.cartBtn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border: 1px solid rgb(255 255 255 / 0.35);
+    border-radius: 2px;
+    background: rgb(8 8 10 / 0.42);
+    color: var(--rn-white);
+    cursor: pointer;
+    transition: border-color 0.2s var(--rn-ease), background 0.2s var(--rn-ease);
+}
+
+.cartBtn:hover { border-color: var(--rn-white); background: rgb(8 8 10 / 0.62); }
+
+/* The count rides the corner of the bag rather than sitting beside it, so the control stays
+   square whatever the number. */
+.cartCount {
+    position: absolute;
+    top: -7px;
+    right: -7px;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    border-radius: 10px;
+    background: var(--rn-red);
+    color: var(--rn-white);
+    font-family: var(--rn-body);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 20px;
+    text-align: center;
+}
+
+.headerSolid .cartBtn {
+    border-color: var(--rn-line-ink);
+    background: transparent;
+    color: var(--rn-ink);
+}
+
+.headerSolid .cartBtn:hover { border-color: var(--rn-ink); background: rgb(11 11 13 / 0.05); }
 
 /* Wide enough for the nav: the wordmark and links centre in the bar as one block, and the
    actions come out of the flow and pin to the right so they do not pull it off centre.
    Narrower than that there is no nav to centre, so the brand stays on the left. */
-@media (min-width: 1000px) {
-    .bar { justify-content: center; }
+/* Below 1000px there is no nav to centre, so the wordmark takes the left edge back and the
+   actions keep the right. */
+@media (max-width: 999px) {
+    .bar { grid-template-columns: auto 1fr; }
 
-    .actions {
-        position: absolute;
-        right: var(--rn-gutter);
-        top: 50%;
-        margin-inline-start: 0;
-        transform: translateY(-50%);
-    }
+    .group { grid-column: 1; }
+
+    .actions { grid-column: 2; }
 }
 
 .lang {
@@ -157,9 +220,16 @@
 
 .lang:hover { border-color: var(--rn-white); background: rgb(8 8 10 / 0.62); }
 
-.store {
-    padding: 0.7rem 1.4rem;
-    font-size: 0.8125rem;
+/* Live's is 95x40 with 16px type at regular weight and no tracking.
+
+   Scoped through .actions so it outranks the shared .rnBtn: both are single classes, so on
+   equal specificity whichever stylesheet happens to load last was winning, and .rnBtn's
+   tracking and 600 weight kept coming back. */
+.actions .store {
+    padding: 0.5rem 1.45rem;
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: normal;
 }
 
 .burger {
@@ -211,7 +281,7 @@
     font-family: var(--rn-display);
     font-size: 1.25rem;
     font-weight: 700;
-    letter-spacing: -0.01em;
+    letter-spacing: normal;
     text-transform: uppercase;
     color: var(--rn-ink);
     text-decoration: none;
@@ -235,20 +305,22 @@
 
 .mark { display: inline-flex; align-items: center; gap: 0.6rem; }
 
+/* Live draws the symbol at 134x77 over the hero and the lockup at roughly 205x37 on the white
+   bar. Mine were 77x44 and 170x30 — both about half the size theirs are. */
 .markImg {
     display: block;
     width: auto;
-    height: 38px;
+    height: 56px;
     object-fit: contain;
 }
 
-@media (min-width: 560px) { .markImg { height: 44px; } }
+@media (min-width: 560px) { .markImg { height: 77px; } }
 
 /* The lockup is a wide, short image, so it is set shorter than the symbol to carry the same
    optical weight. */
-.markLockup { display: none; height: 26px; }
+.markLockup { display: none; height: 28px; }
 
-@media (min-width: 560px) { .markLockup { height: 30px; } }
+@media (min-width: 560px) { .markLockup { height: 37px; } }
 
 .headerSolid .markMark { display: none; }
 .headerSolid .markLockup { display: block; }
