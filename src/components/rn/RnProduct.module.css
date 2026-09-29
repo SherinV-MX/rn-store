@@ -520,6 +520,11 @@
    them at 1440 — 1120 wide, the label column 306 and the three model columns 271, rows 54 deep
    with the photograph band at 170 and 15px of white above and below the pictures. */
 .compare {
+    /* The section paints its own paper, so it has to name its own ink: [data-site='rn'] sets
+       white on everything by default, and the heading was inheriting it — white on white. The
+       table and the legend already state their colour, which is why only the heading showed
+       the fault. */
+    color: var(--rn-ink);
     /* Live: 10px above the heading, and 162px of brush below the button. */
     padding-block: 10px 162px;
     background: var(--rn-paper) url('/rn/mood/mood-bg.jpg') no-repeat center bottom / auto;

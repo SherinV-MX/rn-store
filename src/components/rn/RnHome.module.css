@@ -592,6 +592,83 @@
 
 .filmPlay:hover { background: var(--rn-red); }
 
+/* In fullscreen the window IS the root element, so the percentage offsets that place it
+   inside the cover artwork no longer have anything to sit in and have to be cleared. The film
+   then fits the screen on its own terms, letterboxed on black rather than stretched. */
+.filmWindow:fullscreen {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+}
+
+.filmWindow:fullscreen .filmVideo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Mute and fullscreen, in the corner of the picture. Out of sight until the pointer is on the
+   film, so the picture is a picture until someone wants to operate it.
+
+   Hidden by opacity and pointer-events rather than by visibility or display. An element that is
+   visibility:hidden cannot take focus, so :focus-within would never fire and a keyboard user
+   could never reach these at all. At opacity 0 they are still in the focus order, and the first
+   tab onto one brings the pair up. pointer-events is what stops the invisible buttons
+   swallowing a click meant for the picture underneath. */
+.filmTools {
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+    display: flex;
+    gap: 8px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s var(--rn-ease);
+}
+
+.filmWindow:hover .filmTools,
+.filmWindow:focus-within .filmTools {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* A touch screen has no pointer to hover with, so there they simply stay. Hiding them on a
+   phone would mean hiding them for good. */
+@media (hover: none) {
+    .filmTools {
+        opacity: 0.85;
+        pointer-events: auto;
+    }
+}
+
+.filmTool {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgb(8 8 10 / 0.55);
+    color: var(--rn-white);
+    cursor: pointer;
+    transition: background 0.2s var(--rn-ease);
+}
+
+.filmTool:hover { background: var(--rn-red); }
+
+.filmTool:focus-visible {
+    outline: 2px solid var(--rn-white);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .filmTools,
+    .filmTool { transition: none; }
+}
+
 
 /* ── Track coverage ──────────────────────────────────────────────────────────
    The heading band runs on the reading rail: live puts the heading 99px down and the
