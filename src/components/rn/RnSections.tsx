@@ -106,7 +106,7 @@ export function RnTracks({ locale }: { locale: string }) {
                                 width={600}
                                 height={347}
                                 sizes="(max-width: 700px) 50vw, 25vw"
-                                quality={80}
+                                quality={82}
                             />
                             <span className={s.trackName}>{region.name}</span>
                         </a>

@@ -19,7 +19,13 @@ export interface CartDict {
     quantity: string;
 }
 
-export default function CartDrawer({ locale, dict }: { locale: string; dict: CartDict }) {
+/* `skin` lets a site dress the drawer without forking it. The Race Navigator rebuild passes
+   "rn" and gets their brush behind it; the store passes nothing and is untouched. */
+export default function CartDrawer({ locale, dict, skin }: {
+    locale: string;
+    dict: CartDict;
+    skin?: 'rn';
+}) {
     const { cart, busy, open, setOpen, setQuantity, removeItem } = useCart();
     const panel = useRef<HTMLDivElement>(null);
 
@@ -51,6 +57,7 @@ export default function CartDrawer({ locale, dict }: { locale: string; dict: Car
                 way a keyboard user ends up somewhere they cannot see. */}
             <aside
                 className={`${styles.drawer} ${open ? styles.drawerOn : ''}`}
+                data-skin={skin}
                 role="dialog"
                 aria-modal="true"
                 aria-label={dict.title}

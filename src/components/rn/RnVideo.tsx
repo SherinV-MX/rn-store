@@ -83,7 +83,7 @@ export default function RnVideo({ locale }: { locale: string }) {
                         width={1045}
                         height={583}
                         sizes="(max-width: 1000px) 100vw, 907px"
-                        quality={85}
+                        quality={82}
                     />
 
                     {/* The red "NEU!" flash is printed over the top-right corner of the
@@ -96,7 +96,7 @@ export default function RnVideo({ locale }: { locale: string }) {
                         width={1045}
                         height={583}
                         sizes="(max-width: 1000px) 100vw, 907px"
-                        quality={85}
+                        quality={82}
                         aria-hidden="true"
                     />
 

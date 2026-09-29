@@ -406,3 +406,79 @@
     text-transform: uppercase;
     color: var(--rn-dimmer);
 }
+
+/* ── Newsletter bar ──────────────────────────────────────────────────────────
+   Live's footer template carries a full-width red band with RN's slanted white logo panel set
+   into the left of it. Measured off them at 1440: the band is 161 tall, the first column takes
+   36% of it with the 500x161 panel centred in that column, and the heading sits 10px into the
+   second column at 28/600.
+
+   The band's red is live's own #e30613 rather than --rn-red (#dc0714). The panel is a flat JPEG
+   with no transparency — its upper right is the band's red, sampled at #e20612 — so painting
+   the band in our slightly darker token would draw a seam straight down the join. */
+.newsBar {
+    display: flex;
+    align-items: stretch;
+    min-height: 161px;
+    background: #e30613;
+}
+
+.newsShapeCol {
+    flex: 0 0 36%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.newsShape {
+    width: 500px;
+    height: 161px;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+/* Live's heading is not centred in the band — its widget padding leaves it 59px down, a little
+   above the middle — so it is pinned there rather than centred. */
+.newsBarBody {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: flex-start;
+    padding: 59px 0 0 10px;
+}
+
+.newsBarHead {
+    margin: 0;
+    font-family: var(--rn-body);
+    font-size: 28px;
+    font-weight: 600;
+    /* 1, so the text box is live's 28 rather than 34 and the 59px pin lands on their line. */
+    line-height: 1;
+    letter-spacing: normal;
+    /* Live's near-black on the red. At 28/600 that is large bold text and it clears AA. */
+    color: #161616;
+}
+
+@media (max-width: 1040px) {
+    /* The panel cannot hold its 500px beside the heading much below this, so the band stacks
+       and the panel scales with the column instead. */
+    .newsBar {
+        flex-direction: column;
+        align-items: stretch;
+        min-height: 0;
+    }
+
+    .newsShapeCol { flex: none; justify-content: flex-start; }
+
+    .newsShape {
+        width: min(500px, 70%);
+        height: auto;
+    }
+
+    .newsBarBody {
+        /* The pin is a desktop measurement; stacked, the heading just sits under the panel. */
+        align-items: center;
+        padding: 18px 20px 26px;
+    }
+
+    .newsBarHead { font-size: clamp(20px, 4vw, 28px); }
+}

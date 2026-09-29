@@ -49,7 +49,7 @@ export default async function RnLayout({
                 and a dark colour-scheme for the whole rebuild, which the drawer inherited —
                 white type on its white panel, so every line of it went invisible. Out here it
                 renders in the store's own context, exactly as it does in the shop. */}
-            <CartDrawer locale={locale} dict={dict.cart} />
+            <CartDrawer locale={locale} dict={dict.cart} skin="rn" />
         </>
     );
 }

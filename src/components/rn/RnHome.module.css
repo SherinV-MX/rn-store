@@ -374,13 +374,9 @@
 
 .cta { background: var(--rn-paper); color: var(--rn-ink); }
 
-/* The break after the comma is in the copy, the way it is on the live heading. `rnH2` balances
-   its lines by default, which is right for a heading that has to fit whatever width it lands
-   in — but here it overrode the break that was written and evened the two lines out into a
-   shape nobody chose. */
+/* The break after the comma is in the copy, the way it is on the live heading. */
 .ctaHead {
     white-space: pre-line;
-    text-wrap: wrap;
     /* Live sets this heading in a measure narrower than its column, so it stacks four deep and
        the block reads as a slab beside the case rather than two long lines running at it. Set
        in em so it holds that shape as the type scales. */
@@ -457,6 +453,23 @@
     display: grid;
     place-items: center;
     aspect-ratio: 1 / 1;
+}
+
+/* The case is the control, so the button carries none of a button's chrome — and the cursor
+   is what says it can be pressed. */
+.caseToggle {
+    width: 100%;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+}
+
+.caseToggle:focus-visible {
+    outline: 2px solid var(--rn-red);
+    outline-offset: 6px;
 }
 
 .caseVideo {

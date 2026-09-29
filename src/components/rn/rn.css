@@ -11,6 +11,8 @@
     --rn-red: #dc0714;
     --rn-red-hot: #ff2b38;
     --rn-red-deep: #a3050f;
+    /* Only the comparison table uses it: live's tick green. */
+    --rn-green: #30a945;
 
     --rn-black: #0b0b0d;
     --rn-carbon: #131418;
@@ -31,7 +33,14 @@
     --rn-ink-dim: #565c63;
     --rn-line-ink: rgb(11 11 13 / 0.12);
 
-    --rn-display: var(--font-rn-display), 'Titillium Web', system-ui, sans-serif;
+    /* The face the live site actually renders its headings in.
+
+       It declares Titillium Web and never loads it, so every heading there falls back to the
+       browser's own sans — Arial on Windows, Helvetica on a Mac. Loading the real Titillium
+       gave narrower, more condensed headings than theirs, so the stack below reproduces what a
+       visitor sees rather than what their stylesheet asks for. Titillium is kept at the end in
+       case RN ever fix their font loading, at which point the two would agree again. */
+    --rn-display: Arial, 'Helvetica Neue', Helvetica, var(--font-rn-display), sans-serif;
     --rn-body: var(--font-rn-body), 'Source Sans 3', system-ui, sans-serif;
 
     /* One rail width for every section, so section edges line up down the page. */
@@ -84,17 +93,17 @@
 
 .rnH2 {
     font-family: var(--rn-display);
-    /* Live declares 50px/600 Titillium Web but never actually loads the face, so it renders in
-       the browser's fallback sans — about 15% wider on the page. Setting real Titillium at 50px
-       therefore came out visibly smaller than theirs: "EVERYTHING" measures 281px here against
-       323px there. Matching what the visitor sees rather than what the stylesheet claims means
-       57.5px, and a 60px line to keep their four-line block exactly 240px deep. */
-    font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+    /* 50px on a 1.2 line, exactly as live sets it. The earlier 57.6px was compensating for a
+       narrower typeface; now that the face matches theirs, so does the size. */
+    font-size: clamp(1.9rem, 3.9vw, 3.125rem);
     font-weight: 600;
-    line-height: 1.05;
+    line-height: 1.2;
     letter-spacing: normal;
     text-transform: uppercase;
-    text-wrap: balance;
+    /* No balancing. Live fills each line to the measure and breaks where it runs out, so
+       "THE ALL-IN-ONE VIDEO AND ANALYSIS / SYSTEM." Balancing evened the two lines instead and
+       broke after "VIDEO" — a different shape from theirs on every heading that wraps. */
+    text-wrap: wrap;
     margin: 0;
 }
 
@@ -181,3 +190,17 @@
 }
 
 .rnSkip:focus { left: 1rem; top: 1rem; }
+
+/* Text for screen readers only. The comparison table's ticks and crosses are drawings; this is
+   what carries their meaning to anyone not looking at them. */
+[data-site='rn'] .rnSrOnly {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}

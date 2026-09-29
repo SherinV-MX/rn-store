@@ -194,3 +194,67 @@
 }
 
 .checkout:hover { filter: brightness(1.08); }
+
+/* ── Race Navigator skin ─────────────────────────────────────────────────────
+   The same drawer, dressed for the rebuild. Only reached when the RN layout passes
+   skin="rn" — the store's cart is untouched.
+
+   RN's brush stroke does two jobs here. Across the head it is a band: their red laid over the
+   stroke so the panel opens on something with a texture rather than a flat bar. Down the body
+   it is a watermark that only surfaces towards the bottom, kept under a wash that starts fully
+   opaque at the top — the line items sit on clean paper, and the texture appears where there is
+   nothing to read.
+
+   The colours are written out rather than taken from --rn-*: those tokens live on
+   [data-site='rn'], and this panel is mounted outside that element on purpose so it does not
+   inherit the rebuild's white-on-dark text. */
+.drawer[data-skin='rn'] {
+    background-color: #f8f8f8;
+    /* Three layers, topmost first.
+
+       The paper wash is solid for the top half and thins towards the base, so line items sit on
+       clean paper and the stroke only surfaces in the empty space below them.
+
+       The red between the wash and the photograph is what makes this work. Relying on the
+       stroke's own colour left the middle of the panel grey — that part of RN's photograph is a
+       dark cockpit, not brush — so the red is laid over it and the photograph supplies only the
+       texture and the torn edge. Where the wash is thick the tint is invisible; where it thins,
+       the base comes up red rather than muddy.
+
+       The photograph is anchored to the bottom at twice the panel's width, which puts the torn
+       edge of the stroke across the lower third and keeps its grain coarse. */
+    background-image:
+        linear-gradient(to bottom,
+            #f8f8f8 0%, #f8f8f8 46%,
+            rgba(248, 248, 248, 0.58) 74%,
+            rgba(248, 248, 248, 0.34) 100%),
+        linear-gradient(to bottom,
+            rgba(227, 6, 19, 0) 42%,
+            rgba(227, 6, 19, 0.40) 76%,
+            rgba(227, 6, 19, 0.60) 100%),
+        url('/rn/mood/mood-bg.jpg');
+    background-repeat: no-repeat, no-repeat, no-repeat;
+    background-position: center, center, 30% bottom;
+    background-size: auto, auto, 200% auto;
+}
+
+.drawer[data-skin='rn'] .head {
+    /* Their red over their stroke, in one property: the gradient is laid on top of the
+       photograph, so the band keeps the brush's movement without showing the picture. */
+    background:
+        linear-gradient(118deg, rgba(227, 6, 19, 0.94), rgba(163, 5, 15, 0.94)),
+        url('/rn/video/brush-news.jpg') center / cover;
+    border-bottom: 0;
+    color: #fff;
+}
+
+.drawer[data-skin='rn'] .title { color: #fff; }
+
+.drawer[data-skin='rn'] .close { color: #fff; }
+.drawer[data-skin='rn'] .close:hover { background: rgb(255 255 255 / 0.18); }
+
+/* The totals sit on their own panel so the stroke behind them never reaches the numbers. */
+.drawer[data-skin='rn'] .foot {
+    background: rgb(255 255 255 / 0.82);
+    backdrop-filter: blur(2px);
+}

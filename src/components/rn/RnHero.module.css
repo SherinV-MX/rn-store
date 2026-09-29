@@ -124,9 +124,10 @@
 
 .title {
     font-family: var(--rn-display);
-    /* Sized so the actual headlines fit on one line from about 900px up; below that they
-       wrap, balanced, rather than shrinking into illegibility. */
-    font-size: clamp(2rem, 4.6vw, 3.6rem);
+    /* 61px, as live sets its hero. It was 57.6 while the display face was narrower than
+       theirs; with the same face the stated size is the right one. Below about 900px the
+       headlines wrap, balanced, rather than shrinking into illegibility. */
+    font-size: clamp(2rem, 4.9vw, 3.8125rem);
     font-weight: 600;
     line-height: 0.98;
     letter-spacing: normal;

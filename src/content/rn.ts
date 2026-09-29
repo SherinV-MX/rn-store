@@ -217,6 +217,7 @@ export function rnHome(locale: string) {
 export function rnFooter(locale: string) {
     return pick(locale, {
         tagline: 'The way of driving faster.',
+        newsletterHead: 'NEWSLETTER-SIGN UP',
         groups: [
             { head: 'Products', links: ['RN LITE', 'RN ONE', 'RN PRO', 'RN Modes', 'Software & Apps', 'RN Data', 'RN Live', 'RN EMS'] },
             { head: 'Support', links: ['FAQ', 'Track list', 'Manuals', 'Device updates', 'Mode activation', 'Video layouts'] },
@@ -226,6 +227,7 @@ export function rnFooter(locale: string) {
         rights: 'RN Vision GmbH. Rebuild demo — not the live site.',
     }, {
         tagline: 'The way of driving faster.',
+        newsletterHead: 'NEWSLETTER-ANMELDUNG',
         groups: [
             { head: 'Produkte', links: ['RN LITE', 'RN ONE', 'RN PRO', 'RN Modes', 'Software & Apps', 'RN Data', 'RN Live', 'RN EMS'] },
             { head: 'Support', links: ['FAQ', 'Streckenliste', 'Anleitungen', 'Geräte-Updates', 'MODE-Aktivierung', 'Video-Layouts'] },
@@ -238,6 +240,11 @@ export function rnFooter(locale: string) {
 
 /* ------------------------------------------------------------------ RN ONE */
 
+/* A comparison cell that is a yes only with an optional module, plug or cable. RN's own table
+   shows these as a plain tick, which reads as "included"; their spec further up the same page
+   says otherwise. Marking them is the one place this table says more than theirs does. */
+export const OPTIONAL = 'optional';
+
 export function rnOne(locale: string) {
     return pick(locale, {
         eyebrow: 'RN Systems',
@@ -245,127 +252,181 @@ export function rnOne(locale: string) {
         tagline: 'The all-in-one tool',
         intro: 'A compact video and analysis system that sticks to the windscreen in seconds. Two built-in HD cameras record cockpit and track at once, the 5-inch touchscreen works in gloves, and the lap time, reference time and gain or loss sit in front of you while you drive.',
         buy: 'Order now',
-        support: 'To the support area',
+        support: 'To support area',
         gallery: [
-            { src: '/rn/product/rn-one-1.png', alt: 'RN ONE from the front, screen showing a lap' },
-            { src: '/rn/product/rn-one-2.png', alt: 'RN ONE from the side with the suction mount' },
-            { src: '/rn/product/rn-one-3.png', alt: 'RN ONE from the rear showing the connections' },
+            { src: '/rn/product/rn-one-01.png', alt: 'RN ONE on its windscreen mount, screen showing a lap' },
+            { src: '/rn/product/rn-one-02.png', alt: 'RN ONE from the front on its mount' },
+            { src: '/rn/product/rn-one-03.png', alt: 'RN ONE from the side showing the cameras' },
         ],
-        quickSpecs: [
-            { label: 'Weight', value: '884 g' },
-            { label: 'Size', value: '165 × 147 × 113 mm' },
-            { label: 'Display', value: '5″ touchscreen' },
-            { label: 'Storage', value: '64 GB' },
+        /* RN's own three lines from the product page, word for word. */
+        highlights: [
+            'Better lap times with professional data recording',
+            'The all-in-one tool for the race track',
+            'Dual HD-camera system (track and driver)',
         ],
-        featureHead: 'What it does',
-        features: [
+        systemHead: 'The all-in-one video and analysis system.',
+        systemBody: 'The RN ONE is the compact all-rounder among the RN systems. The unit can be mounted on the windscreen in a few easy steps. After mounting, the RN ONE is immediately ready for use. It can be controlled via the large touch screen monitor. Two integrated cameras for track and interior recordings record picture-in-picture videos in HD. A third camera (either HD or Full-HD) can be optionally connected and flexibly installed in the vehicle. Its many features, simple handling and compact design make the RN ONE the ideal system for ambitious trackday enthusiasts and professional racers.',
+        functionsHead: 'Functions',
+        /* RN's own list. Their markup leaks a stray `</li>` into the USB line; written out properly here. */
+        functions: [
+            'Display of lap time, reference time, time gain/loss during the drive',
+            'Two integrated cameras for cockpit and track',
+            'Optional connection of third camera (HD or Full-HD)',
+            'Manual or automatic start/stop of recording',
+            'Picture-in-picture video with up to three camera views and data overlay',
+            'RN Analyzer App for iPad and Windows PCs',
+            'Wireless (WiFi) data and video transfer to iPad or PC',
+            'Export of videos and data to USB stick',
+            'Automatic recognition of race tracks via GPS',
+            'Additional vehicle data optionally via OBD2 or CAN bus',
+        ],
+        shopNow: 'Shop now',
+        /* The four spec tabs, straight off the live product page. Every pane is two columns
+           except Settings, which fills only the first — as it does there. */
+        specTabs: [
             {
-                title: 'Two cameras, one picture',
-                body: 'Track and cockpit record simultaneously, composed picture-in-picture with the data overlay. A third camera can be added in HD or Full HD.',
+                label: 'Technical data',
+                cols: [
+                    {
+                        head: 'General technical data',
+                        items: [
+                            'Compact lightweight aluminum housing',
+                            'Dimensions: 165 x 147 x 113 mm',
+                            'Weight (main unit): 884 g',
+                            'Two integrated cameras for track and cockpit recordings (HD)',
+                            'Connections: Optional camera, USB3, USB2, HDMI output, GPS, microphone, speakers',
+                            'Storage capacity: 64 GB',
+                            'High dynamic microphone',
+                            'Internal battery as buffer (up to 1 hour)',
+                            'WiFi access point for data exchange with iPad/Smartphone/Windows PC and Internet access (e.g. for updates)',
+                            'Bluetooth for connecting the OBD2 connector with the RN OBD PLUG',
+                            'Integrated 5 inch color display with touch screen (also suitable for racing gloves)',
+                        ],
+                    },
+                    {
+                        head: 'Sensors',
+                        items: [
+                            'GPS/Glonass – position and speed (10Hz)',
+                            'Acceleration sensor (20Hz, roll/yaw/pitch)',
+                            'OBD2 connection via optional OBD2 plug or cable adapter',
+                            'CAN-Bus-Connection via optional CAN cable and adapter',
+                        ],
+                    },
+                ],
             },
             {
-                title: 'The lap, while you drive',
-                body: 'Lap time, reference time and the gap you are gaining or losing, on screen in the moment rather than in the debrief.',
+                label: 'Settings',
+                cols: [
+                    {
+                        head: '',
+                        items: [
+                            'Settings and control directly via optional display / WiFi Dashboard or via RN Connect App (for mobile iOS devices)',
+                            'Automatic start/stop function: depending on speed or rpm, or standing start',
+                            'Manual recording possible',
+                            'Creation of driver profiles (with portrait photo) and vehicle profiles',
+                            'Management of multiple events',
+                            'Manual or automatic adjustment of the draw frame',
+                            'Selection of the logo for insertion in the composite videos.',
+                            'Date, time, time zone, video quality, microphone level, speaker level',
+                            'Software updates via Internet',
+                        ],
+                    },
+                ],
             },
             {
-                title: 'It knows where it is',
-                body: 'GPS recognises the circuit automatically. Roll out of the pit lane and it is already timing the right layout.',
+                label: 'Scope of delivery',
+                cols: [
+                    {
+                        head: 'Trackday Version',
+                        items: [
+                            'RN ONE Main Unit (64 GB) with two integrated HD-Cameras',
+                            'Trackday Mode',
+                            'Suction cup mount for windshield',
+                            'Car charger cable 12V',
+                            'RN charger/adapter 230V/14V',
+                            'External GPS-antenna',
+                            'Manual (PDF-Download)',
+                            'RN Analyzer App / Software (as Download in the Apple Store and from our website)',
+                        ],
+                    },
+                    {
+                        head: 'Racing Version',
+                        items: [
+                            'RN ONE Main Unit (64 GB) with two integrated HD-Cameras',
+                            'Trackday Mode',
+                            'Suction cup mount for windshield',
+                            'RN ONE MKII motorsports mount',
+                            'Car charger cable 12V',
+                            'RN charger/adapter 230V/14V',
+                            'External GPS-antenna',
+                            'Manual (PDF-Download)',
+                            'RN Analyzer App / Software (as Download in the Apple Store and from our website)',
+                        ],
+                    },
+                ],
             },
             {
-                title: 'Off the car without cables',
-                body: 'Video and data move over WiFi to an iPad or Windows PC, or onto a USB stick if the paddock WiFi is having a bad day.',
-            },
-            {
-                title: 'The car’s own numbers',
-                body: 'Optional OBD-II plug or CAN bus adapter brings throttle, brake, revs and gear onto the same timeline as the video.',
-            },
-            {
-                title: 'Takes the session it is given',
-                body: 'Recording starts and stops by hand or on its own, and the internal battery buffers up to an hour if power drops.',
+                label: 'Optional extras',
+                cols: [
+                    {
+                        head: 'Accessories:',
+                        items: [
+                            'RN Cameras: available in Full-HD, HD und SD-resolution, Night vision camera',
+                            'Motorsport mount (included in racing version)',
+                            'RN LIVE – livestream module for streaming videos via LTE.',
+                            'RN Telemetry – Telemetry module for streaming car data via LTE.',
+                            'RN Case – sturdy plastic case with tailor-made inlets for main unit, cameras, accessories.',
+                        ],
+                    },
+                    {
+                        head: 'Software Extensions',
+                        items: [
+                            'Endurance/Taxi-Mode',
+                            'RCN Mode',
+                            'Rallye Mode',
+                            'Street Mode',
+                            'Touristenfahrten Mode',
+                            'Pit Lane Monitor',
+                            'Rear View Mirror',
+                        ],
+                    },
+                ],
             },
         ],
-        specHead: 'Technical data',
-        specGroups: [
-            {
-                head: 'Housing',
-                rows: [
-                    ['Construction', 'Compact aluminium lightweight housing'],
-                    ['Dimensions', '165 × 147 × 113 mm'],
-                    ['Weight', '884 g'],
-                    ['Display', '5″ colour touchscreen, usable with racing gloves'],
-                ],
-            },
-            {
-                head: 'Cameras and storage',
-                rows: [
-                    ['Built-in cameras', 'Two HD cameras — track and cockpit'],
-                    ['Third camera', 'Optional, HD or Full HD'],
-                    ['Storage', '64 GB'],
-                    ['Microphone', 'High-dynamic'],
-                ],
-            },
-            {
-                head: 'Sensors',
-                rows: [
-                    ['Positioning', 'GPS / GLONASS, position and speed at 10 Hz'],
-                    ['Acceleration', '20 Hz, roll / yaw / pitch'],
-                    ['OBD-II', 'Via optional plug or cable adapter'],
-                    ['CAN bus', 'Via optional cable and adapter'],
-                ],
-            },
-            {
-                head: 'Connections and power',
-                rows: [
-                    ['Wireless', 'WiFi access point for iPad, phone and Windows PC'],
-                    ['Bluetooth', 'For OBD-II'],
-                    ['Ports', 'Optional camera, USB3, USB2, HDMI out, GPS, microphone, speaker'],
-                    ['Battery', 'Internal buffer, up to 1 hour'],
-                ],
-            },
+        /* The photographs under the tabs: two stacked on the left, one tall beside them, and
+           one across the full width underneath. */
+        mood: [
+            { src: '/rn/mood/mood-01.jpg', alt: 'RN ONE mounted behind the windscreen of a race car' },
+            { src: '/rn/mood/mood-02.jpg', alt: 'The unit held in one hand, showing its size' },
+            { src: '/rn/mood/mood-03.jpg', alt: 'RN ONE recording from the cockpit on track' },
+            { src: '/rn/mood/mood-04.jpg', alt: 'The system set up in the car before a session' },
         ],
-        boxHead: 'In the box',
-        boxIntro: 'Two versions. The difference is the mount.',
-        versions: [
-            {
-                name: 'Trackday',
-                note: 'For trackdays and open pit lane',
-                items: [
-                    'RN ONE unit, 64 GB, two built-in HD cameras',
-                    'Trackday Mode',
-                    'Windscreen suction mount',
-                    '12 V cable for the cigarette lighter',
-                    '230 V / 14 V charger',
-                    'External GPS antenna',
-                    'Manual (PDF, DE / EN)',
-                    'RN Analyzer app and software',
-                ],
-            },
-            {
-                name: 'Racing',
-                note: 'For competition use',
-                items: [
-                    'RN ONE unit, 64 GB, two built-in HD cameras',
-                    'Trackday Mode',
-                    'Windscreen suction mount',
-                    'RN ONE MKII motorsport holder',
-                    '12 V cable for the cigarette lighter',
-                    '230 V / 14 V charger',
-                    'External GPS antenna',
-                    'Manual (PDF, DE / EN)',
-                    'RN Analyzer app and software',
-                ],
-            },
+        compareHead: 'Race Navigator model comparison',
+        compareLabel: 'Model Comparison',
+        compareNote: 'Available with an optional module, plug or cable.',
+        compareLogo: '/rn/compare/logo.jpg',
+        compareModels: [
+            { name: 'RN LITE', image: '/rn/compare/rn-lite.jpg' },
+            { name: 'RN ONE MKII', image: '/rn/compare/rn-one.jpg' },
+            { name: 'RN PRO', image: '/rn/compare/rn-pro.jpg' },
         ],
-        modesHead: 'Modes',
-        modesIntro: 'Each one changes what the device times and what it shows. Activated per unit.',
-        modes: ['Endurance / Taxi', 'RCN', 'Rallye', 'Street', 'Tourist drive', 'Pit lane monitor', 'Rear view mirror'],
-        accHead: 'Options',
-        accessories: [
-            { name: 'RN Camera', note: 'Full HD, HD, SD or night vision' },
-            { name: 'Motorsport holder', note: 'Bolted mount for competition' },
-            { name: 'RN LIVE', note: 'LTE livestream module', image: '/rn/cards/live.jpg' },
-            { name: 'RN Telemetry', note: 'LTE video and data transmission' },
-            { name: 'RN Case', note: 'Fitted protective case' },
+        /* The row labels are in English on the German page too. That is RN's own table, left
+           as they have it rather than quietly improved. */
+        compareRows: [
+            { label: 'Memory', values: ['64 GB', '64 GB', '128GB or 256GB'] },
+            { label: 'HD resolution', values: [true, true, true] },
+            { label: 'Full HD resolution', values: [false, true, true] },
+            { label: 'Video Overlay', values: [false, true, true] },
+            { label: 'WiFi connection', values: [true, true, true] },
+            { label: 'Bluetooth connectivity', values: [true, true, true] },
+            { label: 'OBD connectivity', values: [OPTIONAL, OPTIONAL, OPTIONAL] },
+            { label: 'CAN-Bus connectivity', values: [false, OPTIONAL, OPTIONAL] },
+            { label: 'RN Connect (iOS)', values: [false, true, true] },
+            { label: 'RN Analyzer (iOS)', values: [true, true, true] },
+            { label: 'RN Analyzer (Windows)', values: [true, true, true] },
+            { label: 'Telemetry connectivity', values: [false, OPTIONAL, OPTIONAL] },
+            { label: 'Livestream connectivity', values: [false, false, OPTIONAL] },
+            { label: 'TPMS connectivity', values: [false, true, true] },
         ],
     }, {
         eyebrow: 'RN Systeme',
@@ -373,50 +434,173 @@ export function rnOne(locale: string) {
         tagline: 'Das All-in-One-Tool',
         intro: 'Ein kompaktes Video- und Analysesystem, das in Sekunden an der Scheibe sitzt. Zwei eingebaute HD-Kameras nehmen Cockpit und Strecke gleichzeitig auf, der 5-Zoll-Touchscreen lässt sich mit Handschuhen bedienen, und Rundenzeit, Referenzzeit sowie Gewinn oder Verlust stehen während der Fahrt vor Ihnen.',
         buy: 'Jetzt bestellen',
-        support: 'Zum Support-Bereich',
+        support: 'Zum Support Bereich',
         gallery: [
-            { src: '/rn/product/rn-one-1.png', alt: 'RN ONE von vorn, Display mit Rundenanzeige' },
-            { src: '/rn/product/rn-one-2.png', alt: 'RN ONE von der Seite mit Saugnapfhalterung' },
-            { src: '/rn/product/rn-one-3.png', alt: 'RN ONE von hinten mit den Anschlüssen' },
+            { src: '/rn/product/rn-one-01.png', alt: 'RN ONE an der Scheibenhalterung, Display mit Rundenanzeige' },
+            { src: '/rn/product/rn-one-02.png', alt: 'RN ONE von vorn an der Halterung' },
+            { src: '/rn/product/rn-one-03.png', alt: 'RN ONE von der Seite mit den Kameras' },
         ],
-        quickSpecs: [
-            { label: 'Gewicht', value: '884 g' },
-            { label: 'Maße', value: '165 × 147 × 113 mm' },
-            { label: 'Display', value: '5″ Touchscreen' },
-            { label: 'Speicher', value: '64 GB' },
+        highlights: [
+            'Bessere Rundenzeiten durch professionelle Datenaufzeichnung',
+            'Das All-in-One-Tool für die Rennstrecke',
+            'Dual-HD-Kamerasystem (Strecke und Fahrer)',
         ],
-        featureHead: 'Was es kann',
-        features: [
-            { title: 'Zwei Kameras, ein Bild', body: 'Strecke und Cockpit zeichnen gleichzeitig auf, zusammengesetzt als Bild-in-Bild mit Daten-Overlay. Eine dritte Kamera lässt sich in HD oder Full HD ergänzen.' },
-            { title: 'Die Runde, während Sie fahren', body: 'Rundenzeit, Referenzzeit und der Abstand, den Sie gerade gewinnen oder verlieren — auf dem Display statt erst im Debriefing.' },
-            { title: 'Es weiß, wo es ist', body: 'GPS erkennt die Strecke automatisch. Einmal aus der Box rollen, und die richtige Variante wird bereits gemessen.' },
-            { title: 'Ohne Kabel vom Fahrzeug', body: 'Video und Daten gehen per WLAN auf iPad oder Windows-PC — oder auf einen USB-Stick, wenn das Fahrerlager-WLAN einen schlechten Tag hat.' },
-            { title: 'Die Daten des Fahrzeugs', body: 'Optionaler OBD-II-Stecker oder CAN-Bus-Adapter bringt Gas, Bremse, Drehzahl und Gang auf dieselbe Zeitachse wie das Video.' },
-            { title: 'Nimmt die Session, wie sie kommt', body: 'Aufnahme startet und stoppt manuell oder automatisch, und der interne Akku puffert bis zu einer Stunde, falls die Versorgung wegbricht.' },
+        systemHead: 'Das All-in-One Video- und Analysesystem.',
+        systemBody: 'Der RN ONE ist der kompakte Allrounder unter den RN Systemen. Das Gerät wird in wenigen Schritten an der Frontscheibe montiert und ist sofort einsatzbereit. Bedient wird es über den großen Touchscreen. Zwei integrierte Kameras nehmen Strecke und Innenraum als Bild-in-Bild-Video in HD auf. Eine dritte Kamera (HD oder Full-HD) lässt sich optional anschließen und frei im Fahrzeug platzieren. Funktionsumfang, einfache Bedienung und kompakte Bauweise machen den RN ONE zum idealen System für ambitionierte Trackdayfahrer und Profis.',
+        functionsHead: 'Funktionen',
+        functions: [
+            'Anzeige von Rundenzeit, Referenzzeit und Zeitgewinn oder -verlust während der Fahrt',
+            'Zwei integrierte Kameras für Cockpit und Strecke',
+            'Optionaler Anschluss einer dritten Kamera (HD oder Full-HD)',
+            'Manueller oder automatischer Start und Stopp der Aufzeichnung',
+            'Bild-in-Bild-Video mit bis zu drei Kameraperspektiven und Daten-Overlay',
+            'RN Analyzer App für iPad und Windows-PC',
+            'Drahtlose (WLAN) Daten- und Videoübertragung auf iPad oder PC',
+            'Export von Videos und Daten auf USB-Stick',
+            'Automatische Streckenerkennung per GPS',
+            'Zusätzliche Fahrzeugdaten optional über OBD2 oder CAN-Bus',
         ],
-        specHead: 'Technische Daten',
-        specGroups: [
-            { head: 'Gehäuse', rows: [['Bauweise', 'Kompaktes Aluminium-Leichtbaugehäuse'], ['Maße', '165 × 147 × 113 mm'], ['Gewicht', '884 g'], ['Display', '5″ Farb-Touchscreen, mit Rennhandschuhen bedienbar']] },
-            { head: 'Kameras und Speicher', rows: [['Eingebaute Kameras', 'Zwei HD-Kameras — Strecke und Cockpit'], ['Dritte Kamera', 'Optional, HD oder Full HD'], ['Speicher', '64 GB'], ['Mikrofon', 'Hochdynamisch']] },
-            { head: 'Sensorik', rows: [['Positionierung', 'GPS / GLONASS, Position und Geschwindigkeit mit 10 Hz'], ['Beschleunigung', '20 Hz, Roll / Gier / Nick'], ['OBD-II', 'Über optionalen Stecker oder Kabeladapter'], ['CAN-Bus', 'Über optionales Kabel und Adapter']] },
-            { head: 'Anschlüsse und Strom', rows: [['Funk', 'WLAN-Access-Point für iPad, Smartphone und Windows-PC'], ['Bluetooth', 'Für OBD-II'], ['Anschlüsse', 'Optionale Kamera, USB3, USB2, HDMI-Ausgang, GPS, Mikrofon, Lautsprecher'], ['Akku', 'Interne Pufferung, bis zu 1 Stunde']] },
+        shopNow: 'Jetzt kaufen',
+        specTabs: [
+            {
+                label: 'Technische Daten',
+                cols: [
+                    {
+                        head: 'Allgemeine technische Daten',
+                        items: [
+                            'Kompaktes Alu-Leichtbaugehäuse',
+                            'Abmessungen: 165 x 147 x 113 mm',
+                            'Gewicht (Haupteinheit): 884 g',
+                            'Zwei integrierte Kameras für Strecken- und Cockpitaufnahmen (HD)',
+                            'Anschlüsse: Optionale Zusatzkamera, USB3, USB2, HDMI Ausgang, GPS, Mikrofon, Lautsprecher',
+                            'Speicherkapazität: 64 GB',
+                            'Hochdynamisches Mikrofon',
+                            'Interner Akku als Puffer (bis zu 1 Stunde)',
+                            'WiFi Access-Point für Datenaustausch mit iPad/Smartphone/Windows-PC und Internetzugang (z.B. für Updates)',
+                            'Bluetooth für Anbindung des OBD2 Anschlusses mit dem RN OBD PLUG',
+                            'Integriertes 5-Zoll Farbdisplay mit Touchscreen (auch geeignet für Rennhandschuhe)',
+                        ],
+                    },
+                    {
+                        head: 'Sensoren',
+                        items: [
+                            'GPS/Glonass – Position und Geschwindigkeit (10Hz)',
+                            'Beschleunigungs-Sensor (20Hz, roll/yaw/pitch)',
+                            'OBD2-Anbindung über optionalen OBD2 Plug oder Kabeladapter',
+                            'CAN-Bus-Anbindung über optionalem CAN-Kabel und Adapter',
+                        ],
+                    },
+                ],
+            },
+            {
+                label: 'Einstellungen',
+                cols: [
+                    {
+                        head: '',
+                        items: [
+                            'Einstellungen und Steuerung direkt über Touchscreen-Display oder über RN Connect App (für mobile iOS-Geräte)',
+                            'Automatische Start-/Stopp-Funktion: abhängig von Geschwindigkeit oder Drehzahl, oder stehender Start',
+                            'Manuelle Aufzeichnung möglich',
+                            'Anlegen von Fahrerprofilen (mit Portraitfoto) und Fahrzeugprofilen',
+                            'Verwaltung von mehreren Events',
+                            'Manuelle oder automatische Einstellung der Strecke',
+                            'Auswahl des Logos für die Einblendung in den Composit-Videos',
+                            'Datum, Uhrzeit, Zeitzone, Videoqualität, Mikrofon Level, Lautsprecher Level',
+                            'Software-Updates via Internet',
+                        ],
+                    },
+                ],
+            },
+            {
+                label: 'Lieferumfang',
+                cols: [
+                    {
+                        head: 'Trackday Version',
+                        items: [
+                            'RN ONE Haupteinheit (64 GB) mit zwei eingebauten HD-Kameras',
+                            'Trackday Mode',
+                            'Saugnapf Windschutzscheibe',
+                            'KFZ Kabel 12V für Zigarettenanzünder',
+                            'RN Ladegerät/Adapter 230V/14V',
+                            'Externe GPS-Antenne',
+                            'Handbuch (PDF-Download, Deutsch/Englisch)',
+                            'RN Analyzer App / Software (als Download im Apple Store und von unserer Webseite)',
+                        ],
+                    },
+                    {
+                        head: 'Racing Version',
+                        items: [
+                            'RN ONE Haupteinheit (64 GB) mit zwei eingebauten HD-Kameras',
+                            'Trackday Mode',
+                            'Saugnapf Windschutzscheibe',
+                            'RN ONE MKII Motorsport Halter',
+                            'Externe GPS-Antenne',
+                            'KFZ Kabel 12V für Zigarettenanzünder',
+                            'RN Ladegerät/Adapter 230V/14V',
+                            'Handbuch (PDF-Download, Deutsch/Englisch)',
+                            'RN Analyzer App / Software (als Download im Apple Store und von unserer Webseite)',
+                        ],
+                    },
+                ],
+            },
+            {
+                label: 'Optionales Zubehör',
+                cols: [
+                    {
+                        head: 'Zubehör:',
+                        items: [
+                            'RN Kamera: Verfügbar in Full-HD, HD und SD-Auflösung, Nachtsichtkamera',
+                            'Motorsporthalter (enthalten in Racing-Version)',
+                            'RN LIVE – Livestream-Modul für die Übertragung von Videos per LTE.',
+                            'RN Telemetry – Telemetrie-Modul für die Übertragung von Videos per LTE.',
+                            'RN Case – stabiler Kunststoffkoffer mit maßgeschneiderten Einsparungen für Hauptgerät, Kameras und Zubehör.',
+                        ],
+                    },
+                    {
+                        head: 'Softwareerweiterungen',
+                        items: [
+                            'Endurance/Taxi-Mode',
+                            'RCN Mode',
+                            'Rallye Mode',
+                            'Street Mode',
+                            'Touristenfahrten Mode',
+                            'Pit Lane Monitor',
+                            'Rear View Mirror',
+                        ],
+                    },
+                ],
+            },
         ],
-        boxHead: 'Lieferumfang',
-        boxIntro: 'Zwei Versionen. Der Unterschied ist die Halterung.',
-        versions: [
-            { name: 'Trackday', note: 'Für Trackdays und Open Pit Lane', items: ['RN ONE Gerät, 64 GB, zwei eingebaute HD-Kameras', 'Trackday Mode', 'Scheibenhalterung mit Saugnapf', '12-V-Kabel für den Zigarettenanzünder', '230 V / 14 V Ladegerät', 'Externe GPS-Antenne', 'Anleitung (PDF, DE / EN)', 'RN Analyzer App und Software'] },
-            { name: 'Racing', note: 'Für den Wettbewerbseinsatz', items: ['RN ONE Gerät, 64 GB, zwei eingebaute HD-Kameras', 'Trackday Mode', 'Scheibenhalterung mit Saugnapf', 'RN ONE MKII Motorsport-Halterung', '12-V-Kabel für den Zigarettenanzünder', '230 V / 14 V Ladegerät', 'Externe GPS-Antenne', 'Anleitung (PDF, DE / EN)', 'RN Analyzer App und Software'] },
+        mood: [
+            { src: '/rn/mood/mood-01.jpg', alt: 'RN ONE hinter der Windschutzscheibe eines Rennwagens' },
+            { src: '/rn/mood/mood-02.jpg', alt: 'Das Gerät in einer Hand, das seine Größe zeigt' },
+            { src: '/rn/mood/mood-03.jpg', alt: 'RN ONE bei der Aufnahme aus dem Cockpit auf der Strecke' },
+            { src: '/rn/mood/mood-04.jpg', alt: 'Das System im Fahrzeug, vor der Session aufgebaut' },
         ],
-        modesHead: 'Modes',
-        modesIntro: 'Jeder Mode ändert, was gemessen und angezeigt wird. Pro Gerät freischaltbar.',
-        modes: ['Endurance / Taxi', 'RCN', 'Rallye', 'Street', 'Tourist drive', 'Pit-Lane-Monitor', 'Rückspiegel'],
-        accHead: 'Optionen',
-        accessories: [
-            { name: 'RN Camera', note: 'Full HD, HD, SD oder Nachtsicht' },
-            { name: 'Motorsport-Halterung', note: 'Verschraubte Halterung für den Wettbewerb' },
-            { name: 'RN LIVE', note: 'LTE-Livestream-Modul', image: '/rn/cards/live.jpg' },
-            { name: 'RN Telemetry', note: 'LTE-Video- und Datenübertragung' },
-            { name: 'RN Case', note: 'Passgenauer Schutzkoffer' },
+        compareHead: 'Race Navigator Modellvergleich',
+        compareLabel: 'Modellvergleich',
+        compareNote: 'Mit einem optionalen Modul, Stecker oder Kabel verfügbar.',
+        compareLogo: '/rn/compare/logo.jpg',
+        compareModels: [
+            { name: 'RN LITE', image: '/rn/compare/rn-lite.jpg' },
+            { name: 'RN ONE MKII', image: '/rn/compare/rn-one.jpg' },
+            { name: 'RN PRO', image: '/rn/compare/rn-pro.jpg' },
+        ],
+        compareRows: [
+            { label: 'Memory', values: ['64 GB', '64 GB', '128GB or 256GB'] },
+            { label: 'HD resolution', values: [true, true, true] },
+            { label: 'Full HD resolution', values: [false, true, true] },
+            { label: 'Video Overlay', values: [false, true, true] },
+            { label: 'WiFi connection', values: [true, true, true] },
+            { label: 'Bluetooth connectivity', values: [true, true, true] },
+            { label: 'OBD connectivity', values: [OPTIONAL, OPTIONAL, OPTIONAL] },
+            { label: 'CAN-Bus connectivity', values: [false, OPTIONAL, OPTIONAL] },
+            { label: 'RN Connect (iOS)', values: [false, true, true] },
+            { label: 'RN Analyzer (iOS)', values: [true, true, true] },
+            { label: 'RN Analyzer (Windows)', values: [true, true, true] },
+            { label: 'Telemetry connectivity', values: [false, OPTIONAL, OPTIONAL] },
+            { label: 'Livestream connectivity', values: [false, false, OPTIONAL] },
+            { label: 'TPMS connectivity', values: [false, true, true] },
         ],
     });
 }
