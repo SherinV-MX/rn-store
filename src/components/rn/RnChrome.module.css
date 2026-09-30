@@ -395,18 +395,6 @@
 .social a { color: var(--rn-dimmer); text-decoration: none; transition: color 0.2s var(--rn-ease); }
 .social a:hover { color: var(--rn-white); }
 
-/* A demo of someone else's site should say so where anyone can see it. */
-.demoNote {
-    display: inline-block;
-    padding: 0.2rem 0.5rem;
-    border: 1px solid var(--rn-line);
-    border-radius: 2px;
-    font-size: 0.6875rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--rn-dimmer);
-}
-
 /* ── Newsletter bar ──────────────────────────────────────────────────────────
    Live's footer template carries a full-width red band with RN's slanted white logo panel set
    into the left of it. Measured off them at 1440: the band is 161 tall, the first column takes

@@ -38,7 +38,6 @@ export default function RnFooter({ locale }: { locale: string }) {
                         <a href="#">YouTube</a>
                         <a href="#">Instagram</a>
                     </span>
-                    <span className={s.demoNote}>Macrix rebuild</span>
                 </div>
             </div>
         </footer>

@@ -224,7 +224,7 @@ export function rnFooter(locale: string) {
             { head: 'Partners', links: ['Distribution partners', 'Brand ambassadors', 'References'] },
             { head: 'Legal', links: ['Imprint', 'Privacy policy', 'Terms and conditions'] },
         ],
-        rights: 'RN Vision GmbH. Rebuild demo — not the live site.',
+        rights: 'RN Vision GmbH.',
     }, {
         tagline: 'The way of driving faster.',
         newsletterHead: 'NEWSLETTER-ANMELDUNG',
@@ -234,7 +234,7 @@ export function rnFooter(locale: string) {
             { head: 'Partner', links: ['Vertriebspartner', 'Markenbotschafter', 'Referenzen'] },
             { head: 'Rechtliches', links: ['Impressum', 'Datenschutzerklärung', 'AGB'] },
         ],
-        rights: 'RN Vision GmbH. Rebuild-Demo — nicht die Live-Seite.',
+        rights: 'RN Vision GmbH.',
     });
 }
 
