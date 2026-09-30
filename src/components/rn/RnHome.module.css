@@ -45,14 +45,17 @@
 }
 
 /* The divider belongs between tabs, so it is drawn by every tab but the first. It is inset
-   from the top and bottom, the way a rule between columns is. */
+   from the top and bottom, the way a rule between columns is.
+
+   In RN's red rather than the ink hairline it used to be, so the strip reads as one piece with
+   the sliding rule underneath it instead of a grey grid with a red mark in it. */
 .tab + .tab::before {
     content: '';
     position: absolute;
     left: 0;
     top: 12%;
     bottom: 22%;
-    border-left: 1px solid var(--rn-line-ink);
+    border-left: 1px solid var(--rn-red);
 }
 
 .tabIcon {
