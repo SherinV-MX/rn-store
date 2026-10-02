@@ -42,10 +42,25 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
         openGraph: {
             type: 'website',
             locale,
-            title: dict.meta.title,
-            description: dict.meta.description,
+            /* No title or description here. Setting them pinned every share card to the
+               store's wording — an RN page showed its own name in the tab and "Store — BSS
+               LogisQ" in the card, because a page's title does not reach into an openGraph
+               block that has already named one. Left out, each page's own title and
+               description are what the card carries. */
+
+            /* Served from public rather than as an opengraph-image file beside the route.
+               That convention appends a cache token, which comes out as a query string with
+               no key — ...opengraph-image.png?opengraph-image.0983b4ed.png — and Teams would
+               not load it, where WhatsApp did. A plain path has nothing to object to. */
+            images: [{
+                url: '/og.png',
+                width: 1200,
+                height: 630,
+                type: 'image/png',
+                alt: 'Race Navigator',
+            }],
         },
-        twitter: { card: 'summary_large_image' },
+        twitter: { card: 'summary_large_image', images: ['/og.png'] },
     };
 }
 

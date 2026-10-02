@@ -49,7 +49,16 @@ export async function generateMetadata(
     const { locale, page } = await params;
     const entry = PAGES[page as Slug];
     if (!entry) return {};
-    return { title: `${rnSupport(locale).tiles[entry.tile].title} | Race Navigator` };
+    const name = rnSupport(locale).tiles[entry.tile].title;
+    return {
+        title: `${name} | Race Navigator`,
+        /* Named here rather than left to fall through. Without it these pages inherited the
+           store's line — an RN support page describing itself as hardware shipped from
+           Germany — because a page that sets only a title takes the rest from above. */
+        description: locale === 'de'
+            ? `${name} für Race Navigator: RN ONE, RN PRO und RN LITE.`
+            : `${name} for Race Navigator: RN ONE, RN PRO and RN LITE.`,
+    };
 }
 
 export default async function RnSupportSubPage(
