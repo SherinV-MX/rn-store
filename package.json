@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "@csstools/postcss-global-data": "^4.0.0",
+    "@napi-rs/canvas": "^1.0.10",
     "lucide-react": "^0.562.0",
     "next": "16.1.4",
+    "pdfjs-dist": "^6.3.289",
     "postcss-custom-media": "^12.0.1",
     "react": "19.2.3",
     "react-dom": "19.2.3",

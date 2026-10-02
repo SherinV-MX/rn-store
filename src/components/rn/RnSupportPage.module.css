@@ -1,0 +1,923 @@
+/* ── Shared chrome for the support subpages ──────────────────────────────────
+   Every one of them opens the same way: a photograph with nothing written on it, then the
+   heading and a standfirst on the reading rail. Only what comes after differs, so the opening
+   lives here once rather than six times. */
+
+.banner {
+    position: relative;
+    /* Live's subpage heroes are 768 deep at 1440, centred and covering — the same as the
+       support page's own. 53.34vw lands on 768 there rather than a few pixels short. */
+    height: clamp(320px, 53.34vw, 768px);
+    background: var(--rn-paper) no-repeat center center / cover;
+}
+
+.intro {
+    padding-block: 90px 26px;
+    background: var(--rn-paper);
+    /* The sections paint their own paper, so they name their own ink — [data-site='rn'] sets
+       white on everything by default. */
+    color: var(--rn-ink);
+}
+
+.introRail { padding-inline: 10px; }
+
+.introBody {
+    margin: 28px 0 0;
+    max-width: 1120px;
+    font-family: var(--rn-body);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #000;
+}
+
+.body {
+    padding-block: 10px 120px;
+    background: var(--rn-paper);
+    color: var(--rn-ink);
+}
+
+.bodyRail { padding-inline: 10px; }
+
+/* ── FAQ ─────────────────────────────────────────────────────────────────────
+   The tab row is the shared wash band above; what is left here is the questions inside the
+   open tab. */
+.faqPane {
+    padding-top: 36px;
+    border-top: 1px solid var(--rn-line-ink);
+}
+
+.faqPaneLeaving {
+    animation: rnFaqOut 0.2s cubic-bezier(0.4, 0, 0.7, 0.2) forwards;
+    pointer-events: none;
+}
+
+.faqItem {
+    max-width: 900px;
+    padding-block: 26px;
+    border-bottom: 1px solid var(--rn-line-ink);
+    animation: rnFaqIn 0.42s cubic-bezier(0.2, 0.8, 0.3, 1) var(--rn-in, 0ms) backwards;
+}
+
+.faqItem:last-child { border-bottom: 0; }
+
+.faqQ {
+    margin: 0 0 12px;
+    font-family: var(--rn-display);
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.3;
+    text-transform: uppercase;
+    color: var(--rn-ink);
+}
+
+.faqA {
+    margin: 0 0 10px;
+    font-family: var(--rn-body);
+    font-size: 16px;
+    line-height: 26px;
+    color: #000;
+}
+
+.faqA:last-child { margin-bottom: 0; }
+
+@keyframes rnFaqIn {
+    from { opacity: 0; transform: translate3d(calc(var(--rn-dir, 1) * 22px), 8px, 0); }
+    to   { opacity: 1; transform: none; }
+}
+
+@keyframes rnFaqOut {
+    from { opacity: 1; transform: none; }
+    to   { opacity: 0; transform: translate3d(calc(var(--rn-dir, 1) * -20px), 0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .faqItem,
+    .faqPaneLeaving { animation: none; }
+}
+
+/* ── Subpage bodies ──────────────────────────────────────────────────────────
+   The walkthrough pages are a heading, a line or two and a screenshot, repeated. A single
+   measure keeps the prose readable and the screenshots from sprawling. */
+/* Live sets these section titles at 50px over a 60px line, weight 600, uppercase, with a
+   hair of negative tracking and only 8px under them. This was running at 32px on a 1.2 line,
+   which read as a subheading rather than the title of a section.
+
+   The clamp reaches exactly 50px at live's own 1440 and comes down below that, since 50px
+   fixed would put "Update via the Race Navigator Dashboard" off the side of a phone. */
+.bodyHead {
+    margin: 64px 0 8px;
+    font-family: var(--rn-display);
+    font-size: clamp(28px, 3.5vw, 50px);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.1px;
+    text-transform: uppercase;
+    color: var(--rn-ink);
+}
+
+/* "Available for: all Race Navigator models" — live calls out which devices a method works
+   with in red bold above the explanation. */
+.bodyLead {
+    margin: 0 0 16px;
+    max-width: 1100px;
+    font-family: var(--rn-body);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+    color: var(--rn-red);
+}
+
+.stepHead {
+    margin: 36px 0 12px;
+    max-width: 900px;
+    font-family: var(--rn-display);
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.3;
+    text-transform: uppercase;
+    color: var(--rn-ink);
+}
+
+.bodyText {
+    margin: 0 0 16px;
+    max-width: 1100px;
+    font-family: var(--rn-body);
+    font-size: 16px;
+    line-height: 24px;
+    color: #000;
+    /* RN break their steps with line breaks inside one paragraph; those survive the extraction
+       as newlines and have to be honoured or the whole step runs together. */
+    white-space: pre-line;
+}
+
+.list {
+    margin: 0 0 18px;
+    padding-left: 24px;
+    max-width: 900px;
+    font-family: var(--rn-body);
+    font-size: 16px;
+    line-height: 26px;
+    color: #000;
+}
+
+/* The screenshots. Boxed and on white, because most are device UI photographed against a dark
+   interior and they otherwise bleed into the paper. */
+.shot {
+    display: block;
+    width: 100%;
+    max-width: 900px;
+    height: auto;
+    margin: 18px 0 28px;
+    border: 1px solid var(--rn-line-ink);
+    background: #fff;
+}
+
+/* ── Manual downloads ────────────────────────────────────────────────────────
+   A card per document rather than live's flag columns. Live lists a manual once per language,
+   which leaves a tall English column beside a nearly empty German one; a card is the document,
+   and the languages it exists in sit on it as chips. */
+.manuals {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 22px;
+    margin: 28px 0 48px;
+    max-width: 940px;
+}
+
+.manual {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--rn-line-ink);
+    background: #fff;
+    overflow: hidden;
+    transition: border-color 0.2s var(--rn-ease), transform 0.3s var(--rn-ease);
+}
+
+.manual:hover {
+    border-color: var(--rn-red);
+    transform: translateY(-3px);
+}
+
+/* The manual's own cover page. Every one of these is laid out landscape at the same 1.42,
+   so the box takes that shape and the whole cover is shown rather than a crop of it, and the
+   cards still line up with each other. The tint is what fills the box while the render is on
+   its way, so a card does not jump as its picture arrives. */
+.manualCover {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1.42;
+    object-fit: cover;
+    background: var(--rn-paper-2);
+    border-bottom: 1px solid var(--rn-line-ink);
+}
+
+.manualBody {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+    padding: 14px 15px 16px;
+}
+
+.manualName {
+    margin: 0;
+    flex: 1;
+    font-family: var(--rn-body);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--rn-ink);
+}
+
+.editions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin: 0;
+}
+
+/* One chip per language the document exists in. Each is its own download. */
+.edition {
+    padding: 4px 11px;
+    border: 1px solid var(--rn-red);
+    font-family: var(--rn-body);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    color: var(--rn-red);
+    background: #fff;
+    transition: background 0.2s var(--rn-ease), color 0.2s var(--rn-ease);
+}
+
+.edition:hover {
+    background: var(--rn-red);
+    color: #fff;
+}
+
+.edition:focus-visible {
+    outline: 2px solid var(--rn-red);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .manual { transition: none; }
+    .manual:hover { transform: none; }
+}
+
+/* The nav carousel, sitting between the hero and the page as live has it, with air above it
+   so the tiles are not welded to the bottom edge of the photograph. */
+.navBand {
+    padding-block: 64px 0;
+    background: var(--rn-paper);
+}
+
+@media (max-width: 760px) {
+    .navBand { padding-block: 36px 0; }
+}
+
+/* ── The wash band ───────────────────────────────────────────────────────────
+   Live stands a set of tabs on a red wash of a pit straight, torn off at both ends with a
+   brush edge, and the content begins below the foot of it.
+
+   Two pages do this — Supported Tracks with its regions and the FAQ with its products — and
+   they are the same band to the pixel: the same picture file, tabs 184px down at 50px over a
+   75px line, the row capped at 1120 and centred, a 2px red rule under the open one, and the
+   content 150px below the foot of the picture. So it is written once here and both wear it.
+
+   The picture is wider than the rail the rest of the page sits in, so it breaks out to the
+   full width of the window — carrying its own left offset rather than relying on a margin,
+   which would pull the content out with it. Painted top centre at contain and never repeated,
+   as live sets it. */
+.washBand::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 100vw;
+    /* 860/1900 of the width: contain scales the picture to the window, so a fixed height
+       would leave the box and the picture disagreeing at every size but one. */
+    height: 45.26vw;
+    margin-left: -50vw;
+    background: url('/rn/support/brush-wash.png') top center / contain no-repeat;
+    pointer-events: none;
+}
+
+.washBand {
+    position: relative;
+    /* Live drops its tabs 184px below the top of the wash. Measured off the page rather than
+       guessed, as is everything below. */
+    padding-top: 184px;
+}
+
+@media (max-width: 900px) {
+    /* The picture is 1900 wide, so at contain it is a thin strip on a phone and there is no
+       wash left to stand anything on. */
+    .washBand::before { display: none; }
+    .washBand { padding-top: 8px; }
+}
+
+/* The tabs as live sets them: 50px at weight 600, uppercase, white, centred over the wash,
+   the chosen one underlined in red.
+
+   The row is capped at live's own 1120px rather than at some width picked to force a wrap.
+   That cap is what breaks the lines where live breaks them — Europe beside Asia & Africa and
+   each long region on a line of its own, RN LITE / RN ONE MK2 / RN PRO across the top of the
+   FAQ and the two longer product names under them. */
+.bigTabs {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 1120px;
+    /* No gaps. Live's labels carry their own side padding and sit flush against each other,
+       and the rows butt together at the line height. */
+    margin: 0 auto 25px;
+    /* Three rows of 95, which is what both pages come to. Held so the content below starts at
+       the same place whatever the labels do. */
+    min-height: 285px;
+}
+
+.bigTab {
+    position: relative;
+    /* 95px tall over a 75px line. Live pads 20px a side; this pads 30, because Source Sans 3
+       sets these labels at 0.923 of the width Roboto gives them and at live's own padding the
+       row would fit one label more than live fits. The wider padding puts the line breaks back
+       where live has them — three across the top of the FAQ and Europe beside Asia & Africa —
+       and brings the row widths to 779 and 1129 against live's 766 and 1127. */
+    padding: 10px 30px;
+    border: 0;
+    background: none;
+    font-family: var(--rn-body);
+    font-size: 50px;
+    font-weight: 600;
+    line-height: 75px;
+    text-transform: uppercase;
+    color: #fff;
+    cursor: pointer;
+    transition: opacity 0.2s var(--rn-ease);
+}
+
+.bigTab:hover { opacity: 0.75; }
+
+/* Live marks the open tab with a 2px rule across the whole label, padding included. It
+   is drawn per tab rather than as one travelling bar, because these labels are different
+   widths and on different rows. Scaled from nothing so the mark arrives rather than appears. */
+.bigTab::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 2px;
+    background: var(--rn-red);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s var(--rn-ease);
+}
+
+@media (max-width: 1180px) {
+    /* Below live's own measure the labels have to come down with it, or North -& South
+       America alone overruns the rail. */
+    .bigTab {
+        font-size: clamp(22px, 4.2vw, 50px);
+        line-height: 1.5;
+        padding: 10px 14px;
+    }
+}
+
+@media (max-width: 900px) {
+    /* No wash to stand on, so the tabs come back to the page's own ink on paper. */
+    .bigTabs {
+        justify-content: flex-start;
+        max-width: none;
+        margin-bottom: 30px;
+        border-bottom: 1px solid var(--rn-line-ink);
+    }
+    .bigTab { color: var(--rn-ink-dim); padding-inline: 0; margin-right: 26px; }
+    .bigTabOn { color: var(--rn-ink); }
+}
+
+.bigTabOn::after { transform: scaleX(1); }
+
+@media (prefers-reduced-motion: reduce) {
+    .bigTab, .bigTab::after { transition: none; }
+}
+
+/* The country columns clear the wash rather than sitting in it, but they sit close under it.
+
+   Live measures its gap from the bottom of the picture box, which is not where the brush
+   ends: the ink runs out at 94.8% of the file's height, so live's 150px below the box is
+   really 184px of empty paper below the last red. Closed up here to about 20px below the ink,
+   so the columns read as belonging to the wash above them rather than as a separate block.
+
+   The foot moves with the window — the picture is drawn at the window's width, so it is
+   860/1900 of that tall — and the columns follow it down. What stands above them inside this
+   section is fixed: 184px of lead, the three 95px rows of tabs, the 25px under them, and the
+   count with its own margin. The floor keeps the padding from going negative once the window
+   is narrow enough that the wash is shorter than the tabs standing on it. */
+.washPane {
+    padding-top: max(24px, calc(45.26vw - 558px));
+}
+
+/* The FAQ has no count line between its tabs and its content, so it needs that height back. */
+.faqPane.washPane { padding-top: max(24px, calc(45.26vw - 543px)); }
+
+@media (max-width: 1180px) {
+    /* The labels shrink below live's measure here, so the block above the content is no
+       longer as tall and the sum would push it too far down. */
+    .washPane { padding-top: max(24px, calc(45.26vw - 466px)); }
+    .faqPane.washPane { padding-top: max(24px, calc(45.26vw - 451px)); }
+}
+
+@media (max-width: 900px) {
+    /* No wash, nothing to clear. */
+    .washPane { padding-top: 0; }
+}
+
+.trackCount {
+    margin: 0 0 28px;
+    font-family: var(--rn-body);
+    font-size: 14px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--rn-ink-dim);
+}
+
+.trackGrid {
+    columns: 1;
+    column-gap: 36px;
+}
+
+@media (min-width: 680px) { .trackGrid { columns: 2; } }
+@media (min-width: 1040px) { .trackGrid { columns: 3; } }
+
+.country {
+    /* A country must not be split down the middle by a column break. */
+    break-inside: avoid;
+    margin-bottom: 26px;
+}
+
+/* Sizes measured off live — 20px countries over 16px circuits and 16px variants, on one 24px
+   line through all three so the columns keep a single rhythm whatever is in them. The list had
+   been running smaller than that, and the variants were shrunk to 13px grey where live keeps
+   them the same size and colour as the circuit above them.
+
+   The weights are heavier than live's, by choice: live sets 500 on a country and 400 on
+   everything else, which at these sizes leaves a column of near-identical lines. Bold on the
+   country and semibold on the circuit give the three levels something to be told apart by.
+
+   The body stack rather than the display one: live's country headings compute to Roboto, not
+   to the Titillium its stylesheet asks for and never loads. */
+.countryName {
+    margin: 0 0 8px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--rn-red);
+    font-family: var(--rn-body);
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 24px;
+    text-transform: uppercase;
+    color: var(--rn-ink);
+}
+
+.circuitList {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* Live's circuit paragraphs carry 16px under them. */
+.circuitList > li { margin-bottom: 16px; }
+
+.circuitName {
+    font-family: var(--rn-body);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    color: var(--rn-ink);
+}
+
+.layoutList {
+    margin: 0;
+    /* Live indents its variants 40px. */
+    padding-left: 40px;
+    list-style: none;
+    font-family: var(--rn-body);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    color: var(--rn-ink);
+}
+
+.layoutList > li::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 1px;
+    margin-right: 7px;
+    vertical-align: middle;
+    background: var(--rn-red);
+}
+
+/* "Watch tutorial video" — live sets the words in red and underlined, beside the YouTube
+   mark. The top margin is overridden per link where one follows a walkthrough, to pull it up
+   into the space the overhanging picture leaves. */
+.videoLine {
+    margin: 22px 0 36px;
+    max-width: 1120px;
+}
+
+/* The mirrored run puts its picture on the left, so its link goes with the caption on the
+   right, flush to the far edge of the rail as live sets it. */
+.videoLineRight {
+    text-align: right;
+}
+
+.videoLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--rn-body);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    color: var(--rn-red);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s var(--rn-ease);
+}
+
+.videoLink:hover { color: var(--rn-ink); }
+
+.videoMark {
+    flex: none;
+    /* The mark is not part of the sentence, so it does not take the underline. */
+    text-decoration: none;
+}
+
+/* ── Sample layouts ──────────────────────────────────────────────────────────
+   Video Layouts opens with fifteen stills of a lap, each under a different data overlay, shown
+   one at a time with an arrow either side. No words on them, so no band and no text cell. */
+.layouts {
+    /* Symmetric, so the strip pulls away and settles at the same rate. */
+    --rn-slide: cubic-bezier(0.65, 0, 0.35, 1);
+    margin: 26px 0 48px;
+    max-width: 1120px;
+}
+
+.layouts:focus-visible {
+    outline: 2px solid var(--rn-red);
+    outline-offset: 8px;
+}
+
+.layoutFrame {
+    position: relative;
+    aspect-ratio: var(--rn-layout-ratio, 1.78);
+    background: var(--rn-paper-2);
+    overflow: hidden;
+}
+
+/* Both pictures occupy the frame at once so they cross over each other, the one leaving
+   beneath the one arriving. */
+.layoutImg {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.layoutIn {
+    /* Above the one it is crossing with, below the scrim and the arrows. */
+    z-index: 1;
+    animation: rnLayoutIn 0.52s var(--rn-slide) both;
+}
+
+.layoutOut {
+    animation: rnLayoutOut 0.52s var(--rn-slide) both;
+}
+
+/* A real slide rather than a dissolve: the one leaving travels all the way out of the frame
+   while the one arriving comes all the way in, the two moving as one strip.
+
+   The dissolve this replaces held both pictures near half opacity through the middle of the
+   change, which read as a ghosted double exposure rather than a transition — and the two were
+   scaling against each other at the same time, one up and one down, which muddied it further.
+   Nothing fades here and nothing scales, so every frame of the change shows one sharp picture
+   and the direction is unmistakable.
+
+   A symmetric ease-in-out, not the site's usual ease-out: a slide that leaves at full speed
+   and crawls to a stop feels like it is being dragged. */
+@keyframes rnLayoutIn {
+    from { transform: translate3d(calc(var(--rn-dir, 1) * 100%), 0, 0); }
+    to { transform: none; }
+}
+
+@keyframes rnLayoutOut {
+    from { transform: none; }
+    to { transform: translate3d(calc(var(--rn-dir, 1) * -100%), 0, 0); }
+}
+
+/* The opening picture is simply there: no animation to wait through, and no chance of it
+   being left parked off-frame if one never runs. */
+.layoutFirst { animation: none; }
+
+/* The arrows are this rebuild's own, not live's.
+
+   Live floats a bare white chevron on the picture, which disappears against a pale frame and
+   gives nothing to aim at. These are a glass disc instead: a dark blurred pill with a hair of
+   a white ring, which holds its shape over any still, and takes the brand red on hover so the
+   control answers back.
+
+   Raised above the pictures: the one arriving is on its own layer while the two slide, and
+   without a layer of their own the arrows were painted underneath both.
+
+   There is no scrim down the edges. One was tried, and on these stills — which are bright sky
+   and track at the sides — it read as a grey band on each edge rather than as shading. The
+   disc carries its own fill, so it does not need the picture darkened behind it. */
+.layoutArrow {
+    position: absolute;
+    z-index: 3;
+    top: 50%;
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    transform: translateY(-50%);
+    border: 1px solid rgb(255 255 255 / 0.3);
+    border-radius: 50%;
+    background: rgb(10 10 12 / 0.4);
+    backdrop-filter: blur(10px) saturate(130%);
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.25s var(--rn-ease), border-color 0.25s var(--rn-ease),
+        box-shadow 0.25s var(--rn-ease), transform 0.25s var(--rn-ease);
+}
+
+/* Without the blur the disc is only a flat tint, so it is darkened to keep the same weight. */
+@supports not (backdrop-filter: blur(4px)) {
+    .layoutArrow { background: rgb(10 10 12 / 0.62); }
+}
+
+.layoutArrow:hover,
+.layoutArrow:focus-visible {
+    background: var(--rn-red);
+    border-color: var(--rn-red);
+    box-shadow: 0 8px 22px rgb(220 7 20 / 0.42);
+    outline: none;
+}
+
+.layoutPrev { left: 22px; }
+.layoutNext { right: 22px; }
+
+/* A nudge the way the picture will travel, so the button says which way it goes. */
+.layoutPrev:hover, .layoutPrev:focus-visible { transform: translate(-3px, -50%) scale(1.06); }
+.layoutNext:hover, .layoutNext:focus-visible { transform: translate(3px, -50%) scale(1.06); }
+
+.layoutCount {
+    margin: 12px 0 0;
+    font-family: var(--rn-body);
+    font-size: 14px;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    color: var(--rn-ink-dim);
+}
+
+.layoutNow { font-weight: 700; color: var(--rn-red); }
+
+@media (prefers-reduced-motion: reduce) {
+    .layoutIn, .layoutOut { animation: none; }
+    .layoutOut { display: none; }
+    .layoutArrow { transition: none; }
+    .layoutPrev:hover, .layoutPrev:focus-visible,
+    .layoutNext:hover, .layoutNext:focus-visible { transform: translateY(-50%); }
+}
+
+/* ── Walkthrough slider ──────────────────────────────────────────────────────
+   Live steps through an update one pair of cells at a time: the caption on the left over a red
+   band, the screenshot on the right standing proud of it. The band is a full-bleed stripe
+   behind the row — on live a gradient on the section, #f8f8f8 to #e30613 and back, so the
+   picture overhangs it top and bottom rather than sitting in a box. */
+.walk {
+    position: relative;
+    margin: 30px 0 60px;
+    /* The tallest picture in the run, set by the component, so the row does not jump between
+       the portrait phone shots and the landscape ones. */
+    min-height: var(--rn-step-h, 282px);
+    display: flex;
+    align-items: center;
+}
+
+.walk:focus-visible {
+    outline: 2px solid var(--rn-red);
+    outline-offset: 10px;
+}
+
+/* The stripe, breaking out of the rail to the full width of the window as live's section does.
+   Live sets it with a gradient stop per run — 20/80 of a 322-tall section for the dashboard,
+   35/65 of a 660-tall one for RN Connect — which comes to 193 and 198. So it is one height for
+   both, and how far the picture overhangs is whatever that picture is. */
+.walkBand {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 100vw;
+    height: 195px;
+    margin-left: -50vw;
+    transform: translateY(-50%);
+    background: var(--rn-red);
+    pointer-events: none;
+}
+
+.walkRow {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 1120px;
+}
+
+/* Live flips the RN Connect run: picture left, caption right. */
+.walkMirrored .walkText { order: 2; }
+.walkMirrored .walkShot { order: 1; }
+
+/* Both cells clip horizontally, so a step entering from the side is hidden until it arrives
+   rather than sliding in over the page. The picture overhangs the band vertically, so only the
+   horizontal axis is clipped. */
+.walkText {
+    display: flex;
+    align-items: center;
+    min-height: 195px;
+    padding: 10px 30px 10px 0;
+    overflow-x: clip;
+}
+
+.walkMirrored .walkText { padding: 10px 0 10px 30px; }
+
+/* A step arrives from the side it was asked for — forward brings the next in from the right,
+   back brings the previous in from the left. The picture follows a beat later, so the two do
+   not move as one slab. */
+.walkWords {
+    animation: rnWalkIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* As the gallery: the opening step does not animate in. */
+.walkFirst { animation: none; }
+
+/* Mode Activation names each step above its caption. */
+.walkTitle {
+    margin: 0 0 8px;
+    font-family: var(--rn-display);
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 26px;
+    text-transform: uppercase;
+    color: #fff;
+}
+
+.walkCaption {
+    margin: 0;
+    font-family: var(--rn-body);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #fff;
+}
+
+.walkShot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: clip;
+}
+
+.walkShotStack {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.walkImg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    animation: rnWalkIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.04s both;
+}
+
+/* The step leaving is taken out of the flow so the one arriving keeps the row's height, and
+   fades under it rather than vanishing the moment the next mounts. */
+.walkImgOut {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    animation: rnWalkOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes rnWalkOut {
+    from { opacity: 1; transform: none; }
+    to { opacity: 0; transform: translate3d(calc(var(--rn-dir, 1) * -24px), 0, 0); }
+}
+
+@keyframes rnWalkIn {
+    from {
+        opacity: 0;
+        transform: translate3d(calc(var(--rn-dir, 1) * 34px), 0, 0);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* The arrows flank the picture, as live places them — it pins one at 53% and the other at 3%
+   of the widget, which lands them either side of the picture's half. Raised over the step
+   leaving, which is taken out of the flow while it fades. */
+.walkNav {
+    position: absolute;
+    z-index: 2;
+    left: 50%;
+    top: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.walkMirrored .walkNav { left: 0; }
+
+ /* The same disc as the gallery's, sized down and inverted: these sit on the red band, not on
+    a photograph, so the disc is white and the chevron is ink.
+
+    The hover is ink, never red. Red was tried and the disc disappeared into the band behind
+    it, leaving a chevron floating on its own — the gallery can hover red because nothing in a
+    photograph of a lap is this colour, but here the background already is. */
+.walkArrow {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    border: 1px solid var(--rn-line-ink);
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.72);
+    backdrop-filter: blur(6px);
+    color: var(--rn-ink);
+    cursor: pointer;
+    pointer-events: auto;
+    transition: background 0.25s var(--rn-ease), border-color 0.25s var(--rn-ease),
+        color 0.25s var(--rn-ease), box-shadow 0.25s var(--rn-ease),
+        transform 0.25s var(--rn-ease);
+}
+
+.walkArrow:hover,
+.walkArrow:focus-visible {
+    border-color: var(--rn-ink);
+    background: var(--rn-ink);
+    color: #fff;
+    box-shadow: 0 8px 20px rgb(0 0 0 / 0.3);
+    outline: none;
+}
+
+.walkNav .walkArrow:first-child:hover,
+.walkNav .walkArrow:first-child:focus-visible { transform: translateX(-3px) scale(1.06); }
+
+.walkNav .walkArrow:last-child:hover,
+.walkNav .walkArrow:last-child:focus-visible { transform: translateX(3px) scale(1.06); }
+
+
+@media (max-width: 860px) {
+    /* No room for two cells side by side, so the caption sits on its own band above the
+       picture and the arrows come out from under it. */
+    .walk { display: block; min-height: 0; }
+    .walkRow { grid-template-columns: 1fr; gap: 0; }
+    .walkMirrored .walkText, .walkMirrored .walkShot { order: 0; }
+    .walkText, .walkMirrored .walkText {
+        min-height: 0;
+        padding: 18px 20px;
+        background: var(--rn-red);
+    }
+    .walkBand { display: none; }
+    .walkNav, .walkMirrored .walkNav {
+        position: static;
+        width: 100%;
+        transform: none;
+        justify-content: center;
+        gap: 26px;
+        margin-top: 14px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .walkArrow { transition: none; }
+    .walkArrow:hover, .walkArrow:focus-visible { transform: none; }
+    .walkWords, .walkImg, .walkImgOut { animation: none; }
+    .walkImgOut { display: none; }
+}

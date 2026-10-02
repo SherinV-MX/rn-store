@@ -44,7 +44,7 @@ export default function RnHeader({ locale }: { locale: string }) {
         { label: t.products, href: `/${locale}/rn#systems` },
         /* The live site has a support section of its own; this rebuild does not, so the
            link goes to the footer rather than to an anchor that is not there. */
-        { label: t.support, href: `/${locale}/rn#contact` },
+        { label: t.support, href: `/${locale}/rn/support` },
         { label: t.partners, href: `/${locale}/rn#partners` },
         { label: t.contact, href: `/${locale}/rn#contact` },
     ];

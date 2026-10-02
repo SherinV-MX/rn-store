@@ -214,6 +214,455 @@ export function rnHome(locale: string) {
     });
 }
 
+/* The RN Support page. Live's own six tiles, in their own order — the carousel starts on FAQ,
+   not on Manuals — with their titles exactly as they are set there, including the lower-case
+   "faq" and the hard hyphen the German tiles break on.
+
+   Every tile now points at a page in this rebuild. Nothing here leaves for the live site. */
+export function rnSupport(locale: string) {
+    return pick(locale, {
+        head: 'RN Support',
+        intro: 'You have questions about the installation, functions or handling of your RN system? Do you need technical support? On this page you will find product manuals and quick guides as well as answers to the most frequently asked questions about our products, a detailed guide to RN software updates and an overview of available racetracks and video layouts.',
+        tiles: [
+            { title: 'faq', image: '/rn/support/faq.jpg', href: `/${locale}/rn/support/faq` },
+            { title: 'Supported Tracks', image: '/rn/support/tracks.jpg', href: `/${locale}/rn/support/supported-tracks` },
+            { title: 'Manuals', image: '/rn/support/manuals.jpg', href: `/${locale}/rn/support/manuals` },
+            { title: 'Device Updates', image: '/rn/support/updates.jpg', href: `/${locale}/rn/support/device-updates` },
+            { title: 'Mode Activation', image: '/rn/support/modes.jpg', href: `/${locale}/rn/support/mode-activation` },
+            { title: 'Video Layouts', image: '/rn/support/layouts.jpg', href: `/${locale}/rn/support/video-layouts` },
+        ],
+        prev: 'Previous',
+        next: 'Next',
+    }, {
+        head: 'RN Support',
+        intro: 'Sie haben Fragen rund um den Einbau, die Funktionsweise oder die Handhabung Ihres RN-Systems? Sie benötigen technische Unterstützung? Auf dieser Seite finden Sie neben Produkthandbüchern und Quickguides auch Antworten zu den am häufigsten gestellten Fragen zu unseren Produkten, eine ausführliche Anleitung zu den RN Software-Updates sowie eine Übersicht über die verfügbaren Rennstrecken und Video-Layouts.',
+        tiles: [
+            { title: 'faq', image: '/rn/support/faq.jpg', href: `/${locale}/rn/support/faq` },
+            { title: 'Streckenliste', image: '/rn/support/tracks.jpg', href: `/${locale}/rn/support/supported-tracks` },
+            { title: 'Bedienungs-anleitungen', image: '/rn/support/manuals.jpg', href: `/${locale}/rn/support/manuals` },
+            { title: 'Geräte-updates', image: '/rn/support/updates.jpg', href: `/${locale}/rn/support/device-updates` },
+            { title: 'RN Mode Aktivierung', image: '/rn/support/modes.jpg', href: `/${locale}/rn/support/mode-activation` },
+            { title: 'Video-Layouts', image: '/rn/support/layouts.jpg', href: `/${locale}/rn/support/video-layouts` },
+        ],
+        prev: 'Zurück',
+        next: 'Weiter',
+    });
+}
+
+/* RN's FAQ, lifted from their own page in both languages. Six tabs by product, and
+   inside each a run of questions with their answers.
+
+   The German side is genuinely shorter — 22 questions against 28 — and its
+   questions are set in the same mixed case RN typed them in, down to the stray capitals
+   in "intEgRierten". Left as written rather than tidied: it is their copy. */
+export function rnFaq(locale: string) {
+    return pick(locale, {
+        head: 'FAQ',
+        intro: 'In our FAQ you will find answers and support for the most frequently asked customer questions regarding our Race Navigator systems. Please use the FAQ as your first point of contact for technical questions – in many cases you will find a suitable answer here.',
+        tabs: [
+            {
+                label: 'RN LITE',
+                items: [
+                    {
+                        q: 'DOES THE RN LITE HAVE AN INTERNAL BATTERY?',
+                        a: [
+                            'Yes, the device has an integrated battery. The battery in the device is used to ensure video processing even after an incident. For example, after an accident, it protects against a possible power failure from the external power supply. The battery is not used for normal use of the RN LITE without an external power supply.',
+                            'If the remaining recording time is less than one hour, the system displays a message in the top toolbar. It is a yellow triangle with an exclamation mark in the center. You can check the available storage capacity under : SETTINGS -> RN DEVICE -> STATUS.',
+                        ],
+                    },
+                    {
+                        q: 'CAN OTHER CAMERAS BE CONNECTED TO THE RN LITE?',
+                        a: [
+                            'No, only one camera can be connected to the RN LITE.',
+                        ],
+                    },
+                    {
+                        q: 'CAN THE MEMORY CAPACITY OF THE RN LITE BE EXPANDED?',
+                        a: [
+                            'No, the RN LITE is only available with the 64GB memory version.',
+                        ],
+                    },
+                    {
+                        q: 'I HAVE NO GPS RECEPTION WITH THE RN LITE.',
+                        a: [
+                            '1.) Please check the connection of the external GPS antenna on the device. Tighten the union nut on the connection hand-tight.',
+                            '2.) Please check the laying of the cable and if it is bent or damaged.',
+                            '3.) Please check the installation of the GPS antenna. We generally recommend the installation outside on the roof. The antenna has an integrated magnetic base. It may help to disconnect and reconnect the connector or to restart the system.',
+                        ],
+                    },
+                    {
+                        q: 'WHEN IS THE RN LITE MEMORY FULL?',
+                        a: [
+                            'If the available remaining recording time is less than one hour, the system displays a message in the upper toolbar. It is a yellow triangle with an exclamation mark in the middle. You can check the available memory capacity under : SETTINGS -> RN DEVICE -> STATUS.',
+                        ],
+                    },
+                    {
+                        q: 'THE RN LITE CANNOT BE SWITCHED ON.',
+                        a: [
+                            'Please check the power supply. If in doubt start the engine. You can see at the cigarette lighter plug at a green LED that 12V voltage is available at the plug. The RN ONE MKII is switched on by holding the ON/OFF switch on the side for 2 seconds.',
+                            'In case of extreme sunlight the temperature of the RN ONE can rise strongly. If this happens, a safety feature will operate to protect the RN ONE from thermal damage and it may not turn on. In case of overheating, it is necessary to disassemble the RN ONE and remove it from direct sunlight to cool it down. After a short time, the RN ONE can then be switched on again.',
+                            'After the intro has been played, the start screen appears and the unit is ready for use. In addition, the Home button on the top will blink green during the boot process. If it is constantly green, the system is ready for use.',
+                        ],
+                    },
+                ],
+            },
+            {
+                label: 'RN ONE MK2',
+                items: [
+                    {
+                        q: 'DOES THE RN ONE HAVE AN INTERNAL BATTERY?',
+                        a: [
+                            'Yes, the device has an integrated rechargeable battery with a runtime of approx. 15 minutes. The battery in the device serves to ensure video processing even after an incident. For example, after an accident it protects against a possible power failure on the external power supply. The battery is not for normal use of the RN ONE without external power supply.',
+                        ],
+                    },
+                    {
+                        q: 'CAN THE MEMORY CAPACITY OF THE RN ONE BE EXPANDED?',
+                        a: [
+                            'No, the RN ONE is only available with the 64GB memory version.',
+                        ],
+                    },
+                    {
+                        q: 'WHEN IS THE RN ONE MEMORY FULL?',
+                        a: [
+                            'If the available remaining recording time is less than one hour, the system displays a message in the upper toolbar. It is a yellow triangle with an exclamation mark in the middle. You can check the available memory capacity under: SETTINGS -> RN DEVICE -> STATUS.',
+                        ],
+                    },
+                    {
+                        q: 'CAN FURTHER CAMERAS BE CONNECTED TO THE RN ONE?',
+                        a: [
+                            'Yes, with the RN ONE MKII an additional, external camera can be connected via USB.',
+                        ],
+                    },
+                    {
+                        q: 'THE CAMERA IMAGE APPEARS 180 DEGREES ROTATED.',
+                        a: [
+                            'If the cameras are mounted hanging (thread points upwards), the camera image can be rotated in the software. To do this, you go under: SETTINGS -> CAMERA. SETTINGS -> CAMERA. Select the appropriate camera and set a hook at FLIP. The camera image rotates by 180°.',
+                        ],
+                    },
+                    {
+                        q: 'I HAVE NO GPS SIGNAL WITH THE RN ONE',
+                        a: [
+                            '1.) Please check the connection of the external GPS antenna on the device. The union nut at the connection must be tightened hand-tight.',
+                            '2.) Please check the laying of the cable and whether it is possibly kinked or damaged.',
+                            '3.) Please check the installation of the GPS antenna. We generally recommend the installation outside on the roof. The antenna has an integrated magnetic base. It may help to disconnect and reconnect the connector or to restart the system.',
+                        ],
+                    },
+                    {
+                        q: 'THE RN ONE CANNOT BE SWITCHED ON.',
+                        a: [
+                            'Please check the power supply. If in doubt start the engine. You can see at the cigarette lighter plug at a green LED that 12V voltage is present at the plug. The RN ONE MKII is switched on by holding the ON/OFF switch on the side for 2 seconds.',
+                            'In case of extreme sunlight the temperature of the RN ONE can rise strongly. If this happens, a safety feature will operate to protect the RN ONE from thermal damage and it may not turn on. In case of overheating, it is necessary to disassemble the RN ONE and remove it from direct sunlight to cool it down. After a short time, the RN ONE can then be switched on again.',
+                            'After the intro has been played, the start screen appears and the unit is ready for use. In addition, the Home button on the top will blink green during the boot process. If it is constantly green, the system is ready for use.',
+                        ],
+                    },
+                ],
+            },
+            {
+                label: 'RN PRO',
+                items: [
+                    {
+                        q: 'I HAVE NO GPS SIGNAL WITH THE RN PRO',
+                        a: [
+                            '1.) Please check the connection of the external GPS antenna on the device. The union nut at the connection must be tightened hand-tight.',
+                            '2.) Please check the laying of the cable and whether it is possibly kinked or damaged.',
+                            '3.) Please check the installation of the GPS antenna. We generally recommend the installation outside on the roof. The antenna has an integrated magnetic base. It may help to disconnect and reconnect the connector or to restart the system.',
+                        ],
+                    },
+                    {
+                        q: 'DOES THE RN PRO HAVE AN INTERNAL BATTERY?',
+                        a: [
+                            'Yes, the device has an integrated battery. The runtime of a new, fully charged battery is about 1 hour with deactivated recording. The battery in the device is used to ensure video processing even after an incident. For example, after an accident, it protects against a possible power failure from the external power supply. The battery is not for normal use of the RN PRO without external power supply.',
+                        ],
+                    },
+                    {
+                        q: 'WHEN IS THE RN PRO MEMORY FULL?',
+                        a: [
+                            'f the available remaining recording time is less than one hour, the system displays a message in the upper toolbar. It is a yellow triangle with an exclamation mark in the middle. You can check the available storage capacity under SETTINGS -> RN DEVICE -> STATUS.',
+                        ],
+                    },
+                    {
+                        q: 'CAN THE MEMORY CAPACITY OF THE RN PRO BE EXPANDED?',
+                        a: [
+                            'Yes, the storage capacity of the RN PRO can be expanded from 64GB to 128GB or even 256GB. To do this, the RN PRO must be returned to us. Contact our customer support for more details and conditions.',
+                        ],
+                    },
+                    {
+                        q: 'How many cameras can be connected to the RN PRO?',
+                        a: [
+                            'The RN PRO allows up to four cameras to be connected simultaneously.',
+                        ],
+                    },
+                    {
+                        q: 'THE CAMERA IMAGE APPEARS 180 DEGREES ROTATED.',
+                        a: [
+                            'If the cameras are mounted hanging (thread points upwards), the camera image can be rotated in the software. To do this, you go under: SETTINGS -> CAMERA. Select the appropriate camera and set a hook at FLIP. The camera image rotates by 180°.',
+                        ],
+                    },
+                    {
+                        q: 'THE RN ONE CANNOT BE SWITCHED ON.',
+                        a: [
+                            'Please check the power supply. If in doubt start the engine. You can see at the cigarette lighter plug at a green LED that 12V voltage is present at the plug. The RN ONE MKII is switched on by holding the ON/OFF switch on the side for 2 seconds.',
+                            'In case of extreme sunlight the temperature of the RN ONE can rise strongly. If this happens, a safety feature will engage to protect the RN PRO from thermal damage and it may not turn on. In case of overheating, it is necessary to disassemble the RN ONE and remove it from direct sunlight to cool it down. The RN ONE can then be switched on again after a short time.',
+                            'After the intro has been played, the start screen appears and the unit is ready for use. In addition, the Home button on the top will blink green during the boot process. If it is constantly green, the system is ready for use.',
+                        ],
+                    },
+                ],
+            },
+            {
+                label: 'RN ANALYZER',
+                items: [
+                    {
+                        q: 'ON WHICH DEVICES DOES THE RN ANALYZER WORK?',
+                        a: [
+                            'The RN Analyzer app works on all Apple iPads from iPad 3 onwards. The RN Analyzer software is available for all Windows PCs and laptops from Windows 7 and above.',
+                        ],
+                    },
+                    {
+                        q: 'WHERE CAN I GET THE RN ANALYZER?',
+                        a: [
+                            'The RN Analyzer app can be downloaded for free from the Apple App Store. The RN Analyzer software for Windows can be downloaded for free from our website.',
+                        ],
+                    },
+                    {
+                        q: 'IS DATA ANALYSIS POSSIBLE ON A LAPTOP OR DESKTOP PC?',
+                        a: [
+                            'Yes, the RN Analyzer software for Windows PCs and laptops is available for free download. The software is optimized for the operating systems Windows 7 and Windows 10.',
+                        ],
+                    },
+                ],
+            },
+            {
+                label: 'RN CONNECT',
+                items: [
+                    {
+                        q: 'On what devices does the RN Connect App work?',
+                        a: [
+                            'The RN CONNECT app works on all Apple iPads from iPad 3 and on all Apple iPhones from iPhone 5.',
+                        ],
+                    },
+                    {
+                        q: 'Where can I get the RN Connect App?',
+                        a: [
+                            'The RN Connect App can be downloaded for free in the Apple App Store.',
+                        ],
+                    },
+                ],
+            },
+            {
+                label: 'GENERAL QUESTIONS',
+                items: [
+                    {
+                        q: 'What warranty do I get when I buy a Race Navigator system?',
+                        a: [
+                            'For all articles sold as new goods the legal warranty of 24 months applies. For used, refurbished or demonstration goods the warranty is 12 months. We reserve the right to rectification of defects. The receipt of the goods by you is considered to be the beginning of your claims.',
+                        ],
+                    },
+                    {
+                        q: 'WHERE CAN I ORDER RACE NAVIGATOR PRODUCTS?',
+                        a: [
+                            'You can order all Race Navigator systems ans accessories in our online shop:',
+                            'store.race-navigator.com',
+                        ],
+                    },
+                    {
+                        q: 'How can I contact customer support?',
+                        a: [
+                            'If you have not found the right answer to your question, our customer support is of course available to you.',
+                            'Please send us an e-mail to support@rn-vision.com with a short description of your request.',
+                            'You can also reach us by phone during our business hours: +49 2161 6397011',
+                            'Monday to Friday from 9:00 to 17:00',
+                        ],
+                    },
+                ],
+            },
+        ],
+    }, {
+        head: 'FAQ',
+        intro: 'In unserer FAQ finden Sie Antworten und Hilfestellungen zu den am häufigst gestellten Kundenfragen im Zusammenhang mit unseren Race Navigator Systemen. Bitte nutzen Sie die FAQ als erste Anlaufstelle bei technischen Fragen – in vielen Fällen finden Sie hier eine passende Antwort.',
+        tabs: [
+            {
+                label: 'RN LITE',
+                items: [
+                    {
+                        q: 'Hat der RN lite einen intigierten Akku?',
+                        a: [
+                            'Ja, das Gerät verfügt über einen integrierten Akku. Der Akku im Gerät dient dazu die Videoverarbeitung auch nach einem Zwischenfall zu gewährleisten. So sichert er beispielsweise nach einem Unfall einen möglichen Stromausfall seitens der externen Spannungsversorgung ab. Der Akku dient nicht zur normalen Nutzung des RN LITE ohne externe Spannungsversorgung.',
+                            'Beträgt die vorhandene Rest-Aufnahmezeit weniger als eine Stunde, so zeigt das System einen Hinweis in der oberen Symbolleiste an. Es ist ein gelbes Dreieck mit einem Ausrufezeichen in der Mitte. Man kann die vorhandene Speicherkapazität prüfen unter: SETTINGS -> RN DEVICE -> STATUS.',
+                        ],
+                    },
+                    {
+                        q: 'Können am RN LITE weitere Kameras angeschlossen werden?',
+                        a: [
+                            'Nein, beim RN LITE kann lediglich eine Kamera angeschlossen werden.',
+                        ],
+                    },
+                    {
+                        q: 'Kann man die Speicherkapazität des RN lite erweitern?',
+                        a: [
+                            'Nein, den RN LITE gibt es nur mit der Speichervariante 64GB.',
+                        ],
+                    },
+                    {
+                        q: 'Ich habe beim rn lite keinen gps empfang.',
+                        a: [
+                            '1.) Bitte überprüfen Sie den Anschluss der externen GPS Antenne am Gerät. Die Überwurfmutter am Anschluss ist handfest anzuziehen.',
+                            '2.) Bitte überprüfen Sie die Verlegung des Kabels und ob es eventuell abgeknickt oder beschädigt ist.',
+                            '3.) Bitte überprüfen Sie die Anbringung der GPS Antenne. Wir empfehlen grundsätzlich die Montage außen auf dem Dach. Die Antenne hat einen integrierten Magnetfuß. Es kann helfen, die Steckverbindung zu lösen und erneut zu verbinden, bzw. das System neuzustarten.',
+                        ],
+                    },
+                    {
+                        q: 'Wann ist der rn LITE speicher voll?',
+                        a: [
+                            'Beträgt die vorhandene Rest-Aufnahmezeit weniger als eine Stunde, so zeigt das System einen Hinweis in der oberen Symbolleiste an. Es ist ein gelbes Dreieck mit einem Ausrufezeichen in der Mitte. Man kann die vorhandene Speicherkapazität prüfen unter: SETTINGS -> RN DEVICE -> STATUS.',
+                        ],
+                    },
+                    {
+                        q: 'der rn LITE lässt sich nicht einschalten.',
+                        a: [
+                            'Bitte überprüfen Sie die Spannungsversorgung. Im Zweifel den Motor Starten. Sie erkennen am Zigarettenanzünder-Stecker an einer grün leuchtenden LED, dass 12V Spannung am Stecker anliegen. Der RN ONE MKII wird durch ein 2-sekündiges Halten des seitlichen ON/OFF Schalters eingeschaltet.',
+                            'Bei extremer Sonneneinstrahlung kann die Temperatur des RN ONE stark ansteigt. Ist dies der Fall, greift eine Sicherheitsfunktion, die den RN ONE vor thermischen Schäden schützt und er lässt sich gegebenenfalls nicht mehr einschalten. Bei Überhitzung ist es notwendig, den RN ONE zu demontieren und der direkten Sonneneinstrahlung zu entziehen, um ihn abzukühlen. Nach kurzer Zeit lässt sich der RN ONE dann wieder einschalten.',
+                            'Nachdem das Intro gespielt wurde, erscheint der Start Bildschirm und das Gerät ist einsatzbereit. Zusätzlich blinkt der Home Button auf der Oberseite während des Bootvorgangs grün. Leuchtet er konstant grün, ist das System einsatzbereit.',
+                        ],
+                    },
+                ],
+            },
+            {
+                label: 'RN ONE MK2',
+                items: [
+                    {
+                        q: 'Hat der RN One einen intEgRierten Akku?',
+                        a: [
+                            'Ja, das Gerät verfügt über einen integrierten Akku mit einer Laufzeit von ca. 15 Minuten. Der Akku im Gerät dient dazu die Videoverarbeitung auch nach einem Zwischenfall zu gewährleisten. So sichert er beispielsweise nach einem Unfall einen möglichen Stromausfall seitens der externen Spannungsversorgung ab. Der Akku dient nicht zur normalen Nutzung des RN ONE ohne externe Spannungsversorgung.',
+                        ],
+                    },
+                    {
+                        q: 'Kann man die Speicherkapazität des RN ones erweitern?',
+                        a: [
+                            'Nein, den RN ONE gibt es nur mit der Speichervariante 64GB.',
+                        ],
+                    },
+                    {
+                        q: 'WANN IST DER RN ONE SPEICHER VOLL?',
+                        a: [
+                            'Beträgt die vorhandene Rest-Aufnahmezeit weniger als eine Stunde, so zeigt das System einen Hinweis in der oberen Symbolleiste an. Es ist ein gelbes Dreieck mit einem Ausrufezeichen in der Mitte. Man kann die vorhandene Speicherkapazität prüfen unter: SETTINGS -> RN DEVICE -> STATUS.',
+                        ],
+                    },
+                    {
+                        q: 'Das kamerabild erscheint im 180 grad verdreht.',
+                        a: [
+                            'Werden die Kameras hängend montiert (Gewinde zeigt nach oben), kann man in der Software das Kamerabild drehen. Dazu geht man unter: SETTINGS -> CAMERA. Man wählt die entsprechende Kamera an und setzt bei FLIP einen Haken. Das Kamerabild dreht sich um 180°.',
+                        ],
+                    },
+                    {
+                        q: 'Ich habe beim rn one keinen gps empfang',
+                        a: [
+                            '1.) Bitte überprüfen Sie den Anschluss der externen GPS Antenne am Gerät. Die Überwurfmutter am Anschluss ist handfest anzuziehen.',
+                            '2.) Bitte überprüfen Sie die Verlegung des Kabels und ob es eventuell abgeknickt oder beschädigt ist.',
+                            '3.) Bitte überprüfen Sie die Anbringung der GPS Antenne. Wir empfehlen grundsätzlich die Montage außen auf dem Dach. Die Antenne hat einen integrierten Magnetfuß. Es kann helfen, die Steckverbindung zu lösen und erneut zu verbinden, bzw. das System neuzustarten.',
+                        ],
+                    },
+                    {
+                        q: 'der rn one lässt sich nicht einschalten.',
+                        a: [
+                            'Bitte überprüfen Sie die Spannungsversorgung. Im Zweifel den Motor Starten. Sie erkennen am Zigarettenanzünder-Stecker an einer grün leuchtenden LED, dass 12V Spannung am Stecker anliegen. Der RN ONE MKII wird durch ein 2-sekündiges Halten des seitlichen ON/OFF Schalters eingeschaltet.',
+                            'Bei extremer Sonneneinstrahlung kann die Temperatur des RN ONE stark ansteigt. Ist dies der Fall, greift eine Sicherheitsfunktion, die den RN ONE vor thermischen Schäden schützt und er lässt sich gegebenenfalls nicht mehr einschalten. Bei Überhitzung ist es notwendig, den RN ONE zu demontieren und der direkten Sonneneinstrahlung zu entziehen, um ihn abzukühlen. Nach kurzer Zeit lässt sich der RN ONE dann wieder einschalten.',
+                            'Nachdem das Intro gespielt wurde, erscheint der Start Bildschirm und das Gerät ist einsatzbereit. Zusätzlich blinkt der Home Button auf der Oberseite während des Bootvorgangs grün. Leuchtet er konstant grün, ist das System einsatzbereit.',
+                        ],
+                    },
+                ],
+            },
+            {
+                label: 'RN PRO',
+                items: [
+                    {
+                        q: 'Ich habe beim rn pro keinen gps empfang',
+                        a: [
+                            '1.) Bitte überprüfen Sie den Anschluss der externen GPS Antenne am Gerät. Die Überwurfmutter am Anschluss ist handfest anzuziehen.',
+                            '2.) Bitte überprüfen Sie die Verlegung des Kabels und ob es eventuell abgeknickt oder beschädigt ist.',
+                            '3.) Bitte überprüfen Sie die Anbringung der GPS Antenne. Wir empfehlen grundsätzlich die Montage außen auf dem Dach. Die Antenne hat einen integrierten Magnetfuß. Es kann helfen, die Steckverbindung zu lösen und erneut zu verbinden, bzw. das System neuzustarten.',
+                        ],
+                    },
+                    {
+                        q: 'Wann ist der rn pro speicher voll?',
+                        a: [
+                            'Beträgt die vorhandene Rest-Aufnahmezeit weniger als eine Stunde, so zeigt das System einen Hinweis in der oberen Symbolleiste an. Es ist ein gelbes Dreieck mit einem Ausrufezeichen in der Mitte. Man kann die vorhandene Speicherkapazität prüfen unter: SETTINGS -> RN DEVICE -> STATUS.',
+                        ],
+                    },
+                    {
+                        q: 'Kann man die Speicherkapazität des RN pro erweitern?',
+                        a: [
+                            'Ja, die Speicherkapazität beim RN PRO lässt sich von 64GB auf 128GB oder auch 256GB erweitern. Dazu muss der RN PRO bei uns eingeschickt werden. Kontaktieren Sie unseren Kundensupport für weitere Details und Konditionen.',
+                        ],
+                    },
+                    {
+                        q: 'Das kamerabild erscheint im 180 grad verdreht.',
+                        a: [
+                            'Werden die Kameras hängend montiert (Gewinde zeigt nach oben), kann man in der Software das Kamerabild drehen. Dazu geht man unter: SETTINGS -> CAMERA. Man wählt die entsprechende Kamera an und setzt bei FLIP einen Haken. Das Kamerabild dreht sich um 180°.',
+                        ],
+                    },
+                    {
+                        q: 'der rn one lässt sich nicht einschalten.',
+                        a: [
+                            'Bitte überprüfen Sie die Spannungsversorgung. Im Zweifel den Motor Starten. Sie erkennen am Zigarettenanzünder-Stecker an einer grün leuchtenden LED, dass 12V Spannung am Stecker anliegen. Der RN ONE MKII wird durch ein 2-sekündiges Halten des seitlichen ON/OFF Schalters eingeschaltet.',
+                            'Bei extremer Sonneneinstrahlung kann die Temperatur des RN ONE stark ansteigt. Ist dies der Fall, greift eine Sicherheitsfunktion, die den RN PRO vor thermischen Schäden schützt und er lässt sich gegebenenfalls nicht mehr einschalten. Bei Überhitzung ist es notwendig, den RN ONE zu demontieren und der direkten Sonneneinstrahlung zu entziehen, um ihn abzukühlen. Nach kurzer Zeit lässt sich der RN ONE dann wieder einschalten.',
+                            'Nachdem das Intro gespielt wurde, erscheint der Start Bildschirm und das Gerät ist einsatzbereit. Zusätzlich blinkt der Home Button auf der Oberseite während des Bootvorgangs grün. Leuchtet er konstant grün, ist das System einsatzbereit.',
+                        ],
+                    },
+                ],
+            },
+            {
+                label: 'RN ANALYZER',
+                items: [
+                    {
+                        q: 'Wo erhalte ich den RN Analyzer?',
+                        a: [
+                            'Die RN Analyzer App kann kostenlos im Apple App Store heruntergeladen werden. Die RN Analyzer Software für Windows kann kostenlos von unserer Website heruntergeladen werden.',
+                        ],
+                    },
+                ],
+            },
+            {
+                label: 'RN CONNECT',
+                items: [
+                    {
+                        q: 'Wo erhalte ich die RN CONNECT APP?',
+                        a: [
+                            'Die RN Connect App kann kostenlos im Apple App Store heruntergeladen werden.',
+                        ],
+                    },
+                ],
+            },
+            {
+                label: 'Allgemeine Fragen',
+                items: [
+                    {
+                        q: 'Welche Gewährleistung erhalte ich beim Kauf eines Race Navigator Systems?',
+                        a: [
+                            'Für alle als Neuware verkauften Artikel gilt das gesetzliche Gewährleistungsrecht von 24 Monaten. Für gebrauchte, generalüberhole oder als Vorführware gegenzeichneten Artikel beträgt die Gewährleistung 12 Monate. Wir behalten uns das Recht auf Nachbesserung vor. Als Beginn Ihrer Ansprüche gilt der Erhalt der Ware durch Sie.',
+                        ],
+                    },
+                    {
+                        q: 'WO KANN ICH RACE NAVIGATOR PRODUKTE BESTELLEN?',
+                        a: [
+                            'Sie können alle RN Systeme und sämtliches Zubehör in unserem Online-Shop bestellen:',
+                            'store.race-navigator.de',
+                        ],
+                    },
+                    {
+                        q: 'Wie kann ich den Kundensupport erreichen?',
+                        a: [
+                            'Wenn Sie keine passende Antwort auf Ihre Frage gefunden haben, steht Ihnen natürlich unser Kundensupport zur Verfügung.',
+                            'Bitte senden Sie uns eine E-Mail an support@rn-vision.com mit einer kurzen Beschreibung Ihrer Anfrage zu.',
+                            'Sie können uns innerhalb unserer Geschäftszeiten auch telefonisch erreichen: +49 2161 6397011',
+                            'Montag bis Freitag von 9:00 Uhr bis 17:00 Uhr',
+                        ],
+                    },
+                ],
+            },
+        ],
+    });
+}
+
 export function rnFooter(locale: string) {
     return pick(locale, {
         tagline: 'The way of driving faster.',

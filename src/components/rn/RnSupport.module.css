@@ -1,0 +1,260 @@
+/* ── RN Support ──────────────────────────────────────────────────────────────
+   Measured off live at 1440. The page is short: a 768px photograph, a heading and one
+   paragraph on the 1140 rail, a near-full-width carousel of six tiles, and 150px of air
+   before the footer. */
+
+/* The banner carries no text on live, exactly as the RN ONE banner does not. Centred and
+   covering, as live sets it. */
+.banner {
+    position: relative;
+    /* 53.34vw so it lands on live's 768 at 1440 rather than 5px short. */
+    height: clamp(320px, 53.34vw, 768px);
+    background: var(--rn-paper) url('/rn/support/hero.jpg') no-repeat center center / cover;
+}
+
+.intro {
+    /* Live: the heading sits 110px below the banner, and the paragraph ends 26px above the
+       carousel band. */
+    padding-block: 110px 26px;
+    background: var(--rn-paper);
+    /* The section paints its own paper, so it names its own ink — [data-site='rn'] sets white
+       on everything by default. */
+    color: var(--rn-ink);
+}
+
+/* Live runs this page's content on a 1120 measure rather than the full 1140 rail. */
+.introRail {
+    padding-inline: 10px;
+}
+
+.introBody {
+    /* Live: 28px between the heading and the paragraph. */
+    margin: 28px 0 0;
+    max-width: 1120px;
+    font-family: var(--rn-body);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #000;
+}
+
+/* ── The carousel ────────────────────────────────────────────────────────────
+   Live's band is 1403 wide inside a 1425 viewport — not the reading rail, nearly the full
+   window — holding four 520-tall tiles flush against one another. */
+.band {
+    /* Live builds this gap out of a 10px section inset, a 40px spacer widget and a 20px gap —
+       70px in total — and leaves 180px of air between the carousel and the footer. */
+    padding-block: 70px 180px;
+    background: var(--rn-paper);
+}
+
+/* Edge to edge. Live insets the band by 11px a side and caps it at 1403, which on a wide
+   screen leaves the tiles stranded in the middle with a margin either side; this runs them to
+   both edges of the window instead, so the four always divide the whole width. */
+.carousel {
+    position: relative;
+    width: 100%;
+    margin-inline: 0;
+}
+
+/* Fixed, and this is load-bearing. The tiles change height as the spotlight moves, and a
+   container that takes its height from its tallest child dips for the length of the swap —
+   the old lead is already shrinking while the new one is still growing, so for a moment
+   nothing is full height. The band shortens, everything below it jumps up, and the whole page
+   shivers on every press. Pinning the band means the tiles can resize inside it and nothing
+   outside ever moves. */
+.viewport {
+    overflow: hidden;
+    height: 350px;
+}
+
+.track {
+    display: flex;
+    /* Centred, so the shorter tiles sit against the middle of the tall one rather than hanging
+       from its top edge. */
+    align-items: center;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    transition: transform 0.55s var(--rn-ease);
+}
+
+.cell {
+    /* The track is sized to the whole run, so each cell is one slot of it. */
+    flex: 1 1 0;
+    min-width: 0;
+    padding-inline: 4px;
+}
+
+/* Every tile the same. An earlier version stood the leading one taller and drained the rest,
+   which made five of the six look broken rather than secondary — a set of equals reads better
+   than a spotlight when the items are genuinely equal. */
+.tile {
+    position: relative;
+    display: block;
+    /* Live's tiles are 520 deep. At four across on a wide screen that is a lot of page for six
+       links, so these are shorter — the band still reads as a row of portraits without eating
+       most of the fold.
+
+       This must stay equal to .viewport's height. The band clips, so a tile taller than it has
+       its title cut off at the foot. */
+    height: 350px;
+    overflow: hidden;
+    text-decoration: none;
+}
+
+/* RN's lily effect, the same one their track tiles use: the picture is drawn wider than its
+   frame and parked left, so on hover it drifts right as the title rises to meet it. The two
+   moving against each other is what gives it depth. */
+.shot {
+    object-fit: cover;
+    transform: translate3d(-24px, 0, 0) scale(1.06);
+    transition: transform 0.6s var(--rn-ease);
+}
+
+/* Live's overlay is black at zero opacity, rising on hover. It is what keeps the title legible
+   over whichever part of the photograph happens to be behind it. */
+.wash {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top,
+        rgb(0 0 0 / 0.72), rgb(0 0 0 / 0.18) 58%, rgb(0 0 0 / 0.26));
+    opacity: 0.85;
+    transition: opacity 0.45s var(--rn-ease);
+}
+
+/* The index, in RN's red at the top of the tile. It is what turns six separate pictures into
+   a numbered set, and it gives the eye something to hold while the strip moves. */
+.tileNo {
+    position: absolute;
+    left: 26px;
+    top: 20px;
+    font-family: var(--rn-display);
+    font-size: 34px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    color: var(--rn-red);
+}
+
+/* right: auto so the block shrinks to its own text instead of filling the tile — that is what
+   lets the rule above it be the width of the title and nothing more. */
+.tileFoot {
+    position: absolute;
+    left: 0;
+    right: auto;
+    bottom: 0;
+    max-width: 100%;
+    padding: 0 26px 26px;
+    transform: translate3d(0, 10px, 0);
+    transition: transform 0.45s var(--rn-ease);
+}
+
+/* As wide as the title beneath it, no wider — the block it sits in shrinks to the text, so
+   100% here is the text's own width. */
+.tileRule {
+    display: block;
+    width: 100%;
+    height: 3px;
+    margin: 0 0 14px;
+    background: var(--rn-red);
+}
+
+.tileTitle {
+    margin: 0;
+    font-family: var(--rn-display);
+    font-size: 26px;
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    text-align: left;
+    color: var(--rn-white);
+}
+
+.tile:hover .shot,
+.tile:focus-visible .shot { transform: translate3d(0, 0, 0) scale(1.06); }
+
+.tile:hover .wash,
+.tile:focus-visible .wash { opacity: 1; }
+
+.tile:hover .tileFoot,
+.tile:focus-visible .tileFoot { transform: translate3d(0, 0, 0); }
+
+.tile:focus-visible {
+    outline: 2px solid var(--rn-red);
+    outline-offset: -2px;
+}
+
+/* A red line under the strip, filling as you move through the six. It runs the width of the
+   band so it reads as part of it rather than as a control floating underneath. */
+.progress {
+    position: relative;
+    height: 3px;
+    margin-top: 0;
+    background: rgb(11 11 13 / 0.10);
+}
+
+.progressFill {
+    display: block;
+    height: 100%;
+    background: var(--rn-red);
+    transition: width 0.55s var(--rn-ease);
+}
+
+/* Live's arrows: 36px, white, no background, sitting just inside each edge and centred on the
+   band. */
+.arrow {
+    position: absolute;
+    /* Centred on the tiles, not on the whole component — the marks below would otherwise drag
+       both arrows down off the middle of the strip. */
+    top: 175px;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    margin-top: -18px;
+    padding: 0;
+    border: none;
+    background: rgb(8 8 10 / 0.3);
+    color: var(--rn-white);
+    cursor: pointer;
+    transition: background 0.2s var(--rn-ease);
+}
+
+.arrow:hover { background: var(--rn-red); }
+
+.arrow:focus-visible {
+    outline: 2px solid var(--rn-white);
+    outline-offset: 2px;
+}
+
+.arrowPrev { left: 10px; }
+.arrowNext { right: 10px; }
+
+@media (max-width: 1040px) {
+    .viewport { height: 310px; }
+    .tile { height: 310px; }
+    .arrow { top: 155px; }
+    .tileFoot { padding: 0 18px 18px; }
+
+    .tileTitle { font-size: 21px; }
+    .tileNo { font-size: 28px; left: 18px; top: 16px; }
+}
+
+@media (max-width: 760px) {
+    .viewport { height: 280px; }
+    .tile { height: 280px; }
+    .arrow { top: 140px; }
+    .intro { padding-block: 56px 0; }
+    .band { padding-block: 32px 72px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .track,
+    .shot,
+    .wash,
+    .progressFill,
+    .tileFoot { transition: none; }
+}

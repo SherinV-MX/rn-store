@@ -24,12 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
    leaves `variantId` null and the buttons fall back to linking at the catalogue. */
 const RN_ONE_HANDLE = 'rn-one-race-navigator';
 
-/* RN's own support pages, which are not part of this rebuild — so the button leaves for them,
-   to the same two addresses the live buttons use. */
-const SUPPORT_URL: Record<string, string> = {
-    en: 'https://race-navigator.com/en/rn-support-en/',
-    de: 'https://race-navigator.com/rn-support/',
-};
+
 
 async function rnOneVariantId(locale: string): Promise<string | null> {
     try {
@@ -146,9 +141,11 @@ export default async function RnOnePage({ params }: { params: Promise<{ locale: 
                     />
 
                     <p className={s.specActions}>
-                        <a href={SUPPORT_URL[locale] ?? SUPPORT_URL.en} className={`rnBtn ${s.supportBtn}`}>
+                        {/* The support area is part of the rebuild now, so the button stays on this site
+                            rather than leaving for RN's own. */}
+                        <Link href={`/${locale}/rn/support`} className={`rnBtn ${s.supportBtn}`}>
                             {t.support}
-                        </a>
+                        </Link>
                     </p>
                 </div>
             </section>
@@ -243,9 +240,11 @@ export default async function RnOnePage({ params }: { params: Promise<{ locale: 
                     </div>
 
                     <p className={`${s.specActions} ${s.compareActions}`}>
-                        <a href={SUPPORT_URL[locale] ?? SUPPORT_URL.en} className={`rnBtn ${s.supportBtn}`}>
+                        {/* The support area is part of the rebuild now, so the button stays on this site
+                            rather than leaving for RN's own. */}
+                        <Link href={`/${locale}/rn/support`} className={`rnBtn ${s.supportBtn}`}>
                             {t.support}
-                        </a>
+                        </Link>
                     </p>
                 </div>
             </section>
