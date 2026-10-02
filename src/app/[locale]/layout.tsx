@@ -22,8 +22,22 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     const { locale } = await params;
     const dict = await getDictionary(locale);
     return {
+        /* Share cards need an absolute address for the picture, and a relative one is all a
+           page can give. Set from the deploy's own URL where there is one, so a preview build
+           advertises itself rather than production. */
+        metadataBase: new URL(
+            process.env.NEXT_PUBLIC_SITE_URL
+            ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'),
+        ),
         title: dict.meta.title,
         description: dict.meta.description,
+        openGraph: {
+            type: 'website',
+            locale,
+            title: dict.meta.title,
+            description: dict.meta.description,
+        },
+        twitter: { card: 'summary_large_image' },
     };
 }
 

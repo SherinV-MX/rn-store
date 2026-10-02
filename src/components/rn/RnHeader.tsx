@@ -108,7 +108,10 @@ export default function RnHeader({ locale }: { locale: string }) {
                     <Link href={`/${other}/rn`} className={s.lang} hrefLang={other} title={t.switchTo}>
                         {other}
                     </Link>
-                    <Link href={`/${locale}/products`} className={`rnBtn rnBtnSolid ${s.store}`}>
+                    {/* Straight to RN ONE rather than the product listing: the store sells one
+                        headline system, so the button lands on it instead of on a page that
+                        asks which one. */}
+                    <Link href={`/${locale}/rn/rn-one`} className={`rnBtn rnBtnSolid ${s.store}`}>
                         {t.store}
                     </Link>
                     <button
@@ -132,7 +135,7 @@ export default function RnHeader({ locale }: { locale: string }) {
                         </Link>
                     ))}
                     <div className={s.sheetActions}>
-                        <Link href={`/${locale}/products`} className="rnBtn rnBtnSolid" onClick={() => setOpen(false)}>
+                        <Link href={`/${locale}/rn/rn-one`} className="rnBtn rnBtnSolid" onClick={() => setOpen(false)}>
                             {t.store}
                         </Link>
                         <Link href={`/${other}/rn`} className="rnBtn rnBtnGhost" hrefLang={other}>
