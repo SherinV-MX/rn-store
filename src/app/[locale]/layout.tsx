@@ -23,11 +23,19 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     const dict = await getDictionary(locale);
     return {
         /* Share cards need an absolute address for the picture, and a relative one is all a
-           page can give. Set from the deploy's own URL where there is one, so a preview build
-           advertises itself rather than production. */
+           page can give.
+
+           The production domain, not VERCEL_URL. VERCEL_URL is the host of that one deployment
+           — rn-store-i53e7zup3-....vercel.app — and Vercel keeps those behind Deployment
+           Protection, which answers a crawler with its login page as 200 HTML rather than the
+           picture. WhatsApp fetched it, got HTML, and showed a card with no image.
+           VERCEL_PROJECT_PRODUCTION_URL is the public domain and is the same for every deploy,
+           so a preview advertises the live card rather than one nobody can load. */
         metadataBase: new URL(
             process.env.NEXT_PUBLIC_SITE_URL
-            ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'),
+            ?? (process.env.VERCEL_PROJECT_PRODUCTION_URL
+                ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+                : 'http://localhost:3000'),
         ),
         title: dict.meta.title,
         description: dict.meta.description,
